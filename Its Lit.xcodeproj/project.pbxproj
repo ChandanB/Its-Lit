@@ -10,6 +10,7 @@
 		1F071CA21D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F071CA11D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard */; };
 		1F071CA41D5EB61F00CD2303 /* mainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F071CA31D5EB61F00CD2303 /* mainViewController.swift */; };
 		1F071CA61D5EB70A00CD2303 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F071CA51D5EB70A00CD2303 /* Extensions.swift */; };
+		1F1A937F1D8F9771005E6DB1 /* LightSwitchActivator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1A937E1D8F9771005E6DB1 /* LightSwitchActivator.swift */; };
 		1FE1B9F51D59A724003545ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE1B9F41D59A724003545ED /* AppDelegate.swift */; };
 		1FE1B9F71D59A724003545ED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE1B9F61D59A724003545ED /* ViewController.swift */; };
 		1FE1B9FA1D59A724003545ED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FE1B9F81D59A724003545ED /* Main.storyboard */; };
@@ -21,6 +22,7 @@
 		1F071CA11D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "LaunchScreen 1.58.12 PM.storyboard"; sourceTree = "<group>"; };
 		1F071CA31D5EB61F00CD2303 /* mainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = mainViewController.swift; sourceTree = "<group>"; };
 		1F071CA51D5EB70A00CD2303 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		1F1A937E1D8F9771005E6DB1 /* LightSwitchActivator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightSwitchActivator.swift; sourceTree = "<group>"; };
 		1FE1B9F11D59A724003545ED /* Its Lit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Its Lit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FE1B9F41D59A724003545ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1FE1B9F61D59A724003545ED /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				1FE1B9F41D59A724003545ED /* AppDelegate.swift */,
+				1F1A937E1D8F9771005E6DB1 /* LightSwitchActivator.swift */,
 				1F071CA51D5EB70A00CD2303 /* Extensions.swift */,
 				1FE1B9F61D59A724003545ED /* ViewController.swift */,
 				1F071CA31D5EB61F00CD2303 /* mainViewController.swift */,
@@ -100,12 +103,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Gaming Recess";
 				TargetAttributes = {
 					1FE1B9F01D59A724003545ED = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = H3Z7K9ZZE8;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -147,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1FE1B9F71D59A724003545ED /* ViewController.swift in Sources */,
+				1F1A937F1D8F9771005E6DB1 /* LightSwitchActivator.swift in Sources */,
 				1FE1B9F51D59A724003545ED /* AppDelegate.swift in Sources */,
 				1F071CA41D5EB61F00CD2303 /* mainViewController.swift in Sources */,
 				1F071CA61D5EB70A00CD2303 /* Extensions.swift in Sources */,
@@ -181,8 +186,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -226,8 +233,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -246,6 +255,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -261,6 +271,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PlayerGround.Its-Lit";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -275,6 +286,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PlayerGround.Its-Lit";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
