@@ -1,22 +1,25 @@
   //
- //  ViewController.swift
- //  Its Lit
- //
- //  Created by Chandan Brown on 8/8/16.
- //  Copyright © 2016 Gaming Recess. All rights reserved.
- //
- 
- import UIKit
- import AVFoundation
- import MultipeerConnectivity
- 
- class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , UIImagePickerControllerDelegate {
+  //  ViewController.swift
+  //  Its Lit
+  //
+  //  Created by Chandan Brown on 8/8/16.
+  //  Copyright © 2016 Gaming Recess. All rights reserved.
+  //
+  
+  import UIKit
+  import AVFoundation
+  import MultipeerConnectivity
+  import GoogleMobileAds
+  
+  class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , UIImagePickerControllerDelegate {
     
-    @IBOutlet weak var itsLitImage: UIImageView!
     
     //MARK: - Variables
+    @IBOutlet weak var itsLitImage: UIImageView!
+    @IBOutlet weak var ItsLitButton: UIImageView!
     var myDictionary:NSDictionary = [:]
-    
+    var interstitial: GADInterstitial!
+
     //Variables for Peer to Peer.
     var browser   : MCBrowserViewController!
     var assistant : MCAdvertiserAssistant!
@@ -48,25 +51,16 @@
             return true
         }
         
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
+        
     }
     
     //MARK: - Functions
     
     func itsLitNoButton() {
         
-       // self.present(self.browser, animated: true, completion: nil)
-    // sendInfo()
-        func playSound(_ soundName: String)
-        {
-            let alertSound = URL(fileURLWithPath: Bundle.main.path(forResource: soundName, ofType: "aiff")!)
-            do{
-                let audioPlayer = try AVAudioPlayer(contentsOf:alertSound)
-                audioPlayer.prepareToPlay()
-                audioPlayer.play()
-            }catch {
-                print("Error getting the audio file")
-            }
-        }
+        // self.present(self.browser, animated: true, completion: nil)
+        // sendInfo()
         
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         if (device?.hasTorch)! {
@@ -92,8 +86,8 @@
     
     func sendInfo() {
         if self.session.connectedPeers.count > 0 {
-            let firstNameVar = "Chandan"
-            let lastNameVar = "Brown"
+            let firstNameVar = "It's"
+            let lastNameVar = "Lit"
             myDictionary = ["itemA" : "\(firstNameVar)", "itemB" : "\(lastNameVar)"]
             do {
                 let data =  NSKeyedArchiver.archivedData(withRootObject: myDictionary)
@@ -157,7 +151,6 @@
         self.browser.delegate = self
     }
     
-    @IBOutlet weak var ItsLitButton: UIImageView!
     
     
     override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
@@ -228,8 +221,8 @@
     
     @IBAction func connectScreen(_ sender: AnyObject) {
         self.present(self.browser, animated: true, completion: nil)
-
+        
     }
     
     
- }
+  }

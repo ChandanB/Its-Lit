@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        
+        // Use Firebase library to configure APIs
+        FIRApp.configure()
+        // Initialize Google Mobile Ads SDK
         
 //        window = UIWindow(frame: UIScreen.mainScreen().bounds)
 //        window?.makeKeyAndVisible()
