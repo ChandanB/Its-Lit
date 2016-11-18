@@ -12,31 +12,6 @@ import GoogleMobileAds
 
 class ProfileViewController: UIViewController {
     
-    
-    private func addFriendIntoDatabaseWithUID(uid: String, values: [String: AnyObject]) {
-        let ref = FIRDatabase.database().reference()
-        let friendsReference = ref.child("users").child(uid).child("friends")
-        
-        friendsReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
-            
-            if err != nil {
-                print(err)
-                return
-            }
-            
-            let uid1 = "\(self.user?.id)";
-            let uid2 = "\(ref.child("users").child(uid))";
-            
-            ref.child("users").child(uid1).child("friends")
-            ref.child("users").child(uid2).child("friends")
-            
-            //.child(uid2).setValue(true)
-            //.child(uid1).setValue(true)
-
-        })
-    }
-
-
     var newBannerView: GADBannerView = {
         let banner = GADBannerView()
         banner.translatesAutoresizingMaskIntoConstraints = false
@@ -45,6 +20,7 @@ class ProfileViewController: UIViewController {
     }()
     
     var message: Message?
+    
     var user: User? {
         didSet {
             navigationItem.title = user?.name

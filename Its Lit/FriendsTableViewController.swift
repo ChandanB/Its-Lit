@@ -30,6 +30,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         super.viewDidLoad()
         
         
+
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.leftBarButtonItem?.tintColor = UIColor.black
         navigationController?.navigationItem.title = "Search For Friends"
@@ -118,7 +119,6 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
     
        
         cell.textLabel?.text = user.name
-        cell.detailTextLabel?.text = user.email
         
         if let profileImageUrl = user.profileImageUrl {
             cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
