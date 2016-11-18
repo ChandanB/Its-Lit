@@ -8,24 +8,21 @@
 
 import UIKit
 import Firebase
+import GoogleMobileAds
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         // Use Firebase library to configure APIs
         FIRApp.configure()
         // Initialize Google Mobile Ads SDK
-        
-//        window = UIWindow(frame: UIScreen.mainScreen().bounds)
-//        window?.makeKeyAndVisible()
-//        
-//        window?.rootViewController = UINavigationController(rootViewController: mainViewController())
-        
+        GADMobileAds.configure(withApplicationID: "ca-app-pub-8446644766706278~1782602542")
+
         UINavigationBar.appearance().barTintColor = UIColor.rgb(254, green: 209, blue: 67)
         
         // get rid of black bar underneath navbar
@@ -37,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.addSubview(statusBarBackgroundView)
         window?.addConstraintsWithFormat("H:|[v0]|", views: statusBarBackgroundView)
         window?.addConstraintsWithFormat("V:|[v0(20)]", views: statusBarBackgroundView)
+        
+    
         return true
     }
 

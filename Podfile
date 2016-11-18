@@ -6,12 +6,18 @@ target 'Its Lit' do
   use_frameworks!
 
   # Pods for Its Lit
-
+pod 'Google-Mobile-Ads-SDK’
+pod ‘Firebase’
 pod 'Firebase/AdMob'
 pod 'Firebase/Analytics'
 pod 'Firebase/AppIndexing'
 pod 'Firebase/Auth'
 pod 'Firebase/Crash'
 pod 'Firebase/Database'
+pod 'Firebase/DynamicLinks'
+pod 'Firebase/Messaging'
+pod 'Firebase/RemoteConfig'
+pod 'Firebase/Storage'
+pod 'Firebase/Core'
 
 end
