@@ -1,9 +1,9 @@
 //
 //  Extensions.swift
-//  youtube
+//  Lit
 //
-//  Created by Brian Voong on 6/3/16.
-//  Copyright © 2016 letsbuildthatapp. All rights reserved.
+//  Created by Chandan on 6/3/16.
+//  Copyright © 2016 TurnApp. All rights reserved.
 //
 
 import UIKit

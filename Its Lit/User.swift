@@ -1,6 +1,6 @@
 //
 //  Users.swift
-//  PlayerGround 3.0
+//  Lit
 //
 //  Created by Chandan Brown on 7/24/16.
 //  Copyright © 2016 Gaming Recess. All rights reserved.

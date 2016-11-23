@@ -13,9 +13,12 @@
 		1F039D591DD71E16008B63D6 /* FriendsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F039D581DD71E16008B63D6 /* FriendsTableViewController.swift */; };
 		1F039D5B1DD7203F008B63D6 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F039D5A1DD7203F008B63D6 /* UserCell.swift */; };
 		1F039D601DD72177008B63D6 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F039D5F1DD72177008B63D6 /* Message.swift */; };
-		1F039D661DDC029D008B63D6 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F039D651DDC029D008B63D6 /* ProfileViewController.swift */; };
+		1F039D661DDC029D008B63D6 /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F039D651DDC029D008B63D6 /* ChatLogController.swift */; };
 		1F071CA21D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F071CA11D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard */; };
 		1F071CA61D5EB70A00CD2303 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F071CA51D5EB70A00CD2303 /* Extensions.swift */; };
+		1F18A2C21DDF98CF0095ED97 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F18A2C11DDF98CF0095ED97 /* ChatMessageCell.swift */; };
+		1F18A2C41DDF991C0095ED97 /* ChatInputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F18A2C31DDF991C0095ED97 /* ChatInputContainerView.swift */; };
+		1F18A2C61DDF9C260095ED97 /* MessagingExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F18A2C51DDF9C260095ED97 /* MessagingExtensions.swift */; };
 		1F1DAA3B1DD687C700655B74 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1DAA3A1DD687C700655B74 /* User.swift */; };
 		1F7DCD951DCA9222000AA8BD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F7DCD941DCA9222000AA8BD /* ViewController.swift */; };
 		1F90C4381DD511380088B32E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F90C4371DD511380088B32E /* GoogleService-Info.plist */; };
@@ -35,9 +38,12 @@
 		1F039D581DD71E16008B63D6 /* FriendsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsTableViewController.swift; sourceTree = "<group>"; };
 		1F039D5A1DD7203F008B63D6 /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		1F039D5F1DD72177008B63D6 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		1F039D651DDC029D008B63D6 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		1F039D651DDC029D008B63D6 /* ChatLogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
 		1F071CA11D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "LaunchScreen 1.58.12 PM.storyboard"; sourceTree = "<group>"; };
 		1F071CA51D5EB70A00CD2303 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		1F18A2C11DDF98CF0095ED97 /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
+		1F18A2C31DDF991C0095ED97 /* ChatInputContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatInputContainerView.swift; sourceTree = "<group>"; };
+		1F18A2C51DDF9C260095ED97 /* MessagingExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagingExtensions.swift; sourceTree = "<group>"; };
 		1F1DAA3A1DD687C700655B74 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1F7DCD941DCA9222000AA8BD /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		1F90C4331DD4FAC00088B32E /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
@@ -75,7 +81,7 @@
 				1F90C43A1DD67FA20088B32E /* loginAndCreateAccount.swift */,
 				1F7DCD941DCA9222000AA8BD /* ViewController.swift */,
 				1F039D581DD71E16008B63D6 /* FriendsTableViewController.swift */,
-				1F039D651DDC029D008B63D6 /* ProfileViewController.swift */,
+				1F039D651DDC029D008B63D6 /* ChatLogController.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -98,10 +104,13 @@
 		1F039D5E1DD72089008B63D6 /* Ext and Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				1F18A2C31DDF991C0095ED97 /* ChatInputContainerView.swift */,
+				1F18A2C11DDF98CF0095ED97 /* ChatMessageCell.swift */,
 				1F039D5F1DD72177008B63D6 /* Message.swift */,
 				1F1DAA3A1DD687C700655B74 /* User.swift */,
 				1F039D5A1DD7203F008B63D6 /* UserCell.swift */,
 				1F039D561DD70938008B63D6 /* imageHandle.swift */,
+				1F18A2C51DDF9C260095ED97 /* MessagingExtensions.swift */,
 				1F071CA51D5EB70A00CD2303 /* Extensions.swift */,
 			);
 			name = "Ext and Helpers";
@@ -301,9 +310,12 @@
 				1F039D571DD70938008B63D6 /* imageHandle.swift in Sources */,
 				1F1DAA3B1DD687C700655B74 /* User.swift in Sources */,
 				1F039D5B1DD7203F008B63D6 /* UserCell.swift in Sources */,
-				1F039D661DDC029D008B63D6 /* ProfileViewController.swift in Sources */,
+				1F039D661DDC029D008B63D6 /* ChatLogController.swift in Sources */,
 				1FE1B9F51D59A724003545ED /* AppDelegate.swift in Sources */,
 				1F039D601DD72177008B63D6 /* Message.swift in Sources */,
+				1F18A2C21DDF98CF0095ED97 /* ChatMessageCell.swift in Sources */,
+				1F18A2C61DDF9C260095ED97 /* MessagingExtensions.swift in Sources */,
+				1F18A2C41DDF991C0095ED97 /* ChatInputContainerView.swift in Sources */,
 				1F071CA61D5EB70A00CD2303 /* Extensions.swift in Sources */,
 				1F90C43D1DD6863A0088B32E /* LoginController+handlers.swift in Sources */,
 			);

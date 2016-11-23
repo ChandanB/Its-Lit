@@ -1,9 +1,9 @@
 //
 //  LoginController+handlers.swift
-//  gameofchats
+//  It's Lit
 //
-//  Created by Brian Voong on 7/4/16.
-//  Copyright © 2016 letsbuildthatapp. All rights reserved.
+//  Created byChandan on 7/4/16.
+//  Copyright © 2016 TurnApp. All rights reserved.
 //
 
 import UIKit
@@ -55,7 +55,6 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
     private func registerUserIntoDatabaseWithUID(uid: String, values: [String: AnyObject]) {
         let ref = FIRDatabase.database().reference()
         let usersReference = ref.child("users").child(uid)
-        let friendsReference = ref.child("users").child(uid).child("Friends")
         
         usersReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
             

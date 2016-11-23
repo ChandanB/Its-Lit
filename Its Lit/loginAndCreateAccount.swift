@@ -1,9 +1,9 @@
 //
 //  LoginController.swift
-//  gameofchats
+//  It's Lit
 //
-//  Created by Brian Voong on 6/24/16.
-//  Copyright © 2016 letsbuildthatapp. All rights reserved.
+//  Created by Chandan on 6/24/16.
+//  Copyright © 2016 TurnApp. All rights reserved.
 //
 
 import UIKit

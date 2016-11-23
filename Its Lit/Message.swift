@@ -13,6 +13,7 @@ import Firebase
 
 class Message: NSObject {
     
+    var name: String?
     var fromId: String?
     var text: String?
     var timestamp: NSNumber?
