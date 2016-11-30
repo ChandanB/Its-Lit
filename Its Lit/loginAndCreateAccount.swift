@@ -13,8 +13,6 @@ class LoginViewController: UIViewController  {
     
     var viewController: ViewController?
     
-
-    
     let inputsContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
@@ -26,10 +24,10 @@ class LoginViewController: UIViewController  {
     
     lazy var loginRegisterButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.rgb(255, green: 185, blue: 0)
+        button.backgroundColor = UIColor.black
         button.setTitle("Register", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor.black, for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.layer.cornerRadius = 20
         
@@ -55,7 +53,7 @@ class LoginViewController: UIViewController  {
         FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: { (user, error) in
             
             if error != nil {
-                print(error)
+                print(error as Any)
                 return
             }
             
@@ -108,7 +106,10 @@ class LoginViewController: UIViewController  {
     
     lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "ios emoji")
+        let origImage = UIImage(named: "ios emoji")
+        let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        imageView.image = tintedImage
+        imageView.tintColor = UIColor.black
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.isUserInteractionEnabled = true
@@ -120,7 +121,7 @@ class LoginViewController: UIViewController  {
     lazy var loginRegisterSegmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl(items: ["Login", "Register"])
         sc.translatesAutoresizingMaskIntoConstraints = false
-        sc.tintColor = UIColor.white
+        sc.tintColor = UIColor.black
         sc.selectedSegmentIndex = 1
         sc.addTarget(self, action: #selector(handleLoginRegisterChange), for: .valueChanged)
         return sc
@@ -135,7 +136,10 @@ class LoginViewController: UIViewController  {
         
         // change height of nameTextField
         nameTextFieldHeightAnchor?.isActive = false
+        
         nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 0 : 1/3)
+        
+        
         nameTextFieldHeightAnchor?.isActive = true
         
         emailTextFieldHeightAnchor?.isActive = false
@@ -159,7 +163,7 @@ class LoginViewController: UIViewController  {
 
         setupKeyboardObservers()
         
-        view.backgroundColor = UIColor.black
+        view.backgroundColor = UIColor.white
         
         view.addSubview(inputsContainerView)
         view.addSubview(loginRegisterButton)
@@ -190,8 +194,8 @@ class LoginViewController: UIViewController  {
         profileImageView.topAnchor.constraint(equalTo: loginRegisterSegmentedControl.bottomAnchor, constant: 12).isActive = true
         profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         profileImageView.bottomAnchor.constraint(equalTo: loginRegisterSegmentedControl.topAnchor, constant: -12).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
         profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
 

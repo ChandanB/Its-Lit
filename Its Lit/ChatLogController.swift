@@ -15,7 +15,8 @@ import AVFoundation
 class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let viewController: ViewController? = nil
-    
+    let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+
     var user: User? {
         didSet {
             navigationItem.title = user?.name
@@ -30,6 +31,21 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
             return
         }
+        
+        databaseHandle = FIRDatabase.database().reference().child("Lit").child(uid).child(toId).observe(.childAdded, with: { (snapshot) in
+            
+            self.itsLitNoButton()
+            
+            FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
+                
+                if error != nil {
+                    print("Failed to delete litness:", error as Any)
+                    return
+                }
+                
+            })
+        })
+        
         
         let userMessagesRef = FIRDatabase.database().reference().child("user-messages").child(uid).child(toId)
         userMessagesRef.observe(.childAdded, with: { (snapshot) in
@@ -50,20 +66,34 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                     self.collectionView?.scrollToItem(at: indexPath, at: .bottom, animated: true)
                 })
                 
-                }, withCancel: nil)
-            
             }, withCancel: nil)
+            
+        }, withCancel: nil)
     }
     
     
     
     let cellId = "cellId"
-    
+    var ref: FIRDatabaseReference?
+    var databaseHandle: FIRDatabaseHandle?
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Invite", style: .plain, target: self, action: #selector(invite))
+        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
+            return
+        }
         
+        FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
+            
+            if error != nil {
+                print("Failed to delete litness:", error as Any)
+                return
+            }
+            
+        })
+        
+        navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(254, green: 209, blue: 67)
+    
         collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         //        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         collectionView?.alwaysBounceVertical = true
@@ -75,8 +105,46 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         setupKeyboardObservers()
     }
     
-    func invite(user: User) {
-        viewController?.sendInfo()
+    func itsLitNoButton() {
+        
+        if (device?.hasTorch)! {
+            do {
+                try device?.lockForConfiguration()
+                if (device?.torchMode == AVCaptureTorchMode.on) {
+                    device?.torchMode = AVCaptureTorchMode.off
+                } else {
+                    do {
+                        try device?.setTorchModeOnWithLevel(1.0)
+                    } catch {
+                        print(error)
+                    }
+                }
+                device?.unlockForConfiguration()
+            } catch {
+                print(error)
+            }
+        }
+        
+    }
+    
+    func invite() {
+        if (device?.torchMode == AVCaptureTorchMode.off) && messages == [] {
+            let properties = ["text": "Lit!"]
+            self.sendMessageWithProperties(properties as [String : AnyObject])
+        }
+        let ref = FIRDatabase.database().reference().child("Lit")
+        let childRef = ref.childByAutoId()
+        let toId = self.user!.id!
+        let fromId = FIRAuth.auth()!.currentUser!.uid
+        let litRef = FIRDatabase.database().reference().child("Lit").child(fromId).child(toId)
+        
+        let litId = childRef.key
+        
+        litRef.updateChildValues([litId: 1])
+        
+        let recipientLitRef = FIRDatabase.database().reference().child("Lit").child(toId).child(fromId)
+        recipientLitRef.updateChildValues([litId: 1])
+        
     }
     
     lazy var inputContainerView: ChatInputContainerView = {
@@ -97,22 +165,17 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
-        
-        //        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIKeyboardWillShowNotification, object: nil)
-        //
-        //        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleKeyboardWillHide), name: UIKeyboardWillHideNotification, object: nil)
     }
     
     func handleKeyboardDidShow() {
         if messages.count > 0 {
             let indexPath = IndexPath(item: messages.count - 1, section: 0)
-            collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
+        //    collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
         }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -147,7 +210,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         let message = messages[(indexPath as NSIndexPath).item]
         
-           
+        
         cell.textView.text = message.text
         
         setupCell(cell, message: message)
@@ -174,7 +237,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         if message.fromId == FIRAuth.auth()?.currentUser?.uid {
             //outgoing yellow
-            cell.bubbleView.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
+            cell.bubbleView.backgroundColor = UIColor.black
             cell.textView.textColor = UIColor.white
             cell.profileImageView.isHidden = true
             
@@ -183,7 +246,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             
         } else {
             //incoming gray
-            cell.bubbleView.backgroundColor = ChatMessageCell.blueColor
+            cell.bubbleView.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
             cell.textView.textColor = UIColor.white
             cell.profileImageView.isHidden = false
             
@@ -228,7 +291,10 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     func handleSend() {
         let properties = ["text": inputContainerView.inputTextField.text!]
-        sendMessageWithProperties(properties as [String : AnyObject])
+        if properties == ["text": ""] {
+        } else {
+          sendMessageWithProperties(properties as [String : AnyObject])
+        }
     }
     
     
@@ -247,7 +313,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         childRef.updateChildValues(values) { (error, ref) in
             if error != nil {
-                print(error)
+                print(error as Any)
                 return
             }
             
@@ -303,8 +369,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 
                 zoomingImageView.center = keyWindow.center
                 
-                }, completion: { (completed) in
-                    //                    do nothing
+            }, completion: { (completed) in
+                //                    do nothing
             })
             
         }
@@ -322,9 +388,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 self.blackBackgroundView?.alpha = 0
                 self.inputContainerView.alpha = 1
                 
-                }, completion: { (completed) in
-                    zoomOutImageView.removeFromSuperview()
-                    self.startingImageView?.isHidden = false
+            }, completion: { (completed) in
+                zoomOutImageView.removeFromSuperview()
+                self.startingImageView?.isHidden = false
             })
         }
     }

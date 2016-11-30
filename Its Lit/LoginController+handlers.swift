@@ -20,7 +20,7 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
         FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user: FIRUser?, error) in
             
             if error != nil {
-                print(error)
+                print(error as Any)
                 return
             }
             
@@ -37,7 +37,7 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
                 storageRef.put(uploadData, metadata: nil, completion: { (metadata, error) in
                     
                     if error != nil {
-                        print(error)
+                        print(error as Any)
                         return
                     }
                     
@@ -59,7 +59,7 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
         usersReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
             
             if err != nil {
-                print(err)
+                print(err as Any)
                 return
             }
             

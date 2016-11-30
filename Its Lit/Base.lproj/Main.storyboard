@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QUG-75-iWa">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QUG-75-iWa">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,17 +23,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="twC-Os-jRJ">
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="285" id="urO-NX-yTP"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="167" width="375" height="301"/>
+                                <gestureRecognizers/>
                                 <connections>
                                     <action selector="itsLit:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wLB-ez-wLj"/>
+                                    <outletCollection property="gestureRecognizers" destination="yK2-Sy-bTW" appends="YES" id="5mk-xU-aIp"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ycu-GT-ru0">
+                                <rect key="frame" x="151" y="524" width="74" height="79"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="79" id="KhZ-3g-B6g"/>
-                                    <constraint firstAttribute="width" constant="74" id="wb5-rD-PdL"/>
+                                    <constraint firstAttribute="width" constant="74" id="0wh-kD-hdW"/>
+                                    <constraint firstAttribute="height" constant="79" id="Gu8-fV-iH4"/>
                                 </constraints>
                                 <state key="normal" title="Connect" image="people">
                                     <color key="titleColor" red="0.14901960784313725" green="0.066666666666666666" blue="0.019607843137254902" alpha="1" colorSpace="calibratedRGB"/>
@@ -41,27 +45,32 @@
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Its Lit" translatesAutoresizingMaskIntoConstraints="NO" id="Tqx-ao-sX0">
+                                <rect key="frame" x="16" y="167" width="343" height="285"/>
                                 <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="285" id="SAN-6T-LDa"/>
+                                </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FEC-BE-GA2" customClass="GADBannerView">
+                                <rect key="frame" x="0.0" y="72" width="375" height="49"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.95294117649999999" green="0.68235294120000001" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.93333333333333335" green="0.62352941176470589" blue="0.15294117647058825" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerX" secondItem="Ycu-GT-ru0" secondAttribute="centerX" id="2eo-va-Wul"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="trailing" secondItem="twC-Os-jRJ" secondAttribute="trailing" id="2tX-Y1-WL3"/>
-                            <constraint firstAttribute="trailing" secondItem="FEC-BE-GA2" secondAttribute="trailing" id="8wH-Wg-ewM"/>
-                            <constraint firstItem="FEC-BE-GA2" firstAttribute="centerX" secondItem="twC-Os-jRJ" secondAttribute="centerX" id="HJD-81-DIM"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="FEC-BE-GA2" secondAttribute="bottom" constant="46" id="YZJ-eT-2Ff"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="bottom" secondItem="Tqx-ao-sX0" secondAttribute="bottom" id="Yex-dR-j0J"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="top" id="aJQ-8D-JqQ"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="leading" secondItem="Tqx-ao-sX0" secondAttribute="leading" id="ckd-ay-hHh"/>
-                            <constraint firstItem="FEC-BE-GA2" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="iTu-2F-6VL"/>
-                            <constraint firstItem="Ycu-GT-ru0" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="bottom" constant="72" id="iZg-Fv-0w8"/>
-                            <constraint firstItem="FEC-BE-GA2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="kWP-Ol-tSr"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Ycu-GT-ru0" secondAttribute="bottom" constant="20" id="x59-8O-iqY"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="y7M-AD-ZM7"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerX" secondItem="twC-Os-jRJ" secondAttribute="centerX" id="4Zk-qz-7eX"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="7p1-4l-u2F"/>
+                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="top" id="GOw-7V-rjq"/>
+                            <constraint firstItem="FEC-BE-GA2" firstAttribute="leading" secondItem="twC-Os-jRJ" secondAttribute="leading" id="SYL-Gz-5hh"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerX" secondItem="Ycu-GT-ru0" secondAttribute="centerX" id="Vsp-lN-xPY"/>
+                            <constraint firstItem="Ycu-GT-ru0" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="bottom" constant="72" id="YJH-Ea-eAq"/>
+                            <constraint firstAttribute="trailing" secondItem="FEC-BE-GA2" secondAttribute="trailing" id="YcM-dX-c1a"/>
+                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="FEC-BE-GA2" secondAttribute="bottom" constant="46" id="egN-8V-23B"/>
+                            <constraint firstItem="FEC-BE-GA2" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="tqv-1Y-dAj"/>
+                            <constraint firstItem="Ycu-GT-ru0" firstAttribute="top" secondItem="twC-Os-jRJ" secondAttribute="bottom" constant="56" id="u4g-Yc-cjQ"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Ycu-GT-ru0" secondAttribute="bottom" constant="20" id="ugH-RU-xnX"/>
+                            <constraint firstItem="FEC-BE-GA2" firstAttribute="trailing" secondItem="twC-Os-jRJ" secondAttribute="trailing" id="zjB-n4-hz3"/>
+                            <constraint firstItem="FEC-BE-GA2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="zrV-Un-6GK"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
@@ -71,10 +80,15 @@
                         <outlet property="ItsLitButton" destination="Tqx-ao-sX0" id="7uY-jl-xAQ"/>
                         <outlet property="bannerView" destination="FEC-BE-GA2" id="yP1-iL-mty"/>
                         <outlet property="itsLitImage" destination="Tqx-ao-sX0" id="5ct-Lt-8my"/>
-                        <outlet property="peopleButton" destination="Ycu-GT-ru0" id="5PB-f3-U2U"/>
+                        <outlet property="peopleButton" destination="Ycu-GT-ru0" id="gO9-eM-pTO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="2" minimumPressDuration="1" id="yK2-Sy-bTW">
+                    <connections>
+                        <action selector="changeBackgroundWithGesture:" destination="BYZ-38-t0r" id="t18-3g-U06"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="975.20000000000005" y="1001.649175412294"/>
         </scene>

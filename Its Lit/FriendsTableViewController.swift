@@ -45,6 +45,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
     
     var users = [User]()
     var messages = [Message]()
+    var lit = [Lit]()
     var messagesDictionary = [String: Message]()
     var searchActive : Bool = false
     var filtered = [User]()
@@ -67,7 +68,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         tableView.tableHeaderView = searchController.searchBar
         
         searchController.searchBar.searchBarStyle = UISearchBarStyle.prominent
-        searchController.searchBar.placeholder = " Search By Name..."
+        searchController.searchBar.placeholder = " Search For Friends"
         searchController.searchBar.sizeToFit()
         searchController.searchBar.isTranslucent = false
         searchController.searchBar.tintColor = UIColor.rgb(51, green: 21, blue: 1)
@@ -114,7 +115,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
             FIRDatabase.database().reference().child("user-messages").child(uid).child(chatPartnerId).removeValue(completionBlock: { (error, ref) in
                 
                 if error != nil {
-                    print("Failed to delete message:", error)
+                    print("Failed to delete message:", error as Any)
                     return
                 }
                 
@@ -336,7 +337,8 @@ extension FriendsTableViewController: UISearchResultsUpdating {
     // MARK: - UISearchResultsUpdating Delegate
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
-       // let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
+        searchBar.placeholder = "Search For Friends"
+        // let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
         filterContentForSearchText(searchText: searchController.searchBar.text!)
     }
 }

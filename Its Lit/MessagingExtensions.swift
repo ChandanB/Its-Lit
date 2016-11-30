@@ -1,6 +1,6 @@
 //
 //  Extensions.swift
-//  PlayerGround 3.0
+//  It's Lit
 //
 //  Created by Chandan Brown on 7/24/16.
 //  Copyright © 2016 Gaming Recess. All rights reserved.
@@ -33,7 +33,7 @@ class CustomImageView: UIImageView {
             URLSession.shared.dataTask(with: url!, completionHandler: { (data, respones, error) in
                 
                 if error != nil {
-                    print(error)
+                    print(error as Any)
                     return
                 }
                 
