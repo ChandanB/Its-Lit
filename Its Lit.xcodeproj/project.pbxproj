@@ -24,6 +24,7 @@
 		1F90C4381DD511380088B32E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F90C4371DD511380088B32E /* GoogleService-Info.plist */; };
 		1F90C43B1DD67FA20088B32E /* loginAndCreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F90C43A1DD67FA20088B32E /* loginAndCreateAccount.swift */; };
 		1F90C43D1DD6863A0088B32E /* LoginController+handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F90C43C1DD6863A0088B32E /* LoginController+handlers.swift */; };
+		1FC7386B1DEFCBE40076040B /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC7386A1DEFCBE40076040B /* ViewExtension.swift */; };
 		1FE1B9F51D59A724003545ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE1B9F41D59A724003545ED /* AppDelegate.swift */; };
 		1FE1B9FA1D59A724003545ED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FE1B9F81D59A724003545ED /* Main.storyboard */; };
 		1FE1B9FC1D59A724003545ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FE1B9FB1D59A724003545ED /* Assets.xcassets */; };
@@ -52,6 +53,7 @@
 		1F90C4391DD5228C0088B32E /* Its Lit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Its Lit.entitlements"; sourceTree = "<group>"; };
 		1F90C43A1DD67FA20088B32E /* loginAndCreateAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loginAndCreateAccount.swift; sourceTree = "<group>"; };
 		1F90C43C1DD6863A0088B32E /* LoginController+handlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginController+handlers.swift"; sourceTree = "<group>"; };
+		1FC7386A1DEFCBE40076040B /* ViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
 		1FE1B9F11D59A724003545ED /* It's Lit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "It's Lit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FE1B9F41D59A724003545ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1FE1B9F91D59A724003545ED /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				1F039D581DD71E16008B63D6 /* FriendsTableViewController.swift */,
 				1F039D651DDC029D008B63D6 /* ChatLogController.swift */,
 				1FF7AE0C1DE5583700FAD488 /* ViewController.swift */,
+				1FC7386A1DEFCBE40076040B /* ViewExtension.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -313,6 +316,7 @@
 				1F828FB41DE7D38500D0C3EB /* Lit.swift in Sources */,
 				1F1DAA3B1DD687C700655B74 /* User.swift in Sources */,
 				1FF7AE0D1DE5583700FAD488 /* ViewController.swift in Sources */,
+				1FC7386B1DEFCBE40076040B /* ViewExtension.swift in Sources */,
 				1F039D5B1DD7203F008B63D6 /* UserCell.swift in Sources */,
 				1F039D661DDC029D008B63D6 /* ChatLogController.swift in Sources */,
 				1FE1B9F51D59A724003545ED /* AppDelegate.swift in Sources */,

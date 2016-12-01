@@ -107,29 +107,30 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     func itsLitNoButton() {
         
-        if (device?.hasTorch)! {
-            do {
-                try device?.lockForConfiguration()
-                if (device?.torchMode == AVCaptureTorchMode.on) {
-                    device?.torchMode = AVCaptureTorchMode.off
-                } else {
-                    do {
-                        try device?.setTorchModeOnWithLevel(1.0)
-                    } catch {
-                        print(error)
-                    }
-                }
-                device?.unlockForConfiguration()
-            } catch {
-                print(error)
-            }
-        }
+//        if (device?.hasTorch)! {
+//            do {
+//                try device?.lockForConfiguration()
+//                if (device?.torchMode == AVCaptureTorchMode.on) {
+//                    device?.torchMode = AVCaptureTorchMode.off
+//                } else {
+//                    do {
+//                        try device?.setTorchModeOnWithLevel(1.0)
+//                    } catch {
+//                        print(error)
+//                    }
+//                }
+//                device?.unlockForConfiguration()
+//            } catch {
+//                print(error)
+//            }
+//        }
         
     }
     
     func invite() {
+        
         if (device?.torchMode == AVCaptureTorchMode.off) && messages == [] {
-            let properties = ["text": "Lit!"]
+            let properties = ["text": "It's Lit!"]
             self.sendMessageWithProperties(properties as [String : AnyObject])
         }
         let ref = FIRDatabase.database().reference().child("Lit")

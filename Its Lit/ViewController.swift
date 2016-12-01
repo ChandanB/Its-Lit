@@ -14,7 +14,7 @@ import Firebase
 import MediaPlayer
 
 
-class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , UIImagePickerControllerDelegate, MPMediaPickerControllerDelegate {
+class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate {
     
     @IBOutlet weak var bannerView: GADBannerView!
     var animating : Bool = false
@@ -54,6 +54,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         // _
         
+        
         view.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
         
         func canBecomeFirstResponder() -> Bool {
@@ -68,33 +69,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     //MARK: - Functions
 
-    func rotateView() {
-        if(!animating) {
-            animating = true;
-            spinWithOptions(options: UIViewAnimationOptions.curveEaseIn);
-        }
-    }
-    
-    func stopSpinning() {
-        animating = false
-    }
-    
-    func spinWithOptions(options: UIViewAnimationOptions) {
-        UIView.animate(withDuration: 0.5, delay: 0.0, options: options, animations: { () -> Void in
-            let val : CGFloat = CGFloat((M_PI / Double(2.0)));
-            self.itsLitImage.transform = self.itsLitImage.transform.rotated(by: val)
-        }) { (finished: Bool) -> Void in
-            if(finished) {
-                if(self.animating){
-                    self.spinWithOptions(options: UIViewAnimationOptions.curveLinear)
-                } else if (options != UIViewAnimationOptions.curveEaseOut) {
-                    self.spinWithOptions(options: UIViewAnimationOptions.curveEaseOut)
-                }
-            }
-            
-        }
-    }
-    
+        
     func checkIfUserIsLoggedIn() {
         
         if FIRAuth.auth()?.currentUser?.uid == nil {
@@ -112,59 +87,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(handleLogout))
             navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 67)
             navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
-            setupMusicButton()
         }
     }
     
-    var musicButton: UIButton = {
-        let button = UIButton(type: .system)
-        let origImage = UIImage(named: "Music")
-        button.setImage(origImage, for: .normal)
-       // button.addTarget(self, action: #selector(musicPicker), for: .touchUpInside)
-        return button
-    }()
-    
-    func setupMusicButton() {
-        self.view.addSubview(musicButton)
-        positionMusicButton()
-    }
-    
-    func positionMusicButton() {
-        musicButton.centerXAnchor.constraint(equalTo: peopleButton.centerXAnchor ).isActive = true
-        musicButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-    }
-    
-    func musicPicker() {
-        let mediaPicker = MPMediaPickerController(mediaTypes: .music)
-        mediaPicker.delegate = self
-        present(mediaPicker, animated: true, completion: nil)
-    }
-    
-    private func mediaPicker(mediaPicker: MPMediaPickerController, didPickMediaItems mediaItemCollection: MPMediaItemCollection) {
-        //User selected a/an item(s).
-        myMusicPlayer = MPMusicPlayerController()
-        
-        if let player = myMusicPlayer{
-            player.beginGeneratingPlaybackNotifications()
-            
-            player.setQueue(with: mediaItemCollection)
-            player.play()
-            
-            
-            mediaPicker.dismiss(animated: true, completion: nil)
-        }
-    }
-    
-    func mediaPickerDidCancel(mediaPicker: MPMediaPickerController) {
-        print("User selected Cancel tell me what to do")
-        mediaPicker.dismiss(animated: true, completion: nil)
-    }
-    
-    func setupMusicPlayer() {
-        let mediaPicker = MPMediaPickerController(mediaTypes: .music)
-        mediaPicker.delegate = self
-        present(mediaPicker, animated: true, completion: nil)
-    }
     func goToFriendsPage() {
         
         let friendsTableViewController = FriendsTableViewController()
@@ -199,7 +124,8 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         present(navController, animated: true, completion: nil)
         
     }
-    
+    let profileImageView = UIImageView()
+
     func setupNavBarWithUser(_ user: User) {
         
         let titleView = UIView()
@@ -210,10 +136,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         containerView.translatesAutoresizingMaskIntoConstraints = false
         titleView.addSubview(containerView)
         
-        let profileImageView = UIImageView()
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         profileImageView.contentMode = .scaleAspectFill
-        profileImageView.layer.cornerRadius = 20
+        profileImageView.layer.cornerRadius = 15
         profileImageView.clipsToBounds = true
         profileImageView.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
         if let profileImageUrl = user.profileImageUrl {
@@ -226,9 +151,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         //need x,y,width,height anchors
         profileImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
         profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        
+        profileImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
         
         containerView.addSubview(nameLabel)
         nameLabel.text = user.name
@@ -419,91 +344,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         self.animateBackgroundColour()
     }
     
-    func animateBackgroundColour () {
-        let origImage = UIImage(named: "people");
-        let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-        counter += 1
-        
-    if FIRAuth.auth()?.currentUser?.uid == nil {
-        if (counter == 1) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 0
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-                self.peopleButton.setImage(tintedImage, for: .normal)
-                self.peopleButton.tintColor = UIColor.white
-            }, completion: nil)
-        } else if (counter == 3) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 1
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-            }, completion: nil)
-            
-        } else if (counter == 5) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 2
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-            }, completion: nil)
-        } else if (counter == 7) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 3
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                self.navigationItem.leftBarButtonItem?.tintColor = UIColor.black
-                self.peopleButton.tintColor = UIColor.black
-            }, completion: nil)
-        } else if (counter == 9) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 4
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-            }, completion: nil)
-        }
-    } else {
-        if (counter == 1) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 0
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-                self.peopleButton.setImage(tintedImage, for: .normal)
-                self.peopleButton.tintColor = UIColor.white
-                self.nameLabel.textColor = UIColor.white
-                self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            }, completion: nil)
-        } else if (counter == 3) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 1
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-            }, completion: nil)
-            
-        } else if (counter == 5) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 2
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-            }, completion: nil)
-        } else if (counter == 7) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 3
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                self.navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-                self.peopleButton.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-                self.navigationItem.titleView?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-                self.nameLabel.textColor = UIColor.rgb(51, green: 21, blue: 1)
-                self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-
-            }, completion: nil)
-        } else if (counter == 9) {
-            UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.backgroundLoop = 4
-                self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-            }, completion: nil)
-        }
-        
-        }
-        
-        if counter > 9 {
-            counter = 0
-        }
-}
-   
+       
     @IBAction func itsLit(_ sender: UIButton) {
         
         sendInfo()
@@ -512,31 +353,31 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
-//        if (device?.hasTorch)! {
-//            do {
-//                try device?.lockForConfiguration()
-//                if (device?.torchMode == AVCaptureTorchMode.on) {
-//                    stopSpinning()
-//                    device?.torchMode = AVCaptureTorchMode.off
-//                } else {
-//                    do {
-//                        try device?.setTorchModeOnWithLevel(1.0)
-//                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-//                    } catch {
-//                        print(error)
-//                    }
-//                }
-//                device?.unlockForConfiguration()
-//            } catch {
-//                print(error)
-//            }
-//        } else {
-//            print ("The Mac is Lit")
-//        }
-//        
-//        if self.session.connectedPeers.count == 6 {
-//            playSound()
-//        }
+        if (device?.hasTorch)! {
+            do {
+                try device?.lockForConfiguration()
+                if (device?.torchMode == AVCaptureTorchMode.on) {
+                    stopSpinning()
+                    device?.torchMode = AVCaptureTorchMode.off
+                } else {
+                    do {
+                        try device?.setTorchModeOnWithLevel(1.0)
+                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                    } catch {
+                        print(error)
+                    }
+                }
+                device?.unlockForConfiguration()
+            } catch {
+                print(error)
+            }
+        } else {
+            print ("The Mac is Lit")
+        }
+        
+        if self.session.connectedPeers.count == 6 {
+            playSound()
+        }
         
     }
     
