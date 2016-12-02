@@ -5,16 +5,15 @@
 //  Created by Charles Thierry on 7/16/13.
 //  Copyright (c) 2013 Weemo. All rights reserved.
 //
-#include <stdint.h>
 #import <AvailabilityMacros.h>
+#include <stdint.h>
 
 #pragma mark - Call status
 /**
  The call possible statuses.
  @since 5.0
  */
-typedef NS_ENUM(NSInteger, callStatus_t)
-{
+typedef NS_ENUM(NSInteger, callStatus_t) {
 	/** The SDK has created the call object*/
 	callStatus_creating = -1,
 	/** The SDK is emitting a call that is not yet picked up.*/
@@ -27,8 +26,7 @@ typedef NS_ENUM(NSInteger, callStatus_t)
 	callStatus_ended,
 };
 
-typedef NS_ENUM(NSInteger, frameFormat_t)
-{
+typedef NS_ENUM(NSInteger, frameFormat_t) {
 	frameFormat_argb = 1,
 	frameFormat_yuv,
 	frameFormat_bgra,
@@ -38,8 +36,7 @@ typedef NS_ENUM(NSInteger, frameFormat_t)
  The possible states of the SDK.
  @since 5.4
  */
-typedef NS_ENUM(NSInteger, sdkStatus_t)
-{
+typedef NS_ENUM(NSInteger, sdkStatus_t) {
 	/** The original State. You can try to connect*/
 	sdkStatus_notConnected = 0,
 	/** The SDK is attempting to connect*/
@@ -60,8 +57,7 @@ typedef NS_ENUM(NSInteger, sdkStatus_t)
  The call terminaison reasons.
  @since 5.3
  */
-typedef NS_ENUM(NSInteger, callEndReason_t)
-{
+typedef NS_ENUM(NSInteger, callEndReason_t) {
 	/** The call was locally hung up*/
 	callEndReason_local = 0,
 	/** The call was terminated by the remote*/
@@ -75,8 +71,7 @@ typedef NS_ENUM(NSInteger, callEndReason_t)
  Errors returned by the SDK.
  @since 5.0
  */
-typedef NS_ENUM(NSInteger, errorCode_t)
-{
+typedef NS_ENUM(NSInteger, errorCode_t) {
 	/** Generic error code.*/
 	errInit_general = 0x100,
 	/** An error occured during network verification.*/
@@ -126,8 +121,7 @@ typedef NS_ENUM(NSInteger, errorCode_t)
  @since 5.4
  */
 
-typedef NS_ENUM(NSInteger, registrationUpdate_t)
-{
+typedef NS_ENUM(NSInteger, registrationUpdate_t) {
 	/** You don't have access to the presence functionality.*/
 	registration_notRegistered,
 	/** You have access to the presence functionality.*/
@@ -136,7 +130,7 @@ typedef NS_ENUM(NSInteger, registrationUpdate_t)
 	registration_alreadyRegistered,
 };
 
-//MARK: Log levels
+// MARK: Log levels
 
 /**
  @brief Log levels used by the [Rtcc setLogLevel:].
@@ -144,8 +138,7 @@ typedef NS_ENUM(NSInteger, registrationUpdate_t)
  Using [Rtcc setLogLevel:] with `logLevel_Warn` will prevent every message whose priority is lower than Warn(ing) to be displayed. This only impacts the logs printed in the Xcode console.
  @since 5.1.49
  */
-typedef NS_ENUM(NSInteger, logLevel_t)
-{
+typedef NS_ENUM(NSInteger, logLevel_t) {
 	/** Will not print a thing in Xcode's debug console.*/
 	logLevel_Fatal = 0,
 	/** Will print all errors met by the SDK in Xcode's debug console.*/
@@ -158,26 +151,15 @@ typedef NS_ENUM(NSInteger, logLevel_t)
 	logLevel_Info
 };
 
+typedef NS_ENUM(NSInteger, logModule_t) { logModule_UCL = 0, logModule_Audio, logModule_Video, logModule_Call, logModule_Share, logModule_Connection };
 
-typedef NS_ENUM(NSInteger, logModule_t)
-{
-	logModule_UCL = 0,
-	logModule_Audio,
-	logModule_Video,
-	logModule_Call,
-	logModule_Share,
-	logModule_Connection
-};
-
-
-//MARK: The video and audio parameters
+// MARK: The video and audio parameters
 
 /**
  This is used to describe the video size used during the call.
  @since 5.1
  */
-typedef NS_ENUM(NSInteger,video_profile_t)
-{
+typedef NS_ENUM(NSInteger, video_profile_t) {
 	/** The video in profile is unknown*/
 	profile_unknown = -1,
 	/** landscape dimensions lower than CIF (352*288) */
@@ -195,20 +177,17 @@ typedef NS_ENUM(NSInteger,video_profile_t)
 
  @since 5.3
  */
-typedef NS_ENUM(NSInteger,audioMode_t)
-{
+typedef NS_ENUM(NSInteger, audioMode_t) {
 	/** The call will start as muted (i.e. no audio will be sent) */
 	audio_mute,
 	/** The call will start as active (i.e. audio will be sent). This is the default mode. */
 	audio_active
 };
 
-
 /**
  Used to set the audio out route you want the incoming audio to take.
  */
-typedef NS_ENUM(NSInteger, audioRoute_t)
-{
+typedef NS_ENUM(NSInteger, audioRoute_t) {
 	/** This is the default builtin speaker, or the headset if any is connected.
 	 [RtccCall audioRoute] returning this value means the SDK is using the builtin ear speaker to play the sound.*/
 	route_default,
@@ -223,7 +202,7 @@ typedef NS_ENUM(NSInteger, audioRoute_t)
 /**
  *  Used to describe the camera currently in use
  */
-typedef NS_ENUM(NSInteger, videoSource_t){
+typedef NS_ENUM(NSInteger, videoSource_t) {
 	/**
 	 *  Undefined video source
 	 */
@@ -241,7 +220,7 @@ typedef NS_ENUM(NSInteger, videoSource_t){
 /**
  *  The type of contact ID you want to call. Used in [Rtcc createCallWithOptions:]
  */
-typedef NS_ENUM(NSInteger, contactID_t){
+typedef NS_ENUM(NSInteger, contactID_t) {
 	/**
 	 *  The contact you want to call is an internal contact
 	 */
@@ -252,13 +231,11 @@ typedef NS_ENUM(NSInteger, contactID_t){
 	contactID_external
 };
 
-
 /**
  The possible types of meeting points, to be used as `Type` in [Rtcc meetingPointCreateWithTitle:atLocation:startDate:endDate:withType:]
  @since 5.3
  */
-typedef NS_ENUM(NSInteger,mpType_t)
-{
+typedef NS_ENUM(NSInteger, mpType_t) {
 	/** Used to create a meeting point. This creates a permanent MP.*/
 	mpType_permanent = 0,
 	/** Used to create a meeting point. This creates a scheduled MP.*/
@@ -272,8 +249,7 @@ typedef NS_ENUM(NSInteger,mpType_t)
  The authorization you set for a meeting point you created.
  @since 5.3
  */
-typedef  NS_ENUM(NSInteger,mpAuthorizationMode_t)
-{
+typedef NS_ENUM(NSInteger, mpAuthorizationMode_t) {
 	/** The default authorization mode. You will be notifed and will have to accept/deny every contact trying to join.*/
 	mpSta_default = 0,
 	/** Autoaccept authorization mode. Everyone will be able to enter your meeting room without you being notified by callback.*/
@@ -282,13 +258,11 @@ typedef  NS_ENUM(NSInteger,mpAuthorizationMode_t)
 	mpSta_autodeny
 };
 
-
 /**
  You asked to join a conference, this is the answer you'll get.
  @since 5.3
  */
-typedef  NS_ENUM(NSInteger, mpAttendeeStatus_t)
-{
+typedef NS_ENUM(NSInteger, mpAttendeeStatus_t) {
 	/** Your request is still pending.*/
 	mpAtt_pending,
 	/** Your request was granted.*/
@@ -297,15 +271,13 @@ typedef  NS_ENUM(NSInteger, mpAttendeeStatus_t)
 	mpAtt_denied
 };
 
-
 #pragma mark - User type
 
 /**
  User profiles. Used during authentication.
  @since 5.3
  */
-typedef NS_ENUM(NSInteger, userProfile_t)
-{
+typedef NS_ENUM(NSInteger, userProfile_t) {
 	/** The data set doesn't define a specific user type.*/
 	userInvalid = -1,
 	/** The user is internal - the "normal" user profile that allow the user to call someone from their contact list.*/
@@ -322,7 +294,7 @@ typedef NS_ENUM(NSInteger, userProfile_t)
  UserType is used to authenticate a user based on the provided data.
  @since 5.5
  */
-@interface UserType: NSObject
+@interface UserType : NSObject
 /**
  *  Generate a UserType set for external authentication.
  *
@@ -358,9 +330,7 @@ typedef NS_ENUM(NSInteger, userProfile_t)
  *
  *  @return A UserType to be used in [Rtcc connectWithAppID:andUserType:]
  */
-+ (instancetype)UserTypeAttendeeWithUID:(NSString *)uid suffix:(NSString *)suffix mpID:(NSString*)mpid andUserhash:(NSString *)userhash;
-
-
++ (instancetype)UserTypeAttendeeWithUID:(NSString *)uid suffix:(NSString *)suffix mpID:(NSString *)mpid andUserhash:(NSString *)userhash;
 
 /**
  @brief This value is computed depending on the field sets.
@@ -368,7 +338,7 @@ typedef NS_ENUM(NSInteger, userProfile_t)
  If it turns to be invalid, authentication will not take place.
  @since 5.5
  */
-@property (nonatomic, readonly)userProfile_t currentProfile;
+@property(nonatomic, readonly) userProfile_t currentProfile;
 
 /**
  @brief External User. Set only this field.
@@ -376,14 +346,14 @@ typedef NS_ENUM(NSInteger, userProfile_t)
  This is the parent UID of the external user. The parent must be logged in when the external user is trying to log in.
  @since 5.5
  */
-@property (nonatomic) NSString *parentUID;
+@property(nonatomic) NSString *parentUID;
 /**
  @brief Internal User. Set only this field.
 
  This is the token generated to authenticate the user.
  @since 5.5
  */
-@property (nonatomic) NSString *token;
+@property(nonatomic) NSString *token;
 
 /**
  @brief SixDigits User. Set only this field.
@@ -391,7 +361,7 @@ typedef NS_ENUM(NSInteger, userProfile_t)
  This is the sixdigit code generated by the parent.
  @since 5.5
  */
-@property (nonatomic) NSString *sixDigits;
+@property(nonatomic) NSString *sixDigits;
 
 /**
  @brief Attendee User. This is one of the four fields to set.
@@ -402,7 +372,7 @@ typedef NS_ENUM(NSInteger, userProfile_t)
  @sa [UserType uid]
  @sa [UserType mpid]
  */
-@property (nonatomic) NSString *suffix;
+@property(nonatomic) NSString *suffix;
 /**
  @brief Attendee User. This is one of the four fields to set.
 
@@ -412,7 +382,7 @@ typedef NS_ENUM(NSInteger, userProfile_t)
  @sa [UserType uid]
  @sa [UserType mpid]
  */
-@property (nonatomic) NSString *userHash;
+@property(nonatomic) NSString *userHash;
 /**
  @brief Attendee User. This is one of the four fields to set.
 
@@ -422,7 +392,7 @@ typedef NS_ENUM(NSInteger, userProfile_t)
  @sa [UserType userHash]
  @sa [UserType mpid]
  */
-@property (nonatomic) NSString *uid;
+@property(nonatomic) NSString *uid;
 /**
  @brief Attendee User. This is one of the four fields to set.
 
@@ -432,8 +402,6 @@ typedef NS_ENUM(NSInteger, userProfile_t)
  @sa [UserType userHash]
  @sa [UserType uid]
  */
-@property (nonatomic) NSString *mpid;
-
-
+@property(nonatomic) NSString *mpid;
 
 @end

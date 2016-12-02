@@ -6,12 +6,11 @@
 //  Copyright © 2016 Weemo, Inc. All rights reserved.
 //
 
-#import <RtccSDK/RtccProtocols.h>
 #import <RtccSDK/RtccData.h>
-
+#import <RtccSDK/RtccProtocols.h>
 
 /**
- The Source delegate informs the application about the size of the captured frames. Upon rotating the device or changing the video profile, 
+ The Source delegate informs the application about the size of the captured frames. Upon rotating the device or changing the video profile,
  the size of the captured video will change.
  */
 @protocol RtccDefaultVideoSourceDelegate
@@ -41,27 +40,27 @@
 /**
  @brief The source delegate should be set by the application in order to be informed of the size of the video that is captured and resize the render view that is used.
  */
-@property (nonatomic, weak) id<RtccDefaultVideoSourceDelegate> delegate;
+@property(nonatomic, weak) id<RtccDefaultVideoSourceDelegate> delegate;
 
 /**
  @brief This property must be set by application. Upon setting it, a subview is added that contains the camera render layer.
- 
+
  This subview is added with contraints to keep it the same size as the renderView.
- 
+
  The layer content is set to fit the subview. As such, it will always preserve the video ratio of the capture.
  @sa [RtccCall viewVideoIn]
  */
-@property (nonatomic, weak) UIView *renderView;
+@property(nonatomic, weak) UIView *renderView;
 
 /**
  @brief The video size that is captured. When this size changes, the delegate is notified through the videoSourceSizeChanged: method.
  @sa RtccDefaultVideoSourceDelegate
  */
-@property (nonatomic, readonly) CGSize videoSize;
+@property(nonatomic, readonly) CGSize videoSize;
 
 /**
  @brief This property informs the application about the camera's orientation (videoSource_front or videoSource_back) that is set.
  */
-@property (nonatomic) videoSource_t currentCamera;
+@property(nonatomic) videoSource_t currentCamera;
 
 @end

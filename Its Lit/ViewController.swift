@@ -16,6 +16,7 @@ import MediaPlayer
 
 class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate {
     
+    @IBOutlet weak var musicButton: UIButton!
     @IBOutlet weak var bannerView: GADBannerView!
     var animating : Bool = false
     let loginViewController = LoginViewController()
@@ -54,7 +55,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         // _
         
-        
         view.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
         
         func canBecomeFirstResponder() -> Bool {
@@ -73,12 +73,18 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     func checkIfUserIsLoggedIn() {
         
         if FIRAuth.auth()?.currentUser?.uid == nil {
+            musicButton.isHidden = true
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Sign In (Removes Ads)", style: .done, target: self, action: #selector(signIn))
             navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
             navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
             bannerView.load(GADRequest())
             
         } else {
+            let origImage = UIImage(named: "Music");
+            let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+            self.musicButton.setImage(tintedImage, for: .normal)
+            self.musicButton.tintColor = UIColor.black
+            musicButton.isHidden = false
             bannerView.isHidden = true
             fetchUserAndSetupNavBarTitle()
             let image = UIImage(named: "love")

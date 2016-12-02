@@ -27,7 +27,7 @@ static NSString *k_ContactDN = @"contactDisplayName";
 /**@brief Used in conjonction with [Rtcc createCallWithOptions:].
 
  Should the call start with video enabled? To set, use [NSNumber numberWithBool:]. (Default: YES) */
-static NSString * k_WithVideo = @"withVideo";
+static NSString *k_WithVideo = @"withVideo";
 /**@brief Used in conjonction with [Rtcc createCallWithOptions:].
 
  \@"md" to start in MD, \@"sd" to start in a lower definition (default \@"sd") */
@@ -40,7 +40,6 @@ static NSString *k_WithAudio = @"withAudio";
 
  Set the audio route. To set, use [NSNumber numberWithInt:] with a audioRoute_t.*/
 static NSString *k_AudioRoute = @"audioRoute";
-
 
 @class RtccContact;
 
@@ -109,7 +108,6 @@ static NSString *k_AudioRoute = @"audioRoute";
  */
 - (void)rtccCall:(id)sender shareSending:(BOOL)isSending;
 
-
 /**
  @brief Fired when the video capture is paused or resumed.
  @param sender The RtccCall which property changed.
@@ -130,7 +128,6 @@ static NSString *k_AudioRoute = @"audioRoute";
  */
 - (void)rtccCall:(id)sender videoInSizeChange:(CGSize)size;
 
-
 /**
  @brief Called when the incoming video profile changes.
 
@@ -143,7 +140,6 @@ static NSString *k_AudioRoute = @"audioRoute";
  @since 5.1
  */
 - (void)rtccCall:(id)sender videoInSizeChange:(CGSize)profile forContact:(RtccContact *)contact;
-
 
 /**
  @brief Called when the incoming share frame size changes.
@@ -177,7 +173,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @param zoom   The new zoom level
  @since 6.3
  */
-- (void)rtccCall:(id)sender videoZoom:(CGFloat)zoom  __attribute__((unavailable("The video out zoom change is handled by the VideoOut source.")));
+- (void)rtccCall:(id)sender videoZoom:(CGFloat)zoom __attribute__((unavailable("The video out zoom change is handled by the VideoOut source.")));
 
 /**
  The zoom threshold at which the captured image starts being upscaled
@@ -186,8 +182,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @param zoom   The zoom threshold
  @since 6.3
  */
-- (void)rtccCall:(id)sender videoZoomThreshold:(CGFloat)zoom  __attribute__((unavailable("The video out zoom change is handled by the VideoOut source.")));
-
+- (void)rtccCall:(id)sender videoZoomThreshold:(CGFloat)zoom __attribute__((unavailable("The video out zoom change is handled by the VideoOut source.")));
 
 /**
  The maximum zoom level available for the camera
@@ -268,7 +263,6 @@ static NSString *k_AudioRoute = @"audioRoute";
  */
 - (void)rtccParticipantListChangeForConference:(id)sender;
 
-
 /**
  Indicates that recording for this call started.
  @param sender The related RtccCall.
@@ -278,7 +272,6 @@ static NSString *k_AudioRoute = @"audioRoute";
  @since 5.3
  */
 - (void)rtccCallRecordStopped:(id)sender;
-
 
 /**
  Indicates that recording for this call ended.
@@ -318,7 +311,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @brief The host app should set this value if it wants to be notified about call changes.
  @since 5.0
  */
-@property(nonatomic, strong) id<RtccCallDelegate>delegate;
+@property(nonatomic, strong) id<RtccCallDelegate> delegate;
 
 /**
  @brief The ID of the call.
@@ -334,13 +327,13 @@ static NSString *k_AudioRoute = @"audioRoute";
  Not KVO, as it is updated only when the value is requested.
  @since 5.1
  */
-@property(nonatomic, readonly)NSTimeInterval callDuration;
+@property(nonatomic, readonly) NSTimeInterval callDuration;
 
 /**
  @brief Date of call start.
  @since 5.1
  */
-@property(nonatomic, readonly)NSDate *startDate;
+@property(nonatomic, readonly) NSDate *startDate;
 
 /**
  @brief ID of the contact or the conference being called.
@@ -358,7 +351,6 @@ static NSString *k_AudioRoute = @"audioRoute";
  */
 @property(nonatomic, readonly) NSString *contactDisplayName;
 
-
 /**
  @brief The sip ID of the call.
  This property is only available after the call is set to active.
@@ -368,8 +360,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @sa [RtccCallDelegate rtccCall:sipID:]
  @since 5.2
  */
-@property(nonatomic, readonly, getter = getSipID) NSString *sipID;
-
+@property(nonatomic, readonly, getter=getSipID) NSString *sipID;
 
 #pragma mark - Call status
 /** @name Call Status*/
@@ -389,7 +380,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @sa [RtccCallDelegate rtccCall:audioRoute:]
  @since 5.0 - modified 5.5
  */
-@property (nonatomic) audioRoute_t audioRoute;
+@property(nonatomic) audioRoute_t audioRoute;
 
 /**
  @brief Whether or not the call is receiving video.
@@ -398,7 +389,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @sa [RtccCallDelegate rtccCall:videoReceiving:]
  @since 5.0
  */
-@property(nonatomic, readonly, getter = isReceivingVideo) BOOL receivingVideo;
+@property(nonatomic, readonly, getter=isReceivingVideo) BOOL receivingVideo;
 
 /**
  @brief Whether or not the call has an outbound view share ongoing.
@@ -407,7 +398,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @sa [RtccCallDelegate rtccCall:shareReceiving:]
  @since 5.1
  */
-@property(nonatomic, readonly, getter = isReceivingShare) BOOL receivingShare;
+@property(nonatomic, readonly, getter=isReceivingShare) BOOL receivingShare;
 
 /**
  @brief Whether or not the call has an outbound view share ongoing.
@@ -417,7 +408,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @sa [RtccCallDelegate rtccCall:shareSending:]
  @since 5.1
  */
-@property(nonatomic, readonly, getter = isSendingShare) BOOL sendingShare;
+@property(nonatomic, readonly, getter=isSendingShare) BOOL sendingShare;
 
 /**
  @brief Whether or not the call is sending captured audio packet.
@@ -427,7 +418,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @sa [RtccCallDelegate rtccCall:audioSending:]
  @since 5.0
  */
-@property(nonatomic, readonly, getter = isSendingAudio) BOOL sendingAudio;
+@property(nonatomic, readonly, getter=isSendingAudio) BOOL sendingAudio;
 
 /** @name Videos & Share Screens*/
 /**
@@ -459,7 +450,7 @@ static NSString *k_AudioRoute = @"audioRoute";
 
 /**
  @brief  Ask the remote to change the quality of the video it sends. The remote is not compelled to do so.
- 
+
  @param videoProfile	The wanted profile
  @sa [RtccCall getVideoInSize]
  */
@@ -468,7 +459,7 @@ static NSString *k_AudioRoute = @"audioRoute";
 /**
  *  Module to deal with VideoOut.
  */
-@property (nonatomic, readonly) RtccVideoOut *videoOut;
+@property(nonatomic, readonly) RtccVideoOut *videoOut;
 
 /** @name Conference Call*/
 /**
@@ -487,36 +478,35 @@ static NSString *k_AudioRoute = @"audioRoute";
  @sa [RtccCall myself]
  @since 5.3
  */
-@property (nonatomic, readonly) NSDictionary *participantsDictionary;
+@property(nonatomic, readonly) NSDictionary <NSNumber *, RtccContact *>*participantsDictionary;
 
 /**
  @brief Only used in case of conference. Not present in the participantsList.
  @since 5.3
  */
-@property (nonatomic, readonly) RtccContact *myself;
-
+@property(nonatomic, readonly) RtccContact *myself;
 
 /**
  YES if the app is hosting the conference. NO if attendee.
  @sa [Rtcc meetingPointCreateWithTitle:atLocation:startDate:endDate:withType:]
  @since 5.3
  */
-@property (nonatomic, readonly) BOOL isHost;
+@property(nonatomic, readonly) BOOL isHost;
 
 /**
  *  YES if the conference is being recorded. The delegate is notified of a change through rtccCallRecordStarted: and rtccCallRecordStopped:
  @sa [RtccCall recordingStart:]
  @sa [RtccCall recordingStop]
  */
-@property (nonatomic, readonly, getter=isRecording) BOOL recording;
+@property(nonatomic, readonly, getter=isRecording) BOOL recording;
 
 /**
- *  YES if the conference is being recorded but this recording is paused. 
+ *  YES if the conference is being recorded but this recording is paused.
 	The delegate is notified of a change through rtccCallRecordStarted: and rtccCallRecordStopped:
  @sa [RtccCall recordingStart:]
  @sa [RtccCall recordingStop]
  */
-@property (nonatomic, readonly, getter=isRecordingPaused) BOOL recordingPaused;
+@property(nonatomic, readonly, getter=isRecordingPaused) BOOL recordingPaused;
 
 /**
  @brief Setting this mutes/unmutes all the conference participants.
@@ -526,7 +516,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  Setting this to YES sends a global command to the conference bridge.
  @since 5.3
  */
-@property (nonatomic, getter = areAllMuted) BOOL muteAll;
+@property(nonatomic, getter=areAllMuted) BOOL muteAll;
 
 /**
  @brief Setting this deafens/undeafens all the conference participants.
@@ -536,8 +526,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  Setting this to YES sends a global command to the conference bridge.
  @since 5.3
  */
-@property (nonatomic, getter = areAllDeafen) BOOL deafenAll;
-
+@property(nonatomic, getter=areAllDeafen) BOOL deafenAll;
 
 #pragma mark - Basic controls
 /** @name Basic Call Controls*/
@@ -651,7 +640,7 @@ static NSString *k_AudioRoute = @"audioRoute";
  @param participantID The ID of the participant to kick out.
  @since 5.3
  */
-- (void)kickParticipant:(NSNumber *)participantID __attribute__((nonnull (1)));
+- (void)kickParticipant:(NSNumber *)participantID __attribute__((nonnull(1)));
 
 /**
  @brief Start recording the video to the specified URL. Conference calls only.
@@ -689,6 +678,5 @@ static NSString *k_AudioRoute = @"audioRoute";
  @since 5.6
  */
 - (void)setThumbnailsOnly:(BOOL)onlyThumbnails;
-
 
 @end

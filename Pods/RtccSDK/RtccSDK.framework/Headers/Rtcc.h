@@ -6,11 +6,10 @@
 //  Copyright (c) 2013 Weemo. All rights reserved.
 //
 
-
-#import "RtccData.h"
 #import "RtccCall.h"
-#import "RtccProtocols.h"
+#import "RtccData.h"
 #import "RtccLogDelegate.h"
+#import "RtccProtocols.h"
 
 /** @name Meeting Points dictionaries keys.*/
 
@@ -20,7 +19,7 @@ extern NSString *k_MPType;
 /**@brief Where the meeting will take place.
 
  Value is a NSString, max 128 long.*/
-extern  NSString *k_MPLocation;
+extern NSString *k_MPLocation;
 /**@brief The meeting's "human" name.
 
  Value is a NSString, max 128 long.*/
@@ -72,9 +71,7 @@ extern NSString *k_UserInfoName;
  @sa callStatus_t
  @since 5.0
  */
-- (void)rtccCallCreated:(RtccCall*)call;
-
-
+- (void)rtccCallCreated:(RtccCall *)call;
 
 /**
  @brief Called when the call terminates, with an additional termination reason.
@@ -85,8 +82,7 @@ extern NSString *k_UserInfoName;
  @param reason The reason of the call termination.
  @sa [RtccDelegate rtccCallEnded:]
  */
-- (void)rtccCallEnded:(RtccCall*)call withReason:(callEndReason_t)reason;
-
+- (void)rtccCallEnded:(RtccCall *)call withReason:(callEndReason_t)reason;
 
 /**
  @brief Called by the Rtcc singleton after the authentication step.
@@ -94,8 +90,7 @@ extern NSString *k_UserInfoName;
  @sa [Rtcc connectWithAppID:andUserType:]
  @since 5.0
  */
-- (void)rtccDidAuthenticate:(NSError*)error;
-
+- (void)rtccDidAuthenticate:(NSError *)error;
 
 /**
  @brief Called when Rtcc singleton ended its initialization.
@@ -105,7 +100,7 @@ extern NSString *k_UserInfoName;
  @sa [Rtcc connectWithAppID:andUserType:]
  @since 5.0
  */
-- (void)rtccDidConnect:(NSError*)error;
+- (void)rtccDidConnect:(NSError *)error;
 
 @optional
 /**
@@ -116,7 +111,7 @@ extern NSString *k_UserInfoName;
  @param call The call that is stopped.
  @since 5.0 optional since 5.4
  */
-- (void)rtccCallEnded:(RtccCall*)call;
+- (void)rtccCallEnded:(RtccCall *)call;
 
 /**
  @brief Called when Rtcc gets disconnected from the server.
@@ -128,8 +123,7 @@ extern NSString *k_UserInfoName;
  @sa [Rtcc disconnect]
  @since 5.0
  */
-- (void)rtccDidDisconnect:(NSError*)error;
-
+- (void)rtccDidDisconnect:(NSError *)error;
 
 /**
  *  Triggered when the SDK have to transmit data to its delegate.
@@ -160,7 +154,7 @@ extern NSString *k_UserInfoName;
  The public IP your client is using.
  @since 5.6
  */
-@property (nonatomic, readonly) NSString *publicIP;
+@property(nonatomic, readonly) NSString *publicIP;
 
 /**
  @brief Delegate for the SDK instance. Implements `RtccDelegate`'s protocol.
@@ -168,7 +162,7 @@ extern NSString *k_UserInfoName;
  */
 @property(nonatomic, weak) id<RtccDelegate> delegate;
 
-@property(nonatomic, weak) id<RtccACDDelegate>acdDelegate;
+@property(nonatomic, weak) id<RtccACDDelegate> acdDelegate;
 
 /**
  * The delegate used for logs. This delegate is set using setLogger:.
@@ -190,7 +184,7 @@ extern NSString *k_UserInfoName;
  @sa [Rtcc connectWithAppID:andUserType:]
  @sa [Rtcc authenticated]
  */
-@property(nonatomic, getter = isConnected, readonly)BOOL connected;
+@property(nonatomic, getter=isConnected, readonly) BOOL connected;
 
 /**
  @brief YES if the RTCC instance is authenticated.
@@ -199,7 +193,7 @@ extern NSString *k_UserInfoName;
  @sa [Rtcc connectWithAppID:andUserType:]
  @sa [Rtcc connected]
  */
-@property(nonatomic, getter = isAuthenticated, readonly)BOOL authenticated;
+@property(nonatomic, getter=isAuthenticated, readonly) BOOL authenticated;
 
 /**
  @brief The current active call, if any.
@@ -215,7 +209,7 @@ extern NSString *k_UserInfoName;
  Not KVO compliant since 6.3.
  @since 5.4
  */
-@property (nonatomic, readonly)sdkStatus_t currentStatus;
+@property(nonatomic, readonly) sdkStatus_t currentStatus;
 
 /**
  @brief The display name used by the application.
@@ -237,7 +231,7 @@ extern NSString *k_UserInfoName;
 
  Registering a roster (a.k.a. a list of contacts) is done using [Rtcc addContactsToRoster:].
  */
-@property (nonatomic, weak) id <RtccPresenceDelegate> presenceDelegate;
+@property(nonatomic, weak) id<RtccPresenceDelegate> presenceDelegate;
 
 /**
  @brief The delegate to whom the answers to the Data method will be sent.
@@ -245,7 +239,7 @@ extern NSString *k_UserInfoName;
  Implements `RtccDataDelegate`'s protocol.
  @since 5.4
  */
-@property (nonatomic, weak)id<RtccDataDelegate> dataDelegate;
+@property(nonatomic, weak) id<RtccDataDelegate> dataDelegate;
 
 /**
  @brief Delegate that implements the meeting point callbacks.
@@ -279,7 +273,7 @@ extern NSString *k_UserInfoName;
  @return The Rtcc singleton.
  @since 5.0
  */
-+ (Rtcc*)instance;
++ (Rtcc *)instance;
 
 /**
  *  Connects the Rtcc object to the back end. The Rtcc object is instantiated through [Rtcc instance].
@@ -333,7 +327,6 @@ extern NSString *k_UserInfoName;
  */
 + (logLevel_t)getLogLevel;
 
-
 #pragma mark - Connection relevant
 /** @name Connection and status */
 
@@ -345,7 +338,6 @@ extern NSString *k_UserInfoName;
  @since 5.0
  */
 - (void)disconnect;
-
 
 #pragma mark - One-to-One Call
 /** @name Create a call*/
@@ -369,7 +361,8 @@ extern NSString *k_UserInfoName;
  @sa [RtccDelegate rtccCallCreated:]
  @since 5.3
  */
-- (void)createCallWithOptions:(NSDictionary *)options __attribute__((nonnull (1)));;
+- (void)createCallWithOptions:(NSDictionary *)options __attribute__((nonnull(1)));
+;
 
 /**
  @brief Creates a call whose recipient is `contactUID`.
@@ -383,7 +376,7 @@ extern NSString *k_UserInfoName;
  @sa [Rtcc createCall:andSetDisplayName:]
  @since 5.0
  */
-- (void)createCall:(NSString*)contactUID __attribute__((nonnull (1)));
+- (void)createCall:(NSString *)contactUID __attribute__((nonnull(1)));
 
 /**
  @brief Creates a call whose recipient is `contactUID` and set the contact's display name to `displayName`.
@@ -400,8 +393,7 @@ extern NSString *k_UserInfoName;
  @sa [Rtcc createCall:]
  @since 5.0
  */
-- (void)createCall:(NSString *)contactUID andSetDisplayName:(NSString *)displayName __attribute__((nonnull (1, 2)));
-
+- (void)createCall:(NSString *)contactUID andSetDisplayName:(NSString *)displayName __attribute__((nonnull(1, 2)));
 
 /**
  @brief Creates a call whose recipient is `contactUID` and set the contact's display name to `displayName`.
@@ -419,9 +411,7 @@ extern NSString *k_UserInfoName;
  @sa [Rtcc createCall:]
  @since 5.2
  */
-- (void)createCall:(NSString *)contactUID andSetDisplayName:(NSString *)displayName withVideo:(BOOL)videoEnabled
-__attribute__((nonnull (1, 2)));
-
+- (void)createCall:(NSString *)contactUID andSetDisplayName:(NSString *)displayName withVideo:(BOOL)videoEnabled __attribute__((nonnull(1, 2)));
 
 #pragma mark - Media Overrides
 /** @name Media rate overrides */
@@ -455,7 +445,6 @@ __attribute__((nonnull (1, 2)));
  */
 - (void)resetBandwidthDefaults;
 
-
 #pragma mark - Presence calls
 /** @name Handle the presence */
 
@@ -484,7 +473,7 @@ __attribute__((nonnull (1, 2)));
  @sa [RtccPresenceDelegate rtccRosterUpdate:]
  @since 5.4
  */
-- (void)addContactsToRoster:(NSArray *)contactsUID __attribute__((nonnull (1)));
+- (void)addContactsToRoster:(NSArray *)contactsUID __attribute__((nonnull(1)));
 
 /**
  @brief Removes the UID contained in `contactsUID` from the roster.
@@ -506,7 +495,7 @@ __attribute__((nonnull (1, 2)));
  @param flag A host application defined value, send to the remote contact who first sent the message.
  @sa [RtccDataDelegate rtccReceivedData:from:withID:]
  */
-- (void)dataAcknowledge:(uint8_t)messageID ofContact:(NSString *)contactUID withFlag:(uint8_t)flag __attribute__ ((nonnull (2)));
+- (void)dataAcknowledge:(uint8_t)messageID ofContact:(NSString *)contactUID withFlag:(uint8_t)flag __attribute__((nonnull(2)));
 
 /**
  @brief Sends data to a contact.
@@ -517,13 +506,10 @@ __attribute__((nonnull (1, 2)));
  @param messageID The ID of the message
  @sa [RtccDataDelegate rtccReceivedData:from:withID:]
  */
-- (void)dataSend:(NSData *)data toContactUIDs:(NSArray *)contactUIDs withID:(uint8_t)messageID __attribute__((nonnull (1, 2)));
-
-
+- (void)dataSend:(NSData *)data toContactUIDs:(NSArray *)contactUIDs withID:(uint8_t)messageID __attribute__((nonnull(1, 2)));
 
 #pragma mark - MeetingPoints Host
 /** @name Meeting Point: Host controls*/
-
 
 /**
  @brief Creates a MeetingPoint based on values.
@@ -537,11 +523,7 @@ __attribute__((nonnull (1, 2)));
  @warning 5.3: For the key `mpType`, the value `mpType_adHoc` is not yet supported
  @since 5.3
  */
-- (void)meetingPointCreateWithTitle:(NSString *)title
-								 atLocation:(NSString *)location
-								  startDate:(NSDate *)startDate
-									 endDate:(NSDate *)endDate
-						   withType:(mpType_t)mpType;
+- (void)meetingPointCreateWithTitle:(NSString *)title atLocation:(NSString *)location startDate:(NSDate *)startDate endDate:(NSDate *)endDate withType:(mpType_t)mpType;
 
 /**
  @brief Changes the writable informations of the meeting point.
@@ -555,12 +537,7 @@ __attribute__((nonnull (1, 2)));
  @since 5.3
  @sa [Rtcc meetingPointCreateWithTitle:atLocation:startDate:endDate:withType:]
  */
-- (void)meetingPointUpdate:(NSString *)mpID
-				  newTitle:(NSString *)title
-					newLocation:(NSString *)location
-				  newStartDate:(NSDate *)startDate
-					 newEndDate:(NSDate *)endDate
-__attribute__((nonnull (1)));
+- (void)meetingPointUpdate:(NSString *)mpID newTitle:(NSString *)title newLocation:(NSString *)location newStartDate:(NSDate *)startDate newEndDate:(NSDate *)endDate __attribute__((nonnull(1)));
 
 /**
  @brief Locks the meeting point.
@@ -569,7 +546,7 @@ __attribute__((nonnull (1)));
  @param mpID The ID of the meeting point we want to lock. Must not be `nil`.
  @since 5.3
  */
-- (void)meetingPointLock:(NSString *)mpID __attribute__((nonnull (1)));
+- (void)meetingPointLock:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Changes the meeting point automatic authorization behaviour.
@@ -579,8 +556,7 @@ __attribute__((nonnull (1)));
  @param status One of mpAuthorizationMode_t;
  @since 5.3
  */
-- (void)meetingPoint:(NSString *)mpID setAuthorizationStatus:(mpAuthorizationMode_t)status __attribute__((nonnull (1)));
-
+- (void)meetingPoint:(NSString *)mpID setAuthorizationStatus:(mpAuthorizationMode_t)status __attribute__((nonnull(1)));
 
 /**
  @brief Returns details about the meeting point.
@@ -589,7 +565,7 @@ __attribute__((nonnull (1)));
  @param mpID The meeting point id. Must not be `nil`.
  @since 5.3
  */
-- (void)meetingPointGetDetails:(NSString *)mpID __attribute__((nonnull (1)));
+- (void)meetingPointGetDetails:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Returns the list of contacts in the meeting point.
@@ -598,7 +574,7 @@ __attribute__((nonnull (1)));
  @param mpID The meeting point id. Must not be `nil`.
  @since 5.3
  */
-- (void)meetingPointContactList:(NSString *)mpID  __attribute__((nonnull (1)));
+- (void)meetingPointContactList:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Deletes the meeting point from the system.
@@ -608,8 +584,7 @@ __attribute__((nonnull (1)));
  @sa [Rtcc meetingPointCreateWithTitle:atLocation:startDate:endDate:withType:]
  @since 5.3
  */
-- (void)meetingPointDelete:(NSString *)mpID __attribute__((nonnull (1)));
-
+- (void)meetingPointDelete:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Starts the meeting point.
@@ -620,8 +595,7 @@ __attribute__((nonnull (1)));
  @sa [Rtcc meetingPointStop:]
  @since 5.3
  */
-- (void)meetingPointStart:(NSString *)mpID __attribute__((nonnull (1)));
-
+- (void)meetingPointStart:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Stops the meeting point.
@@ -631,7 +605,7 @@ __attribute__((nonnull (1)));
  @sa [Rtcc meetingPointStart:]
  @since 5.3
  */
-- (void)meetingPointStop:(NSString *)mpID __attribute__((nonnull (1)));
+- (void)meetingPointStop:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Create the conference call related to the meeting point.
@@ -642,18 +616,18 @@ __attribute__((nonnull (1)));
  @sa [Rtcc meetingPointJoinConferenceAttendee:]
  @since 5.3
  */
-- (void)meetingPointJoinConferenceHost:(NSString *)mpID __attribute__((nonnull (1)));
+- (void)meetingPointJoinConferenceHost:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Create the conference call related to the meeting point.
- 
+
  It is only after this call is created and started that the Host can accept or deny attendees. This method can only be called after the meeting point is started through [Rtcc meetingPointStart:]. The additional parameters are used to configure the call.
  @param mpID The ID of the meeting point. Must not be `nil`.
  @param parameters The call parameters.
  @sa [Rtcc meetingPointStart:]
  @sa [Rtcc meetingPointJoinConferenceAttendee:]
 */
- - (void)meetingPointJoinConferenceHost:(NSString *)mpID withOptions:(NSDictionary *)parameters __attribute__((nonnull (1)));
+- (void)meetingPointJoinConferenceHost:(NSString *)mpID withOptions:(NSDictionary *)parameters __attribute__((nonnull(1)));
 
 /**
  @brief Accept an attendee in the conference.
@@ -664,7 +638,7 @@ __attribute__((nonnull (1)));
  @sa [RtccHostDelegate rtccHostNewAttendee:]
  @since 5.3
  */
-- (void)meetingPoint:(NSString *)mpID acceptUser:(NSString *)contactUID __attribute__((nonnull (1, 2)));
+- (void)meetingPoint:(NSString *)mpID acceptUser:(NSString *)contactUID __attribute__((nonnull(1, 2)));
 
 /**
  @brief Denies an attendee access to the conference.
@@ -675,7 +649,7 @@ __attribute__((nonnull (1)));
  @sa [RtccHostDelegate rtccHostNewAttendee:]
  @since 5.3
  */
-- (void)meetingPoint:(NSString *)mpID denyUser:(NSString *)contactUID __attribute__((nonnull (1, 2)));
+- (void)meetingPoint:(NSString *)mpID denyUser:(NSString *)contactUID __attribute__((nonnull(1, 2)));
 
 /**
  @brief Invites a user to a meeting point.
@@ -686,7 +660,7 @@ __attribute__((nonnull (1)));
  @sa [RtccHostDelegate rtccHostNewAttendee:]
  @since 5.3
  */
-- (void)meetingPoint:(NSString *)mpID inviteUser:(NSString *)contactUID __attribute__((nonnull (1,2)));
+- (void)meetingPoint:(NSString *)mpID inviteUser:(NSString *)contactUID __attribute__((nonnull(1, 2)));
 
 /**
  @brief Cancels the invitation sent by [Rtcc meetingPoint:inviteUser:].
@@ -696,24 +670,23 @@ __attribute__((nonnull (1)));
  @param contactUID The ID of the contact whose invitation will be revoked. Must not be `nil`.
  @since 5.3
  */
-- (void)meetingPoint:(NSString *)mpID cancelInviteTo:(NSString *)contactUID __attribute__((nonnull (1,2)));
+- (void)meetingPoint:(NSString *)mpID cancelInviteTo:(NSString *)contactUID __attribute__((nonnull(1, 2)));
 
 /** @name Meeting Point: Attendee controls*/
-
 
 /**
  @brief Asks to join a meeting point as an attendee.
  @param mpID The ID of the meeting point we want to join. Must not be `nil`.
  @since 5.3
  */
-- (void)meetingPointRequestJoin:(NSString *)mpID __attribute__((nonnull (1)));
+- (void)meetingPointRequestJoin:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Cancels the join request.
  @param mpID The ID of the meeting point we wanted to join. Must not be `nil`.
  @since 5.3
  */
-- (void)meetingPointCancelJoinRequest:(NSString *)mpID __attribute__((nonnull (1)));
+- (void)meetingPointCancelJoinRequest:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Call the meeting point as attendee.
@@ -725,11 +698,11 @@ __attribute__((nonnull (1)));
  @warning To be called only after the host accepts the join request or the attendee receives an invite. Calling otherwise will lead to a call error.
  @since 5.3
  */
-- (void)meetingPointJoinConferenceAttendee:(NSString *)mpID __attribute__((nonnull (1)));
+- (void)meetingPointJoinConferenceAttendee:(NSString *)mpID __attribute__((nonnull(1)));
 
 /**
  @brief Call the meeting point as attendee.
- 
+
  This should be called only if already accepted (i.e. in response to a [RtccAttendeeDelegate rtccAttendeeAuthorization:forMeeting:] with `mpAtt_accepted` as first param).
  @param mpID The meeting point ID. Must not be `nil`.
  @param parameters Those parameters are used to configure the call.
@@ -737,7 +710,7 @@ __attribute__((nonnull (1)));
  @sa [Rtcc meetingPointJoinConferenceHost:] for the matching Host function.
  @warning To be called only after the host accepts the join request or the attendee receives an invite. Calling otherwise will lead to a call error.
  */
-- (void)meetingPointJoinConferenceAttendee:(NSString *)mpID withOptions:(NSDictionary *)parameters __attribute__((nonnull (1)));
+- (void)meetingPointJoinConferenceAttendee:(NSString *)mpID withOptions:(NSDictionary *)parameters __attribute__((nonnull(1)));
 
 /**
  @brief Used by an attendee to respond to an invitation to join a meeting point.
@@ -750,7 +723,7 @@ __attribute__((nonnull (1)));
  @deprecated Since 6.3 Please use [Rtcc meetingPoint:attendeeAnswersToInvite:from:]
  @since 5.3
  */
-- (void)meetingPoint:(NSString *)mpID attendeeAnswersToInvite:(BOOL)accept __attribute__((nonnull (1))) __attribute__((unavailable("Please use [Rtcc meetingPoint:attendeeAnswersToInvite:from:]")));
+- (void)meetingPoint:(NSString *)mpID attendeeAnswersToInvite:(BOOL)accept __attribute__((nonnull(1))) __attribute__((unavailable("Please use [Rtcc meetingPoint:attendeeAnswersToInvite:from:]")));
 
 /**
  @brief Used by an attendee to respond to an invitation to join a meeting point.
@@ -763,7 +736,7 @@ __attribute__((nonnull (1)));
  @sa [RtccAttendeeDelegate rtccAttendeeWasInvitedToMeeting:byUser:]
  @since 6.3
  */
-- (void)meetingPoint:(NSString *)mpID attendeeAnswersToInvite:(BOOL)accept from:(NSString *)userUID  __attribute__((nonnull (1, 3)));
+- (void)meetingPoint:(NSString *)mpID attendeeAnswersToInvite:(BOOL)accept from:(NSString *)userUID __attribute__((nonnull(1, 3)));
 
 /**
  @brief Join a meeting point using its ID and a hash.
@@ -773,12 +746,11 @@ __attribute__((nonnull (1)));
  @param hash The hash for the Meeting Point. Provided by an implementation of JS in standalone mode.
  @since 5.4.1
  */
-- (void)meetingPoint:(NSString *)mpID joinWithHash:(NSString *)hash __attribute__((nonnull (1,2)));
-
+- (void)meetingPoint:(NSString *)mpID joinWithHash:(NSString *)hash __attribute__((nonnull(1, 2)));
 
 /**
  *  ACD Connection and handling
- 
+
  */
 /**
  *  Send an ACD request.
@@ -794,6 +766,3 @@ __attribute__((nonnull (1)));
 - (void)requestACDCancel;
 
 @end
-
-
-

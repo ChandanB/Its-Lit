@@ -83,14 +83,12 @@
  */
 - (void)rtccMeetingPointUpdated:(NSDictionary *)mp;
 
-
 /**
  @brief The meeting was cancelled by the host.
  @param mpID The ID of the cancelled meeting point. If `nil`, an error occured.
  @since 5.3
  */
 - (void)rtccMeetingPointCancelled:(NSString *)mpID;
-
 
 /**
  @brief The meeting point was stopped.
@@ -106,7 +104,6 @@
  */
 - (void)rtccMeetingPointUser:(NSString *)userUID answeredToInvite:(mpAttendeeStatus_t)answer;
 
-
 @optional
 /**
  *	An error occured while modifying a Meeting point.
@@ -116,7 +113,6 @@
  *  @deprecated Since 5.6.3 - Please use rtccMeetingPointError:forMPID: which gives you the ID of the related meeting point.
  */
 - (void)rtccMeetingPointError:(NSError *)err __attribute__((unavailable("Please use rtccMeetingPointError:forMPID:.")));
-
 
 /**
  *  An error occured while modifying a Meeting point.
@@ -142,9 +138,7 @@
  */
 - (void)rtccHostNewAttendee:(NSDictionary *)infos;
 
-
-- (void)rtccMeetingPoint:(NSString *)mpID answer:(mpAttendeeStatus_t)answer
-				fromAttendee:(NSString *)userUID;
+- (void)rtccMeetingPoint:(NSString *)mpID answer:(mpAttendeeStatus_t)answer fromAttendee:(NSString *)userUID;
 
 /**
  @brief An invite operation was cancelled.
@@ -152,7 +146,6 @@
  @since 5.3
  */
 - (void)rtccOperationCancelled;
-
 
 /**
  @brief Fired when the Meeting Point global authorization status was updated.
@@ -164,7 +157,6 @@
  @since 5.3
  */
 - (void)rtccMeetingPoint:(NSString *)mpID statusUpdate:(mpAuthorizationMode_t)status;
-
 
 /**
  @brief Fired when a meeting point is started.
@@ -218,7 +210,6 @@
  */
 - (void)rtccAttendeeAuthorization:(mpAttendeeStatus_t)status forMeeting:(NSString *)mpID;
 
-
 /**
  @brief The attendee is invited to join a conference call by a user.
  Please note that being invited to join a Conference call does not mean you will join the Meeting Point itself.
@@ -257,7 +248,6 @@
 - (void)rtccAttendeeError:(NSError *)err forMPID:(NSString *)mpID;
 
 @end
-
 
 /**
  This protocol presents the callbacks related to the presence part of the SDK.
@@ -312,9 +302,7 @@
  */
 - (void)rtccRosterUpdate:(NSDictionary *)updatedRoster;
 
-
 @end
-
 
 /**
  This protocol presents the callbacks related to the data part of the SDK.
@@ -389,17 +377,10 @@
  */
 - (void)stop;
 
-@property (nonatomic, weak) id<RtccMediaSink>sink;
+@property(nonatomic, weak) id<RtccMediaSink> sink;
 @end
 
-
-typedef NS_ENUM(NSInteger, VideoProfile_t)
-{
-	videoProfile_sd = 0,
-	videoProfile_md,
-	videoProfile_mhd,
-	videoProfile_hd
-};
+typedef NS_ENUM(NSInteger, VideoProfile_t) { videoProfile_sd = 0, videoProfile_md, videoProfile_mhd, videoProfile_hd };
 
 /**
  *  This specialized source creates video frames and image.
@@ -409,14 +390,10 @@ typedef NS_ENUM(NSInteger, VideoProfile_t)
 /**
  *  The expected video profile.
  */
-@property (nonatomic)video_profile_t videoProfile __attribute__((deprecated("Replaced by [RtccCall.videoOut preferedVideoProfile]. Implements requestedVideoProfileChange: to be notified.")));
-@property (nonatomic, weak) id<RtccVideoSink>sink;
+@property(nonatomic) video_profile_t videoProfile __attribute__((deprecated("Replaced by [RtccCall.videoOut preferedVideoProfile]. Implements requestedVideoProfileChange: to be notified.")));
+@property(nonatomic, weak) id<RtccVideoSink> sink;
 
 @optional
 - (void)requestedVideoProfileChange:(VideoProfile_t)requestedProfile;
 
 @end
-
-
-
-

@@ -20,6 +20,5 @@ pod 'Firebase/RemoteConfig'
 pod 'Firebase/Storage'
 pod 'Firebase/Core'
 pod 'RtccSDK', '~> 6.5'
-
-
+pod 'Soundcloud'
 end

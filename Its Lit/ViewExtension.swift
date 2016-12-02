@@ -100,7 +100,6 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
                     self.peopleButton.setImage(tintedImage, for: .normal)
                     self.peopleButton.tintColor = UIColor.white
-                    
                 }, completion: nil)
             } else if (counter == 3) {
                 UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
@@ -140,6 +139,7 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.peopleButton.setImage(tintedImage, for: .normal)
                     self.peopleButton.tintColor = UIColor.white
                     self.nameLabel.textColor = UIColor.white
+                    self.musicButton.tintColor = UIColor.white
                     self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
                 }, completion: nil)
             } else if (counter == 3) {
@@ -163,6 +163,8 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
                     self.peopleButton.tintColor = UIColor.rgb(51, green: 21, blue: 1)
                     self.navigationItem.titleView?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+                    self.musicButton.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+
                     self.nameLabel.textColor = UIColor.rgb(51, green: 21, blue: 1)
                     self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
                     
