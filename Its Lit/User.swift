@@ -9,6 +9,7 @@
 import Firebase
 import UIKit
 
+
 class User: NSObject {
     var id: String?
     var name: String?

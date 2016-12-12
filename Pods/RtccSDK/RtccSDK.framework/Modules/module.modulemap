@@ -1,6 +1,0 @@
-framework module RtccSDK {
-  umbrella header "RtccSDK.h"
-
-  export *
-  module * { export * }
-}

@@ -12,7 +12,6 @@ import UserNotifications
 import Firebase
 import FirebaseInstanceID
 import FirebaseMessaging
-
 import GoogleMobileAds
 
 @UIApplicationMain

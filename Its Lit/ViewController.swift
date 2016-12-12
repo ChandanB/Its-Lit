@@ -12,12 +12,15 @@ import MultipeerConnectivity
 import GoogleMobileAds
 import Firebase
 import MediaPlayer
+import MapKit
 
-
-class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate {
+class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate, CLLocationManagerDelegate {
     
+    @IBOutlet weak var map: MKMapView!
+    @IBOutlet weak var worldButton: UIButton!
     @IBOutlet weak var musicButton: UIButton!
     @IBOutlet weak var bannerView: GADBannerView!
+    var locationManager = CLLocationManager()
     var animating : Bool = false
     let loginViewController = LoginViewController()
     var counter = 0
@@ -45,7 +48,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         checkIfUserIsLoggedIn()
         
         loadPeerToPeer()
-        
+
         self.becomeFirstResponder()
         
         UINavigationBar.appearance().barTintColor = UIColor.rgb(254, green: 209, blue: 67)
@@ -69,22 +72,45 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     //MARK: - Functions
 
+    
+    @IBAction func showMap(_ sender: Any) {
+        
+       
+        setupMap()
+        
+        if (CLLocationManager.locationServicesEnabled())
+        {
+            locationManager = CLLocationManager()
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.startUpdatingLocation()
+        }
+
+    }
         
     func checkIfUserIsLoggedIn() {
         
         if FIRAuth.auth()?.currentUser?.uid == nil {
             musicButton.isHidden = true
+            worldButton.isHidden = true
+            map.isHidden = true
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Sign In (Removes Ads)", style: .done, target: self, action: #selector(signIn))
             navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
             navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
             bannerView.load(GADRequest())
             
         } else {
+            locationManager.requestAlwaysAuthorization()
+            locationManager.requestWhenInUseAuthorization()
+        
+            map.isHidden = true
+
             let origImage = UIImage(named: "Music");
             let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
             self.musicButton.setImage(tintedImage, for: .normal)
             self.musicButton.tintColor = UIColor.black
             musicButton.isHidden = false
+            worldButton.isHidden = false
             bannerView.isHidden = true
             fetchUserAndSetupNavBarTitle()
             let image = UIImage(named: "love")
@@ -131,14 +157,14 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
     }
     let profileImageView = UIImageView()
+    let titleView = UIView()
+    let containerView = UIView()
 
     func setupNavBarWithUser(_ user: User) {
         
-        let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
         // titleView.backgroundColor = UIColor.redColor()
         
-        let containerView = UIView()
         containerView.translatesAutoresizingMaskIntoConstraints = false
         titleView.addSubview(containerView)
         
@@ -391,6 +417,43 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         self.present(self.browser, animated: true, completion: nil)
         
     }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        let location = locations.last! as CLLocation
+        print (location)
+        let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        
+        let locationRef = FIRDatabase.database().reference().child("users").child(FIRAuth.auth()!.currentUser!.uid).child("Location")
+        let childRef = locationRef.childByAutoId()
+        let locId = childRef.key
+        let values: [String: Any] = ["locId": locId as AnyObject]
+        
+        //append properties dictionary onto values somehow??
+        //key $0, value $1
+        
+        map.setRegion(region, animated: true)
+        map.setUserTrackingMode(.follow, animated: true)
+        
+//        childRef.updateChildValues(values) { (error, ref) in
+//            if error != nil {
+//                print(error as Any)
+//                return
+//            }
+//            
+//            
+//            let locationRef = FIRDatabase.database().reference().child("users").child(FIRAuth.auth()!.currentUser!.uid)
+//            
+//            let locId = childRef.key
+//            locationRef.updateChildValues([locId: location])
+//            
+//            
+//        }
+        
+    }
+    
+    
     
     
 }

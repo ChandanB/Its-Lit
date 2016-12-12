@@ -107,6 +107,20 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     func itsLitNoButton() {
         
+        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
+            return
+        }
+        
+        FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
+            
+            if error != nil {
+                print("Failed to delete litness:", error as Any)
+                return
+            }
+            
+        })
+
+        
         if (device?.hasTorch)! {
             do {
                 try device?.lockForConfiguration()
@@ -247,10 +261,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             
         } else {
             //incoming gray
+            let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(imageTapped))
+
+
             cell.bubbleView.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
             cell.textView.textColor = UIColor.white
             cell.profileImageView.isHidden = false
-            
+            cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+
             cell.bubbleViewRightAnchor?.isActive = false
             cell.bubbleViewLeftAnchor?.isActive = true
         }
@@ -298,6 +316,23 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }
     }
     
+     func imageTapped(sender: UITapGestureRecognizer) {
+        let imageView = sender.view as! UIImageView
+        let newImageView = UIImageView(image: imageView.image)
+        navigationController?.isNavigationBarHidden = true
+        newImageView.frame = self.view.frame
+        newImageView.backgroundColor = .black
+        newImageView.contentMode = .scaleAspectFit
+        newImageView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target:self, action:#selector(dismissFullscreenImage))
+        newImageView.addGestureRecognizer(tap)
+        self.view.addSubview(newImageView)
+    }
+    
+    func dismissFullscreenImage(sender: UITapGestureRecognizer) {
+        navigationController?.isNavigationBarHidden = false
+        sender.view?.removeFromSuperview()
+    }
     
     fileprivate func sendMessageWithProperties(_ properties: [String: AnyObject]) {
         let ref = FIRDatabase.database().reference().child("messages")

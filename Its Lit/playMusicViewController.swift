@@ -20,11 +20,12 @@ class playMusicViewController: UIViewController, MPMediaPickerControllerDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        volumeSlider.tintColor = UIColor.rgb(223, green: 39, blue: 48)
+        navigationController?.navigationBar.tintColor = UIColor.white
+        volumeSlider.tintColor = UIColor.white
         let origImage = UIImage(named: "people")
         let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-        peopleButton.setImage(tintedImage, for: .normal)
-        peopleButton.tintColor = UIColor.rgb(223, green: 39, blue: 48)
+       // peopleButton.setImage(tintedImage, for: .normal)
+       // peopleButton.tintColor = UIColor.rgb(223, green: 39, blue: 48)
         // Do any additional setup after loading the view.
     }
     

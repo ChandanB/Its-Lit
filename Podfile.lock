@@ -1,5 +1,4 @@
 PODS:
-  - 1PasswordExtension (1.8.4)
   - Firebase (3.10.0):
     - Firebase/Core (= 3.10.0)
   - Firebase/AdMob (3.10.0):
@@ -92,11 +91,6 @@ PODS:
     - GoogleToolboxForMac/NSString+URLArguments (= 2.1.0)
   - GoogleToolboxForMac/NSString+URLArguments (2.1.0)
   - GTMSessionFetcher/Core (1.1.7)
-  - RtccSDK (6.6.3)
-  - Soundcloud (1.0.1):
-    - 1PasswordExtension (~> 1.8.3)
-    - UICKeyChainStore (~> 2.0.6)
-  - UICKeyChainStore (2.0.7)
 
 DEPENDENCIES:
   - Firebase
@@ -112,11 +106,8 @@ DEPENDENCIES:
   - Firebase/RemoteConfig
   - Firebase/Storage
   - Google-Mobile-Ads-SDK
-  - RtccSDK (~> 6.5)
-  - Soundcloud
 
 SPEC CHECKSUMS:
-  1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
   Firebase: 387f37c7dca894a02708da9ff35ba147040eae9e
   FirebaseAnalytics: 9c67af0ebeb8d2146c9b4ea2616439affa947b58
   FirebaseAppIndexing: d0fa52ce0ad13f4b5b2f09e4b47fb0dc2213f4e9
@@ -134,10 +125,7 @@ SPEC CHECKSUMS:
   GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
   GoogleToolboxForMac: 2b2596cbb7186865e98cadf2b1e262d851c2b168
   GTMSessionFetcher: a1f8ed39e4fe21c68957daed472c7afbcdf29166
-  RtccSDK: 7ad50387c49604312abbae264a99480042fe2388
-  Soundcloud: f0d2e40084254773d34781c67515bd2882571064
-  UICKeyChainStore: 696cd35083f7c8fb5e201d909b7e6aea6b478575
 
-PODFILE CHECKSUM: 6f0274f400b50d2fdae99d2f935d1ac28f17441b
+PODFILE CHECKSUM: 204c607ebc30d32baab5fdb3a213deb74b9b4861
 
 COCOAPODS: 1.0.1

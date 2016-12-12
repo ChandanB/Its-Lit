@@ -7,7 +7,7 @@ target 'Its Lit' do
 
   # Pods for Its Lit
 pod 'Google-Mobile-Ads-SDK’
-pod ‘Firebase’
+pod 'Firebase'
 pod 'Firebase/AdMob'
 pod 'Firebase/Analytics'
 pod 'Firebase/AppIndexing'
@@ -19,6 +19,5 @@ pod 'Firebase/Messaging'
 pod 'Firebase/RemoteConfig'
 pod 'Firebase/Storage'
 pod 'Firebase/Core'
-pod 'RtccSDK', '~> 6.5'
-pod 'Soundcloud'
+
 end

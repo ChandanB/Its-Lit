@@ -24,7 +24,7 @@
 		1F79BE421DF22D14002ECA07 /* musicHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F79BE411DF22D14002ECA07 /* musicHelper.swift */; };
 		1F828FB41DE7D38500D0C3EB /* Lit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F828FB31DE7D38500D0C3EB /* Lit.swift */; };
 		1F90C4381DD511380088B32E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F90C4371DD511380088B32E /* GoogleService-Info.plist */; };
-		1F90C43B1DD67FA20088B32E /* loginAndCreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F90C43A1DD67FA20088B32E /* loginAndCreateAccount.swift */; };
+		1F90C43B1DD67FA20088B32E /* LoginAndCreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F90C43A1DD67FA20088B32E /* LoginAndCreateAccount.swift */; };
 		1F90C43D1DD6863A0088B32E /* LoginController+handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F90C43C1DD6863A0088B32E /* LoginController+handlers.swift */; };
 		1FC7386B1DEFCBE40076040B /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC7386A1DEFCBE40076040B /* ViewExtension.swift */; };
 		1FE1B9F51D59A724003545ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE1B9F41D59A724003545ED /* AppDelegate.swift */; };
@@ -55,7 +55,7 @@
 		1F90C4331DD4FAC00088B32E /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		1F90C4371DD511380088B32E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1F90C4391DD5228C0088B32E /* Its Lit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Its Lit.entitlements"; sourceTree = "<group>"; };
-		1F90C43A1DD67FA20088B32E /* loginAndCreateAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = loginAndCreateAccount.swift; sourceTree = "<group>"; };
+		1F90C43A1DD67FA20088B32E /* LoginAndCreateAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginAndCreateAccount.swift; sourceTree = "<group>"; };
 		1F90C43C1DD6863A0088B32E /* LoginController+handlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginController+handlers.swift"; sourceTree = "<group>"; };
 		1FC7386A1DEFCBE40076040B /* ViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
 		1FE1B9F11D59A724003545ED /* It's Lit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "It's Lit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,7 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				1F90C43C1DD6863A0088B32E /* LoginController+handlers.swift */,
-				1F90C43A1DD67FA20088B32E /* loginAndCreateAccount.swift */,
+				1F90C43A1DD67FA20088B32E /* LoginAndCreateAccount.swift */,
 				1F039D581DD71E16008B63D6 /* FriendsTableViewController.swift */,
 				1F039D651DDC029D008B63D6 /* ChatLogController.swift */,
 				1FF7AE0C1DE5583700FAD488 /* ViewController.swift */,
@@ -316,7 +316,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F90C43B1DD67FA20088B32E /* loginAndCreateAccount.swift in Sources */,
+				1F90C43B1DD67FA20088B32E /* LoginAndCreateAccount.swift in Sources */,
 				1F79BE421DF22D14002ECA07 /* musicHelper.swift in Sources */,
 				1F039D591DD71E16008B63D6 /* FriendsTableViewController.swift in Sources */,
 				1F039D571DD70938008B63D6 /* imageHandle.swift in Sources */,
@@ -455,7 +455,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.TurnApp.Its-Lit";
 				PRODUCT_NAME = "It's Lit";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 3.0.1;
 			};
 			name = Debug;
 		};
@@ -475,7 +475,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.TurnApp.Its-Lit";
 				PRODUCT_NAME = "It's Lit";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 3.0.1;
 			};
 			name = Release;
 		};

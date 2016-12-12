@@ -120,6 +120,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
                 }
                 
                 self.messagesDictionary.removeValue(forKey: chatPartnerId)
+                self.messages.remove(at: indexPath.row)
                 self.attemptReloadOfTable()
                 
                 //                //this is one way of updating the table, but its actually not that safe..
@@ -243,6 +244,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         if searchController.isActive && searchController.searchBar.text != "" {
             user = filtered[(indexPath as NSIndexPath).row]
             cell.textLabel?.text = user.name
+            cell.timeLabel.text = ""
             if let profileImageUrl = user.profileImageUrl {
                 cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
             }
