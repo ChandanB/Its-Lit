@@ -72,10 +72,10 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         searchController.searchBar.sizeToFit()
         searchController.searchBar.isTranslucent = false
         searchController.searchBar.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-   //     searchController.searchBar.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
+      //searchController.searchBar.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
         searchController.searchBar.barTintColor = UIColor.white
         searchController.searchBar.delegate = self
-      //  navigationItem.titleView = searchController.searchBar
+      //navigationItem.titleView = searchController.searchBar
         
         fetchUser()
         observeUserMessages()
@@ -256,9 +256,6 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
             cell.message = message
             
          }
-    
-       
-     
         return cell
     }
     

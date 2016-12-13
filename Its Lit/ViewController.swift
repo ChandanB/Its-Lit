@@ -16,25 +16,26 @@ import MapKit
 
 class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate, CLLocationManagerDelegate {
     
+    
+    //MARK: - Objects
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var worldButton: UIButton!
     @IBOutlet weak var musicButton: UIButton!
     @IBOutlet weak var bannerView: GADBannerView!
+    @IBOutlet weak var peopleButton: UIButton!
+    @IBOutlet weak var itsLitImage: UIImageView!
+    @IBOutlet weak var ItsLitButton: UIImageView!
     var locationManager = CLLocationManager()
     var animating : Bool = false
     let loginViewController = LoginViewController()
     var counter = 0
     var myMusicPlayer: MPMusicPlayerController?
-    //MARK: - Objects
-    @IBOutlet weak var peopleButton: UIButton!
-    @IBOutlet weak var itsLitImage: UIImageView!
-    @IBOutlet weak var ItsLitButton: UIImageView!
     var myDictionary:NSDictionary = [:]
     var interstitial: GADInterstitial!
     var player: AVAudioPlayer?
     let url = Bundle.main.url(forResource: "We Lit", withExtension: "mp3")!
     let nameLabel = UILabel()
-
+    
     //Variables for Peer to Peer.
     var browser   : MCBrowserViewController!
     var assistant : MCAdvertiserAssistant!
@@ -48,7 +49,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         checkIfUserIsLoggedIn()
         
         loadPeerToPeer()
-
+        
         self.becomeFirstResponder()
         
         UINavigationBar.appearance().barTintColor = UIColor.rgb(254, green: 209, blue: 67)
@@ -56,7 +57,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         // get rid of black bar underneath navbar
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        // _
         
         view.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
         
@@ -71,11 +71,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     //MARK: - Functions
-
-    
     @IBAction func showMap(_ sender: Any) {
-        
-       
         setupMap()
         
         if (CLLocationManager.locationServicesEnabled())
@@ -85,9 +81,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.startUpdatingLocation()
         }
-
-    }
         
+    }
+    
     func checkIfUserIsLoggedIn() {
         
         if FIRAuth.auth()?.currentUser?.uid == nil {
@@ -102,9 +98,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         } else {
             locationManager.requestAlwaysAuthorization()
             locationManager.requestWhenInUseAuthorization()
-        
+            
             map.isHidden = true
-
+            
             let origImage = UIImage(named: "Music");
             let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
             self.musicButton.setImage(tintedImage, for: .normal)
@@ -156,10 +152,11 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         present(navController, animated: true, completion: nil)
         
     }
+    
     let profileImageView = UIImageView()
     let titleView = UIView()
     let containerView = UIView()
-
+    
     func setupNavBarWithUser(_ user: User) {
         
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
@@ -221,7 +218,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 self.setupNavBarWithUser(user)
             }
             
-            }, withCancel: nil)
+        }, withCancel: nil)
     }
     
     func playSound() {
@@ -329,8 +326,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         self.browser.delegate = self
     }
     
-    
-    
     override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
         navigationController?.navigationBar.shake()
         ItsLitButton.shake()
@@ -376,7 +371,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         self.animateBackgroundColour()
     }
     
-       
+    
     @IBAction func itsLit(_ sender: UIButton) {
         
         sendInfo()
@@ -436,30 +431,26 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         map.setRegion(region, animated: true)
         map.setUserTrackingMode(.follow, animated: true)
         
-//        childRef.updateChildValues(values) { (error, ref) in
-//            if error != nil {
-//                print(error as Any)
-//                return
-//            }
-//            
-//            
-//            let locationRef = FIRDatabase.database().reference().child("users").child(FIRAuth.auth()!.currentUser!.uid)
-//            
-//            let locId = childRef.key
-//            locationRef.updateChildValues([locId: location])
-//            
-//            
-//        }
+        //        childRef.updateChildValues(values) { (error, ref) in
+        //            if error != nil {
+        //                print(error as Any)
+        //                return
+        //            }
+        //
+        //
+        //            let locationRef = FIRDatabase.database().reference().child("users").child(FIRAuth.auth()!.currentUser!.uid)
+        //
+        //            let locId = childRef.key
+        //            locationRef.updateChildValues([locId: location])
+        //
+        //
+        //        }
         
     }
-    
-    
-    
-    
 }
 
 public extension UIView {
-
+    
     func shake(count : Float? = nil,for duration : TimeInterval? = nil,withTranslation translation : Float? = nil) {
         let animation : CABasicAnimation = CABasicAnimation(keyPath: "transform.translation.x")
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)

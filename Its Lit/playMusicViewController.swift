@@ -24,9 +24,6 @@ class playMusicViewController: UIViewController, MPMediaPickerControllerDelegate
         volumeSlider.tintColor = UIColor.white
         let origImage = UIImage(named: "people")
         let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-       // peopleButton.setImage(tintedImage, for: .normal)
-       // peopleButton.tintColor = UIColor.rgb(223, green: 39, blue: 48)
-        // Do any additional setup after loading the view.
     }
     
     @IBOutlet weak var nowPlayingLabel: UILabel!
@@ -109,15 +106,4 @@ class playMusicViewController: UIViewController, MPMediaPickerControllerDelegate
             view.value = (sender as AnyObject).value
         }
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

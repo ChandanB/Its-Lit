@@ -90,7 +90,6 @@
 				1F039D581DD71E16008B63D6 /* FriendsTableViewController.swift */,
 				1F039D651DDC029D008B63D6 /* ChatLogController.swift */,
 				1FF7AE0C1DE5583700FAD488 /* ViewController.swift */,
-				1FC7386A1DEFCBE40076040B /* ViewExtension.swift */,
 				1F26CC3C1DF2244E00462166 /* playMusicViewController.swift */,
 			);
 			name = Views;
@@ -99,7 +98,6 @@
 		1F039D5D1DD7205C008B63D6 /* Info and Asset */ = {
 			isa = PBXGroup;
 			children = (
-				1FE1BA001D59A724003545ED /* Info.plist */,
 				1F90C4371DD511380088B32E /* GoogleService-Info.plist */,
 				1F039D541DD704A5008B63D6 /* We Lit.mp3 */,
 				1F039D521DD703A4008B63D6 /* ItsLit.aiff */,
@@ -120,8 +118,6 @@
 				1F1DAA3A1DD687C700655B74 /* User.swift */,
 				1F039D5A1DD7203F008B63D6 /* UserCell.swift */,
 				1F039D561DD70938008B63D6 /* imageHandle.swift */,
-				1F18A2C51DDF9C260095ED97 /* MessagingExtensions.swift */,
-				1F071CA51D5EB70A00CD2303 /* Extensions.swift */,
 				1F828FB31DE7D38500D0C3EB /* Lit.swift */,
 				1F79BE411DF22D14002ECA07 /* musicHelper.swift */,
 			);
@@ -135,6 +131,16 @@
 				2D1CCC90587EA32F0F342E3A /* Pods_Its_Lit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1FD42A3E1E00A0F400782D9A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				1FC7386A1DEFCBE40076040B /* ViewExtension.swift */,
+				1F18A2C51DDF9C260095ED97 /* MessagingExtensions.swift */,
+				1F071CA51D5EB70A00CD2303 /* Extensions.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 		1FE1B9E81D59A724003545ED = {
@@ -158,10 +164,12 @@
 		1FE1B9F31D59A724003545ED /* Its Lit */ = {
 			isa = PBXGroup;
 			children = (
-				1F039D5E1DD72089008B63D6 /* Ext and Helpers */,
-				1F039D5C1DD72044008B63D6 /* Views */,
+				1FE1BA001D59A724003545ED /* Info.plist */,
 				1FE1B9F41D59A724003545ED /* AppDelegate.swift */,
 				1FE1B9F81D59A724003545ED /* Main.storyboard */,
+				1FD42A3E1E00A0F400782D9A /* Extensions */,
+				1F039D5E1DD72089008B63D6 /* Ext and Helpers */,
+				1F039D5C1DD72044008B63D6 /* Views */,
 				1F039D5D1DD7205C008B63D6 /* Info and Asset */,
 			);
 			path = "Its Lit";

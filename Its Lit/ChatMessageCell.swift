@@ -84,7 +84,7 @@ class ChatMessageCell: UICollectionViewCell {
         bubbleViewRightAnchor = bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -8)
         bubbleViewRightAnchor?.isActive = true
         bubbleViewLeftAnchor = bubbleView.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8)
-        //        bubbleViewLeftAnchor?.active = false
+        //bubbleViewLeftAnchor?.active = false
         
         
         bubbleView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
@@ -94,9 +94,8 @@ class ChatMessageCell: UICollectionViewCell {
         
         bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         
-        //ios 9 constraints
         //x,y,w,h
-        //        textView.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
+        //textView.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
         textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8).isActive = true
         textView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         
