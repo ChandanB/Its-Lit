@@ -85,11 +85,11 @@
 		1F039D5C1DD72044008B63D6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1FF7AE0C1DE5583700FAD488 /* ViewController.swift */,
 				1F90C43C1DD6863A0088B32E /* LoginController+handlers.swift */,
 				1F90C43A1DD67FA20088B32E /* LoginAndCreateAccount.swift */,
 				1F039D581DD71E16008B63D6 /* FriendsTableViewController.swift */,
 				1F039D651DDC029D008B63D6 /* ChatLogController.swift */,
-				1FF7AE0C1DE5583700FAD488 /* ViewController.swift */,
 				1F26CC3C1DF2244E00462166 /* playMusicViewController.swift */,
 			);
 			name = Views;
