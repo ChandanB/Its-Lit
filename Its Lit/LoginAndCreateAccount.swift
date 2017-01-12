@@ -36,6 +36,61 @@ class LoginViewController: UIViewController  {
         return button
     }()
     
+    lazy var skipLoginRegister: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.red
+        button.setTitle("Skip", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.layer.cornerRadius = 20
+        
+        button.addTarget(self, action: #selector(loginRegisterSkipped), for: .touchUpInside)
+        
+        return button
+    }()
+    
+    let errorTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = ""
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.isHidden = true
+        return tf
+    }()
+    
+    func loginRegisterSkipped() {
+        let bullet1 = "You will have ads"
+        let bullet2 = "It'll be less lit"
+        let bullet4 = "You won't be able to message friends "
+        let bullet3 = "You won't be able to connect with others without Wifi"
+        
+        let strings = [bullet1, bullet2, bullet3, bullet4]
+        
+        var fullString = ""
+        
+        for string: String in strings
+        {
+            let bulletPoint: String = "\u{2022}"
+            let formattedString: String = "\(bulletPoint) \(string)\n"
+            
+            fullString = fullString + formattedString
+        }
+        
+        let alert = UIAlertController(title: "Wait!", message: "If you skip login/register:\n\(fullString)", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Skip Anyway", style: UIAlertActionStyle.default, handler: { action in
+            self.goToDefaultPage()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Nah I Was JP", style: UIAlertActionStyle.default, handler: nil))
+
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func goToDefaultPage() {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "DefaultUserViewController") as! DefaultUserViewController
+        self.present(vc, animated: true, completion: nil)
+    }
+    
     func handleLoginRegister() {
         if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
             handleLogin()
@@ -53,6 +108,9 @@ class LoginViewController: UIViewController  {
         FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: { (user, error) in
             
             if error != nil {
+                self.profileImageView.shake()
+                self.errorTextField.isHidden = false
+                self.errorTextField.text = ("Invalid Email or Password")
                 print(error as Any)
                 return
             }
@@ -61,7 +119,6 @@ class LoginViewController: UIViewController  {
             
             self.viewController?.fetchUserAndSetupNavBarTitle()
             self.viewController?.viewDidLoad()
-            self.viewController?.bannerView.isHidden = true
             self.dismiss(animated: true, completion: nil)
             
         })
@@ -124,12 +181,21 @@ class LoginViewController: UIViewController  {
         sc.tintColor = UIColor.black
         sc.selectedSegmentIndex = 1
         sc.addTarget(self, action: #selector(handleLoginRegisterChange), for: .valueChanged)
+       
         return sc
     }()
     
     func handleLoginRegisterChange() {
+        self.errorTextField.isHidden = true
+        
         let title = loginRegisterSegmentedControl.titleForSegment(at: loginRegisterSegmentedControl.selectedSegmentIndex)
         loginRegisterButton.setTitle(title, for: .normal)
+        
+        if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
+            self.nameTextField.placeholder = ""
+        } else {
+            self.nameTextField.placeholder = "Name"
+        }
         
         // change height of inputContainerView, but how???
         inputsContainerViewHeightAnchor?.constant = loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 100 : 150
@@ -169,6 +235,8 @@ class LoginViewController: UIViewController  {
         view.addSubview(loginRegisterButton)
         view.addSubview(profileImageView)
         view.addSubview(loginRegisterSegmentedControl)
+        view.addSubview(skipLoginRegister)
+        view.addSubview(errorTextField)
         
         setupInputsContainerView()
         setupLoginRegisterButton()
@@ -198,6 +266,11 @@ class LoginViewController: UIViewController  {
         profileImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
         profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
+        
+       // errorTextField.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 12).isActive = true
+        errorTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        errorTextField.bottomAnchor.constraint(equalTo: profileImageView.topAnchor, constant: -12).isActive = true
+        
 
     }
     
@@ -266,6 +339,12 @@ class LoginViewController: UIViewController  {
         loginRegisterButton.topAnchor.constraint(equalTo: inputsContainerView.bottomAnchor, constant: 12).isActive = true
         loginRegisterButton.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
         loginRegisterButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        skipLoginRegister.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        skipLoginRegister.topAnchor.constraint(equalTo: loginRegisterButton.bottomAnchor, constant: 12).isActive = true
+        skipLoginRegister.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
+        skipLoginRegister.heightAnchor.constraint(equalToConstant: 50).isActive = true
+
     }
     
     func setupKeyboardObservers() {

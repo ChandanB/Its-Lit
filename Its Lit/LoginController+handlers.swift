@@ -20,6 +20,11 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
         FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user: FIRUser?, error) in
             
             if error != nil {
+                self.profileImageView.shake()
+                self.errorTextField.isHidden = false
+                if (self.passwordTextField.text?.characters.count)! < 6 {
+                self.errorTextField.text = ("Password has to be atleast 6 characters")
+                }
                 print(error as Any)
                 return
             }
@@ -59,6 +64,7 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
         usersReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
             
             if err != nil {
+                self.profileImageView.shake()
                 print(err as Any)
                 return
             }
@@ -70,7 +76,6 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
             user.setValuesForKeys(values)
             self.viewController?.setupNavBarWithUser(user)
             self.viewController?.viewDidLoad()
-            self.viewController?.bannerView.isHidden = true
             self.dismiss(animated: true, completion: nil)
             
         })

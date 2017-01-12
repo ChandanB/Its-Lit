@@ -46,7 +46,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             })
         })
         
-        
         let userMessagesRef = FIRDatabase.database().reference().child("user-messages").child(uid).child(toId)
         userMessagesRef.observe(.childAdded, with: { (snapshot) in
             

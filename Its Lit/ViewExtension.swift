@@ -12,7 +12,6 @@ import Firebase
 extension ViewController: UIImagePickerControllerDelegate {
     
     func setupMap() {
-        
         if map.isHidden == false  {
             map.isHidden = true
           //  rotateWorldView()
@@ -23,11 +22,8 @@ extension ViewController: UIImagePickerControllerDelegate {
         }
         
         map.layer.cornerRadius = 30
-        
     }
-    
-    
-    
+   
     func profilePicUpdate() {
         let user = FIRAuth.auth()?.currentUser
             guard (user?.uid) != nil else {
@@ -92,7 +88,6 @@ extension ViewController: UIImagePickerControllerDelegate {
         profilePicUpdate()
         
         dismiss(animated: true, completion: nil)
-        
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -116,6 +111,7 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.peopleButton.setImage(tintedImage, for: .normal)
                     self.peopleButton.tintColor = UIColor.white
                 }, completion: nil)
+                
             } else if (counter == 4) {
                 UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                     self.backgroundLoop = 1
@@ -129,6 +125,7 @@ extension ViewController: UIImagePickerControllerDelegate {
                     UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
                     self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
                 }, completion: nil)
+                
             } else if (counter == 8) {
                 UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                     self.backgroundLoop = 3
@@ -137,6 +134,7 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.navigationItem.leftBarButtonItem?.tintColor = UIColor.black
                     self.peopleButton.tintColor = UIColor.black
                 }, completion: nil)
+                
             } else if (counter == 10) {
                 UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                     self.backgroundLoop = 4
@@ -144,6 +142,7 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
                 }, completion: nil)
             }
+            
         } else {
             if (counter == 2) {
                 UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
@@ -192,7 +191,6 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
                 }, completion: nil)
             }
-            
         }
         
         if counter > 11 {
@@ -223,9 +221,9 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.spinWithOptions(options: UIViewAnimationOptions.curveEaseOut)
                 }
             }
-            
         }
     }
+    
     func rotateWorldView() {
         if(!animating) {
             animating = true;
@@ -246,9 +244,6 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseOut)
                 }
             }
-            
         }
     }
-
-
 }

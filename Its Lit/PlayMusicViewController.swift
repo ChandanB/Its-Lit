@@ -10,7 +10,7 @@ import UIKit
 import MediaPlayer
 import AVFoundation
 
-class playMusicViewController: UIViewController, MPMediaPickerControllerDelegate {
+class PlayMusicViewController: UIViewController, MPMediaPickerControllerDelegate {
     
     @IBOutlet weak var peopleButton: UIButton!
     @IBOutlet weak var volumeSlider: UISlider!
