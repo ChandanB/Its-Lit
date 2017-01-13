@@ -47,7 +47,7 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="71" id="49h-34-qvp"/>
                                 </constraints>
-                                <state key="normal" image="World Icon"/>
+                                <state key="normal" image="Destination"/>
                                 <connections>
                                     <action selector="showMap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="juN-NX-hA8"/>
                                 </connections>
@@ -136,9 +136,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Destination" width="512" height="512"/>
         <image name="Its Lit" width="1000" height="1000"/>
         <image name="Music" width="512" height="512"/>
-        <image name="World Icon" width="200" height="200"/>
         <image name="people" width="512" height="248"/>
     </resources>
 </document>
