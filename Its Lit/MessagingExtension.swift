@@ -16,8 +16,8 @@ func addConstraintsWithFormat(_ format: String, views: UIView...) {
         view.translatesAutoresizingMaskIntoConstraints = false
         viewsDictionary[key] = view
     }
-
-class CustomImageView: UIImageView {
+    
+    class CustomImageView: UIImageView {
         
         var imageUrlString: String?
         
@@ -45,11 +45,11 @@ class CustomImageView: UIImageView {
                         self.image = imageToCache
                     }
                     
-                    })
+                })
                 
             }).resume()
         }
         
     }
-
+    
 }

@@ -23,7 +23,7 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
                 self.profileImageView.shake()
                 self.errorTextField.isHidden = false
                 if (self.passwordTextField.text?.characters.count)! < 6 {
-                self.errorTextField.text = ("Password has to be atleast 6 characters")
+                    self.errorTextField.text = ("Password has to be atleast 6 characters")
                 }
                 print(error as Any)
                 return
@@ -38,7 +38,7 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
             let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
             
             if let profileImage = self.profileImageView.image, let uploadData = UIImageJPEGRepresentation(profileImage, 0.1) {
-            
+                
                 storageRef.put(uploadData, metadata: nil, completion: { (metadata, error) in
                     
                     if error != nil {

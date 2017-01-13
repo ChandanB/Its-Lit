@@ -12,7 +12,7 @@ import Firebase
 class LoginViewController: UIViewController  {
     
     var viewController: ViewController?
-    
+
     let inputsContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
@@ -87,8 +87,8 @@ class LoginViewController: UIViewController  {
     }
     
     func goToDefaultPage() {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "DefaultUserViewController") as! DefaultUserViewController
-        self.present(vc, animated: true, completion: nil)
+        self.viewController?.viewDidLoad()
+        self.dismiss(animated: true, completion: nil)
     }
     
     func handleLoginRegister() {
@@ -219,7 +219,6 @@ class LoginViewController: UIViewController  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.leftBarButtonItem?.tintColor = UIColor.white
         

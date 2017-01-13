@@ -12,25 +12,22 @@
 		1F039D571DD70938008B63D6 /* imageHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F039D561DD70938008B63D6 /* imageHandle.swift */; };
 		1F039D601DD72177008B63D6 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F039D5F1DD72177008B63D6 /* Message.swift */; };
 		1F039D661DDC029D008B63D6 /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F039D651DDC029D008B63D6 /* ChatLogController.swift */; };
-		1F071CA21D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F071CA11D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard */; };
-		1F071CA61D5EB70A00CD2303 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F071CA51D5EB70A00CD2303 /* Extensions.swift */; };
 		1F18A2C41DDF991C0095ED97 /* ChatInputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F18A2C31DDF991C0095ED97 /* ChatInputContainerView.swift */; };
-		1F18A2C61DDF9C260095ED97 /* MessagingExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F18A2C51DDF9C260095ED97 /* MessagingExtensions.swift */; };
 		1F1DAA3B1DD687C700655B74 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1DAA3A1DD687C700655B74 /* User.swift */; };
 		1F2314E41E25ACB400A84468 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2314E31E25ACB400A84468 /* ChatMessageCell.swift */; };
 		1F2314E61E25ACD900A84468 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2314E51E25ACD900A84468 /* UserCell.swift */; };
-		1F2314E81E25AD0100A84468 /* PlayMusicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2314E71E25AD0100A84468 /* PlayMusicViewController.swift */; };
 		1F2314EA1E25AD4500A84468 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2314E91E25AD4500A84468 /* UserViewController.swift */; };
 		1F2314EC1E25ADB400A84468 /* FriendsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2314EB1E25ADB400A84468 /* FriendsTableViewController.swift */; };
-		1F2314EE1E28109100A84468 /* DefaultUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2314ED1E28109100A84468 /* DefaultUserViewController.swift */; };
-		1F2314F01E28115E00A84468 /* DefaultViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2314EF1E28115E00A84468 /* DefaultViewExtension.swift */; };
+		1F45896F1E2883B00043D0EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F45896E1E2883B00043D0EA /* AppDelegate.swift */; };
+		1F4589711E2883C80043D0EA /* MessagingExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4589701E2883C80043D0EA /* MessagingExtension.swift */; };
+		1F4589731E2884250043D0EA /* LoginControllerExt+Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4589721E2884250043D0EA /* LoginControllerExt+Handlers.swift */; };
+		1F4589751E2884540043D0EA /* RandomExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4589741E2884540043D0EA /* RandomExtensions.swift */; };
+		1F4589771E28848A0043D0EA /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F4589761E28848A0043D0EA /* Launch Screen.storyboard */; };
 		1F79BE421DF22D14002ECA07 /* musicHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F79BE411DF22D14002ECA07 /* musicHelper.swift */; };
 		1F828FB41DE7D38500D0C3EB /* Lit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F828FB31DE7D38500D0C3EB /* Lit.swift */; };
 		1F90C4381DD511380088B32E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F90C4371DD511380088B32E /* GoogleService-Info.plist */; };
 		1F90C43B1DD67FA20088B32E /* LoginAndCreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F90C43A1DD67FA20088B32E /* LoginAndCreateAccount.swift */; };
-		1F90C43D1DD6863A0088B32E /* LoginController+handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F90C43C1DD6863A0088B32E /* LoginController+handlers.swift */; };
 		1FC7386B1DEFCBE40076040B /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC7386A1DEFCBE40076040B /* ViewExtension.swift */; };
-		1FE1B9F51D59A724003545ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE1B9F41D59A724003545ED /* AppDelegate.swift */; };
 		1FE1B9FA1D59A724003545ED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FE1B9F81D59A724003545ED /* Main.storyboard */; };
 		1FE1B9FC1D59A724003545ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FE1B9FB1D59A724003545ED /* Assets.xcassets */; };
 		1FE1BA0B1D59BB67003545ED /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FE1BA0A1D59BB67003545ED /* Images.xcassets */; };
@@ -43,28 +40,25 @@
 		1F039D561DD70938008B63D6 /* imageHandle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = imageHandle.swift; sourceTree = "<group>"; };
 		1F039D5F1DD72177008B63D6 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		1F039D651DDC029D008B63D6 /* ChatLogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
-		1F071CA11D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "LaunchScreen 1.58.12 PM.storyboard"; sourceTree = "<group>"; };
-		1F071CA51D5EB70A00CD2303 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1F18A2C31DDF991C0095ED97 /* ChatInputContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatInputContainerView.swift; sourceTree = "<group>"; };
-		1F18A2C51DDF9C260095ED97 /* MessagingExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagingExtensions.swift; sourceTree = "<group>"; };
 		1F1DAA3A1DD687C700655B74 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1F2314E31E25ACB400A84468 /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		1F2314E51E25ACD900A84468 /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
-		1F2314E71E25AD0100A84468 /* PlayMusicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayMusicViewController.swift; sourceTree = "<group>"; };
 		1F2314E91E25AD4500A84468 /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		1F2314EB1E25ADB400A84468 /* FriendsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsTableViewController.swift; sourceTree = "<group>"; };
-		1F2314ED1E28109100A84468 /* DefaultUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUserViewController.swift; sourceTree = "<group>"; };
-		1F2314EF1E28115E00A84468 /* DefaultViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultViewExtension.swift; sourceTree = "<group>"; };
+		1F45896E1E2883B00043D0EA /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1F4589701E2883C80043D0EA /* MessagingExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagingExtension.swift; sourceTree = "<group>"; };
+		1F4589721E2884250043D0EA /* LoginControllerExt+Handlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginControllerExt+Handlers.swift"; sourceTree = "<group>"; };
+		1F4589741E2884540043D0EA /* RandomExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomExtensions.swift; sourceTree = "<group>"; };
+		1F4589761E28848A0043D0EA /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		1F79BE411DF22D14002ECA07 /* musicHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = musicHelper.swift; sourceTree = "<group>"; };
 		1F828FB31DE7D38500D0C3EB /* Lit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lit.swift; sourceTree = "<group>"; };
 		1F90C4331DD4FAC00088B32E /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		1F90C4371DD511380088B32E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1F90C4391DD5228C0088B32E /* Its Lit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Its Lit.entitlements"; sourceTree = "<group>"; };
 		1F90C43A1DD67FA20088B32E /* LoginAndCreateAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginAndCreateAccount.swift; sourceTree = "<group>"; };
-		1F90C43C1DD6863A0088B32E /* LoginController+handlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginController+handlers.swift"; sourceTree = "<group>"; };
 		1FC7386A1DEFCBE40076040B /* ViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
 		1FE1B9F11D59A724003545ED /* It's Lit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "It's Lit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1FE1B9F41D59A724003545ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1FE1B9F91D59A724003545ED /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1FE1B9FB1D59A724003545ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1FE1BA001D59A724003545ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -89,13 +83,11 @@
 		1F039D5C1DD72044008B63D6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1F2314ED1E28109100A84468 /* DefaultUserViewController.swift */,
 				1F2314E91E25AD4500A84468 /* UserViewController.swift */,
 				1F90C43A1DD67FA20088B32E /* LoginAndCreateAccount.swift */,
-				1F90C43C1DD6863A0088B32E /* LoginController+handlers.swift */,
 				1F2314EB1E25ADB400A84468 /* FriendsTableViewController.swift */,
 				1F039D651DDC029D008B63D6 /* ChatLogController.swift */,
-				1F2314E71E25AD0100A84468 /* PlayMusicViewController.swift */,
+				1F4589721E2884250043D0EA /* LoginControllerExt+Handlers.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -106,7 +98,7 @@
 				1F90C4371DD511380088B32E /* GoogleService-Info.plist */,
 				1F039D541DD704A5008B63D6 /* We Lit.mp3 */,
 				1F039D521DD703A4008B63D6 /* ItsLit.aiff */,
-				1F071CA11D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard */,
+				1F4589761E28848A0043D0EA /* Launch Screen.storyboard */,
 				1FE1BA0A1D59BB67003545ED /* Images.xcassets */,
 				1FE1B9FB1D59A724003545ED /* Assets.xcassets */,
 				1F90C4391DD5228C0088B32E /* Its Lit.entitlements */,
@@ -141,10 +133,9 @@
 		1FD42A3E1E00A0F400782D9A /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				1F2314EF1E28115E00A84468 /* DefaultViewExtension.swift */,
 				1FC7386A1DEFCBE40076040B /* ViewExtension.swift */,
-				1F18A2C51DDF9C260095ED97 /* MessagingExtensions.swift */,
-				1F071CA51D5EB70A00CD2303 /* Extensions.swift */,
+				1F4589701E2883C80043D0EA /* MessagingExtension.swift */,
+				1F4589741E2884540043D0EA /* RandomExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -171,7 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				1FE1BA001D59A724003545ED /* Info.plist */,
-				1FE1B9F41D59A724003545ED /* AppDelegate.swift */,
+				1F45896E1E2883B00043D0EA /* AppDelegate.swift */,
 				1FE1B9F81D59A724003545ED /* Main.storyboard */,
 				1FD42A3E1E00A0F400782D9A /* Extensions */,
 				1F039D5E1DD72089008B63D6 /* Ext and Helpers */,
@@ -267,9 +258,9 @@
 			files = (
 				1F039D551DD704A5008B63D6 /* We Lit.mp3 in Resources */,
 				1FE1BA0B1D59BB67003545ED /* Images.xcassets in Resources */,
+				1F4589771E28848A0043D0EA /* Launch Screen.storyboard in Resources */,
 				1FE1B9FC1D59A724003545ED /* Assets.xcassets in Resources */,
 				1F90C4381DD511380088B32E /* GoogleService-Info.plist in Resources */,
-				1F071CA21D5E91F100CD2303 /* LaunchScreen 1.58.12 PM.storyboard in Resources */,
 				1F039D531DD703A4008B63D6 /* ItsLit.aiff in Resources */,
 				1FE1B9FA1D59A724003545ED /* Main.storyboard in Resources */,
 			);
@@ -332,24 +323,21 @@
 			files = (
 				1F90C43B1DD67FA20088B32E /* LoginAndCreateAccount.swift in Sources */,
 				1F79BE421DF22D14002ECA07 /* musicHelper.swift in Sources */,
-				1F2314F01E28115E00A84468 /* DefaultViewExtension.swift in Sources */,
 				1F2314EC1E25ADB400A84468 /* FriendsTableViewController.swift in Sources */,
-				1F2314EE1E28109100A84468 /* DefaultUserViewController.swift in Sources */,
 				1F039D571DD70938008B63D6 /* imageHandle.swift in Sources */,
+				1F4589731E2884250043D0EA /* LoginControllerExt+Handlers.swift in Sources */,
 				1F828FB41DE7D38500D0C3EB /* Lit.swift in Sources */,
 				1F1DAA3B1DD687C700655B74 /* User.swift in Sources */,
 				1FC7386B1DEFCBE40076040B /* ViewExtension.swift in Sources */,
 				1F039D661DDC029D008B63D6 /* ChatLogController.swift in Sources */,
-				1FE1B9F51D59A724003545ED /* AppDelegate.swift in Sources */,
 				1F039D601DD72177008B63D6 /* Message.swift in Sources */,
-				1F18A2C61DDF9C260095ED97 /* MessagingExtensions.swift in Sources */,
 				1F18A2C41DDF991C0095ED97 /* ChatInputContainerView.swift in Sources */,
+				1F4589711E2883C80043D0EA /* MessagingExtension.swift in Sources */,
 				1F2314EA1E25AD4500A84468 /* UserViewController.swift in Sources */,
+				1F45896F1E2883B00043D0EA /* AppDelegate.swift in Sources */,
 				1F2314E61E25ACD900A84468 /* UserCell.swift in Sources */,
+				1F4589751E2884540043D0EA /* RandomExtensions.swift in Sources */,
 				1F2314E41E25ACB400A84468 /* ChatMessageCell.swift in Sources */,
-				1F071CA61D5EB70A00CD2303 /* Extensions.swift in Sources */,
-				1F2314E81E25AD0100A84468 /* PlayMusicViewController.swift in Sources */,
-				1F90C43D1DD6863A0088B32E /* LoginController+handlers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

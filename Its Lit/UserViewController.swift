@@ -15,7 +15,7 @@ import MediaPlayer
 import MapKit
 
 class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate, CLLocationManagerDelegate {
- 
+    
     //MARK: - Objects In View
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var worldButton: UIButton!
@@ -27,18 +27,18 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     let titleView = UIView()
     let containerView = UIView()
     var viewController = self
+    var interstitial: GADInterstitial!
     
     //MARK: - Objects
     var locationManager = CLLocationManager()
     var animating : Bool = false
     let loginViewController = LoginViewController()
-    var counter = 0
     var myMusicPlayer: MPMusicPlayerController?
     var myDictionary:NSDictionary = [:]
-    var interstitial: GADInterstitial!
     var player: AVAudioPlayer?
     let url = Bundle.main.url(forResource: "We Lit", withExtension: "mp3")!
     let nameLabel = UILabel()
+    var counter = 0
     
     //MARK: - Colors and Animations
     var backgroundColours = [UIColor()]
@@ -64,7 +64,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         view.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
         self.map.isHidden = true
-
+        
         checkIfUserIsLoggedIn()
         loadPeerToPeer()
         
@@ -78,23 +78,30 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     //Check if logged in
     func checkIfUserIsLoggedIn() {
+        // If user isn't logged in
         if FIRAuth.auth()?.currentUser?.uid == nil {
-            
+            self.worldButton.isHidden = true
+            self.musicButton.isHidden = true
+            setupNavBarWithoutUser()
+            createAndLoadInterstitial()
             do {
                 try FIRAuth.auth()?.signOut()
             } catch let logoutError {
                 print(logoutError)
             }
-            
             let loginController = LoginViewController()
             loginController.viewController = self
             let navController = UINavigationController(rootViewController: loginController)
             present(navController, animated: true, completion: nil)
             
         } else {
+            self.worldButton.isHidden = false
+            profileImageView.isHidden = false
+            navigationItem.rightBarButtonItem?.isEnabled = true
+            self.musicButton.isHidden = true
             locationManager.requestAlwaysAuthorization()
             locationManager.requestWhenInUseAuthorization()
-                        
+            
             let origImage = UIImage(named: "Music");
             let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
             self.musicButton.setImage(tintedImage, for: .normal)
@@ -127,7 +134,14 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             }
         }, withCancel: nil)
     }
-
+    
+    func setupNavBarWithoutUser() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Sign In", style: .plain, target: self, action: #selector(handleLogout))
+        navigationItem.leftBarButtonItem?.tintColor = .white
+        profileImageView.isHidden = true
+        navigationItem.rightBarButtonItem?.isEnabled = false
+    }
+    
     // Setup Nav Bar with fetched user
     func setupNavBarWithUser(_ user: User) {
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
@@ -174,7 +188,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     //MARK: - Functions
     @IBAction func showMap(_ sender: Any) {
         setupMap()
-        
+        //  rotateWorldView()
         if (CLLocationManager.locationServicesEnabled())
         {
             locationManager = CLLocationManager()
@@ -224,7 +238,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         backgroundColours = [redColor, UIColor.darkGray, blueColor, UIColor.white, defaultColor]
         self.animateBackgroundColour()
     }
-
+    
     //MARK: - Functions for Flash
     func playSound() {
         print ("Play")
@@ -242,7 +256,18 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     func itsLitNoButton() {
         peopleButton.shake()
+        counter += 1
+        
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+        
+        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 25 {
+            UIAlertView(title: "Tip",
+                        message: "Sign in to remove Ads",
+                        delegate: self,
+                        cancelButtonTitle: "It's Lit").show()
+            counter = 0
+        }
+        
         
         if (device?.hasTorch)! {
             do {
@@ -300,41 +325,66 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
     }
     
+    func alertView(_ alertView: UIAlertView, willDismissWithButtonIndex buttonIndex: Int) {
+        if interstitial.isReady {
+            interstitial.present(fromRootViewController: self)
+        } else {
+            print("Ad wasn't ready")
+        }
+        // Give user the option to start the next game.
+    }
+    
     @IBAction func itsLit(_ sender: UIButton) {
         sendInfo()
+        UIView.animate(withDuration: 0.6, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.6, y: 0.6) }, completion: { _ in
+            UIView.animate(withDuration: 0.6) {
+                self.itsLitImage.transform = CGAffineTransform.identity
+            }
+        })
         ItsLitButton.shake()
         rotateView()
+        counter += 1
+        
+        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
+            UIAlertView(title: "Tip",
+                        message: "Sign in to remove Ads",
+                        delegate: self,
+                        cancelButtonTitle: "It's Lit").show()
+            counter = 0
+            stopSpinning()
+            createAndLoadInterstitial()
+        }
         
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
-        if (device?.hasTorch)! {
-            do {
-                try device?.lockForConfiguration()
-                if (device?.torchMode == AVCaptureTorchMode.on) {
-                    stopSpinning()
-                    device?.torchMode = AVCaptureTorchMode.off
-                } else {
+                if (device?.hasTorch)! {
                     do {
-                        try device?.setTorchModeOnWithLevel(1.0)
-                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                        try device?.lockForConfiguration()
+                        if (device?.torchMode == AVCaptureTorchMode.on) {
+                            stopSpinning()
+                            device?.torchMode = AVCaptureTorchMode.off
+                        } else {
+                            do {
+                                try device?.setTorchModeOnWithLevel(1.0)
+                                AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                            } catch {
+                                print(error)
+                            }
+                        }
+                        device?.unlockForConfiguration()
                     } catch {
                         print(error)
                     }
+                } else {
+                    print ("The Mac is Lit")
                 }
-                device?.unlockForConfiguration()
-            } catch {
-                print(error)
-            }
-        } else {
-            print ("The Mac is Lit")
-        }
         
         if self.session.connectedPeers.count == 6 {
             playSound()
         }
         
     }
-
+    
     //MARK: - Peer to Peer connection
     @IBAction func connectScreen(_ sender: AnyObject) {
         self.present(self.browser, animated: true, completion: nil)
@@ -440,7 +490,20 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         self.browser = MCBrowserViewController(serviceType: "VBC-ShareCard", session: self.session)
         self.browser.delegate = self
     }
+    
+    fileprivate func createAndLoadInterstitial() {
+        interstitial = GADInterstitial(adUnitID: "ca-app-pub-8446644766706278/1896898949")
+        let request = GADRequest()
+        // Request test ads on devices you specify. Your test device ID is printed to the console when
+        // an ad request is made.
+        request.testDevices = [ kGADSimulatorID, "2077ef9a63d2b398840261c8221a0c9b" ]
+        interstitial.load(request)
+    }
+    
 }
+
+
+
 
 public extension UIView {
     func shake(count : Float? = nil,for duration : TimeInterval? = nil,withTranslation translation : Float? = nil) {
@@ -453,5 +516,6 @@ public extension UIView {
         animation.byValue = translation ?? -15
         layer.add(animation, forKey: "shake")
     }
+    
 }
 
