@@ -21,16 +21,63 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     var blackBackgroundView: UIView?
     var startingImageView: UIImageView?
     
+    let cellId = "cellId"
+    var ref: FIRDatabaseReference?
+    var databaseHandle: FIRDatabaseHandle?
+    var databaseHandleReceiving: FIRDatabaseHandle?
+    
     var user: User? {
         didSet {
             navigationItem.title = user?.name
             
             observeMessages()
+            observeFriendRequest()
         }
     }
     
     var messages = [Message]()
     
+    func observeLitMessage() {
+        
+    }
+    
+    func observeFriendRequest() {
+        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
+            return
+        }
+        
+        //Check if any request received
+        self.databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(toId).child(uid).observe(.childAdded, with: { (snapshot) in
+            
+            FIRDatabase.database().reference().child("Friend").child(toId).observeSingleEvent(of: .value, with: { (snapshot) in
+                
+                if (snapshot.value as? [String: AnyObject]) != nil {
+                    FIRDatabase.database().reference().child("Friend").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                        
+                        if (snapshot.value as? [String: AnyObject]) != nil {
+                            let image = UIImage(named: "love")
+                            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: nil)
+                        } else {
+                            let userName = self.user!.name
+                            let alert = UIAlertController(title: "Friend Request Received", message: "This user wants to be your friend! Add them to get lit anywhere, anytime.", preferredStyle: UIAlertControllerStyle.alert)
+                            alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: { action in
+                                self.friendAdded()
+                            }))
+                            alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        }
+                    })
+                }
+            })
+            
+        }, withCancel: nil)
+        
+        //Confirm Request Was Sent
+        databaseHandle = FIRDatabase.database().reference().child("Friend").child(uid).child(toId).observe(.childAdded, with: { (snapshot) in
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Waiting", style: .plain, target: self, action: nil)
+        })
+    }
+
     func observeMessages() {
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
             return
@@ -38,19 +85,19 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         databaseHandle = FIRDatabase.database().reference().child("Lit").child(uid).child(toId).observe(.childAdded, with: { (snapshot) in
             
+            if (snapshot.value as? [String: AnyObject]) != nil {
             self.itsLitNoButton()
-            
             FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
-                
                 if error != nil {
                     print("Failed to delete litness:", error as Any)
                     return
                 }
-                
             })
+            }
         })
         
         let userMessagesRef = FIRDatabase.database().reference().child("user-messages").child(uid).child(toId)
+        
         userMessagesRef.observe(.childAdded, with: { (snapshot) in
             
             let messageId = snapshot.key
@@ -74,38 +121,27 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }, withCancel: nil)
     }
     
-    let cellId = "cellId"
-    var ref: FIRDatabaseReference?
-    var databaseHandle: FIRDatabaseHandle?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let image = UIImage(named: "add friend")
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(addFriend))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add Friend", style: .plain, target: self, action: #selector(addFriend))
         
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
             return
         }
         
         FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
-            
             if error != nil {
                 print("Failed to delete litness:", error as Any)
                 return
             }
         })
-        
         navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(254, green: 209, blue: 67)
-    
         collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-        //        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         collectionView?.alwaysBounceVertical = true
         collectionView?.backgroundColor = UIColor.white
         collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.keyboardDismissMode = .interactive
-        
         setupKeyboardObservers()
     }
     
@@ -114,17 +150,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
             return
         }
-        
-        FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
-            
-            if error != nil {
-                print("Failed to delete litness:", error as Any)
-                return
-            }
-            
-        })
-
-        
         if (device?.hasTorch)! {
             do {
                 try device?.lockForConfiguration()
@@ -142,53 +167,54 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 print(error)
             }
         }
-        
     }
     
     func addFriend(){
         let alert = UIAlertController(title: "Add Friend?", message: "Do you want to add this user to your friend list?", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: { action in
-
-    
-            let ref = FIRDatabase.database().reference().child("Friends")
-            let childRef = ref.childByAutoId()
-            let toId = self.user!.id!
-            let fromId = FIRAuth.auth()!.currentUser!.uid
-            let friendRef = FIRDatabase.database().reference().child("Friend").child(fromId).child(toId)
-        
-            let friends = childRef.key
-            let recipientRef = FIRDatabase.database().reference().child("Friend").child(toId).child(fromId)
-            
-            friendRef.updateChildValues([friends: true])
-          //  recipientRef.updateChildValues([friends: true])
-            
-            FIRDatabase.database().reference().child("Friend").child(toId).observeSingleEvent(of: .value, with: { (snapshot) in
-                
-                if (snapshot.value as? [String: AnyObject]) != nil {
-                    
-                    FIRDatabase.database().reference().child("Friend").child(fromId).observeSingleEvent(of: .value, with: { (snapshot) in
-                        
-                        if (snapshot.value as? [String: AnyObject]) != nil {
-                            print ("Users are friends")
-                            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Friends", style: .plain, target: self, action: nil)
-                        }
-                    })
-                } else {
-                    print ("Users aren't friends")
-                }
-            }, withCancel: nil)
+            self.friendAdded()
         }))
-
+        
         alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default, handler: nil))
-         self.present(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func friendAdded() {
+        
+        let ref = FIRDatabase.database().reference().child("Friends")
+        let childRef = ref.childByAutoId()
+        let toId = self.user!.id!
+        let fromId = FIRAuth.auth()!.currentUser!.uid
+        let friendRef = FIRDatabase.database().reference().child("Friend").child(fromId).child(toId)
+        
+        let friends = childRef.key
+        let recipientRef = FIRDatabase.database().reference().child("Friend").child(toId).child(fromId)
+        
+        friendRef.updateChildValues([friends: true])
+        //  recipientRef.updateChildValues([friends: true])
+        
     }
     
     func invite() {
         
         if (device?.torchMode == AVCaptureTorchMode.off) && messages == [] {
-            let properties = ["text": "It's Lit!"]
+            let properties = ["text": "Tap the flashlight to send a lit message!"]
             self.sendMessageWithProperties(properties as [String : AnyObject])
+            
         }
+        
+        var properties = ["text": inputContainerView.inputTextField.text!]
+        if properties == ["text": ""] {
+            if (device?.torchMode == AVCaptureTorchMode.off) && messages == [] {
+                properties = ["text": "Tap the flashlight to send a lit message!"]
+                self.sendMessageWithProperties(properties as [String : AnyObject])
+            } else {
+                properties = ["text": "It's Lit!"]
+            }
+        } else {
+            sendMessageWithProperties(properties as [String : AnyObject])
+        }
+        
         let ref = FIRDatabase.database().reference().child("Lit")
         let childRef = ref.childByAutoId()
         let toId = self.user!.id!
@@ -201,6 +227,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         let recipientLitRef = FIRDatabase.database().reference().child("Lit").child(toId).child(fromId)
         recipientLitRef.updateChildValues([litId: 1])
+        
+        FIRDatabase.database().reference().child("Lit").child(fromId).child(toId).removeValue(completionBlock: { (error, ref) in
+            if error != nil {
+                print("Failed to delete litness:", error as Any)
+                return
+            }
+        })
         
     }
     
@@ -227,7 +260,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     func handleKeyboardDidShow() {
         if messages.count > 0 {
             let indexPath = IndexPath(item: messages.count - 1, section: 0)
-        //    collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
+            //    collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
         }
     }
     
@@ -262,12 +295,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatMessageCell
-        
         cell.chatLogController = self
-        
         let message = messages[(indexPath as NSIndexPath).item]
-        
-        
         cell.textView.text = message.text
         
         setupCell(cell, message: message)
@@ -275,11 +304,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         if let text = message.text {
             //a text message
             cell.bubbleWidthAnchor?.constant = estimateFrameForText(text).width + 32
-            cell.textView.isHidden = false
-        } else if message.imageUrl != nil {
-            //fall in here if its an image message
-            cell.bubbleWidthAnchor?.constant = 200
-            cell.textView.isHidden = true
         }
         return cell
     }
@@ -294,24 +318,19 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             cell.bubbleView.backgroundColor = UIColor.black
             cell.textView.textColor = UIColor.white
             cell.profileImageView.isHidden = true
-            
             cell.bubbleViewRightAnchor?.isActive = true
             cell.bubbleViewLeftAnchor?.isActive = false
             
         } else {
             //incoming gray
             let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(imageTapped))
-
-
             cell.bubbleView.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
             cell.textView.textColor = UIColor.white
             cell.profileImageView.isHidden = false
             cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
-
             cell.bubbleViewRightAnchor?.isActive = false
             cell.bubbleViewLeftAnchor?.isActive = true
         }
-        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -346,11 +365,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let properties = ["text": inputContainerView.inputTextField.text!]
         if properties == ["text": ""] {
         } else {
-          sendMessageWithProperties(properties as [String : AnyObject])
+            sendMessageWithProperties(properties as [String : AnyObject])
         }
     }
     
-     func imageTapped(sender: UITapGestureRecognizer) {
+    func imageTapped(sender: UITapGestureRecognizer) {
         let imageView = sender.view as! UIImageView
         let newImageView = UIImageView(image: imageView.image)
         navigationController?.isNavigationBarHidden = true
@@ -399,16 +418,12 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }
     }
     
-    
-    
     //my custom zooming logic
     func performZoomInForStartingImageView(_ startingImageView: UIImageView) {
         
         self.startingImageView = startingImageView
         self.startingImageView?.isHidden = true
-        
         startingFrame = startingImageView.superview?.convert(startingImageView.frame, to: nil)
-        
         let zoomingImageView = UIImageView(frame: startingFrame!)
         zoomingImageView.backgroundColor = UIColor.red
         zoomingImageView.image = startingImageView.image
@@ -428,19 +443,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 self.blackBackgroundView?.alpha = 1
                 self.inputContainerView.alpha = 0
                 
-                // math?
                 // h2 / w1 = h1 / w1
                 // h2 = h1 / w1 * w1
                 let height = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
-                
                 zoomingImageView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: height)
-                
                 zoomingImageView.center = keyWindow.center
                 
             }, completion: { (completed) in
-                //                    do nothing
             })
-            
         }
     }
     
