@@ -37,10 +37,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     var messages = [Message]()
     
-    func observeLitMessage() {
-        
-    }
-    
     func observeFriendRequest() {
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
             return
@@ -56,9 +52,10 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                         
                         if (snapshot.value as? [String: AnyObject]) != nil {
                             let image = UIImage(named: "love")
-                            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: nil)
+                            let tintedImage = image?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+                            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: tintedImage, style: .plain, target: self, action: nil)
+                            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(254, green: 209, blue: 67)
                         } else {
-                            let userName = self.user!.name
                             let alert = UIAlertController(title: "Friend Request Received", message: "This user wants to be your friend! Add them to get lit anywhere, anytime.", preferredStyle: UIAlertControllerStyle.alert)
                             alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: { action in
                                 self.friendAdded()
@@ -74,7 +71,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         //Confirm Request Was Sent
         databaseHandle = FIRDatabase.database().reference().child("Friend").child(uid).child(toId).observe(.childAdded, with: { (snapshot) in
+            if (snapshot.value as? [String: AnyObject]) == nil {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Waiting", style: .plain, target: self, action: nil)
+            }
         })
     }
 
@@ -84,8 +83,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }
         
         databaseHandle = FIRDatabase.database().reference().child("Lit").child(uid).child(toId).observe(.childAdded, with: { (snapshot) in
-            
-            if (snapshot.value as? [String: AnyObject]) != nil {
             self.itsLitNoButton()
             FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
                 if error != nil {
@@ -93,12 +90,32 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                     return
                 }
             })
-            }
+            
+            FIRDatabase.database().reference().child("Lit").child(toId).child(uid).removeValue(completionBlock: { (error, ref) in
+                if error != nil {
+                    print("Failed to delete litness:", error as Any)
+                    return
+                }
+            })
         })
         
         let userMessagesRef = FIRDatabase.database().reference().child("user-messages").child(uid).child(toId)
         
         userMessagesRef.observe(.childAdded, with: { (snapshot) in
+            
+            FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
+                if error != nil {
+                    print("Failed to delete litness:", error as Any)
+                    return
+                }
+            })
+            
+            FIRDatabase.database().reference().child("Lit").child(toId).child(uid).removeValue(completionBlock: { (error, ref) in
+                if error != nil {
+                    print("Failed to delete litness:", error as Any)
+                    return
+                }
+            })
             
             let messageId = snapshot.key
             let messagesRef = FIRDatabase.database().reference().child("messages").child(messageId)
@@ -196,6 +213,19 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     func invite() {
+        let ref = FIRDatabase.database().reference().child("Lit")
+        let childRef = ref.childByAutoId()
+        let toId = self.user!.id!
+        let fromId = FIRAuth.auth()!.currentUser!.uid
+        let litRef = FIRDatabase.database().reference().child("Lit").child(fromId).child(toId)
+        let litId = childRef.key
+        
+        FIRDatabase.database().reference().child("Lit").child(fromId).child(toId).removeValue(completionBlock: { (error, ref) in
+            if error != nil {
+                print("Failed to delete litness:", error as Any)
+                return
+            }
+        })
         
         if (device?.torchMode == AVCaptureTorchMode.off) && messages == [] {
             let properties = ["text": "Tap the flashlight to send a lit message!"]
@@ -214,14 +244,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         } else {
             sendMessageWithProperties(properties as [String : AnyObject])
         }
-        
-        let ref = FIRDatabase.database().reference().child("Lit")
-        let childRef = ref.childByAutoId()
-        let toId = self.user!.id!
-        let fromId = FIRAuth.auth()!.currentUser!.uid
-        let litRef = FIRDatabase.database().reference().child("Lit").child(fromId).child(toId)
-        
-        let litId = childRef.key
         
         litRef.updateChildValues([litId: 1])
         

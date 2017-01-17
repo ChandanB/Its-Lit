@@ -33,7 +33,6 @@
 		1FEE4DF71E28923F00D3C01D /* musicHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DEF1E28923F00D3C01D /* musicHelper.swift */; };
 		1FEE4DF81E28923F00D3C01D /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DF01E28923F00D3C01D /* ChatMessageCell.swift */; };
 		1FEE4DF91E28923F00D3C01D /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DF11E28923F00D3C01D /* UserCell.swift */; };
-		1FF0DDD91E29AFC0009A3CD2 /* FriendsTabsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF0DDD81E29AFC0009A3CD2 /* FriendsTabsViewController.swift */; };
 		B5B91B11DBED834F4821E878 /* Pods_Its_Lit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D1CCC90587EA32F0F342E3A /* Pods_Its_Lit.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,7 +67,6 @@
 		1FEE4DEF1E28923F00D3C01D /* musicHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = musicHelper.swift; sourceTree = "<group>"; };
 		1FEE4DF01E28923F00D3C01D /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		1FEE4DF11E28923F00D3C01D /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
-		1FF0DDD81E29AFC0009A3CD2 /* FriendsTabsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsTabsViewController.swift; sourceTree = "<group>"; };
 		2D1CCC90587EA32F0F342E3A /* Pods_Its_Lit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Its_Lit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		36765741619ECD86C73FEE06 /* Pods-Its Lit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Its Lit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Its Lit/Pods-Its Lit.release.xcconfig"; sourceTree = "<group>"; };
 		571F8332AE04D23B6E8D3193 /* Pods-Its Lit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Its Lit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Its Lit/Pods-Its Lit.debug.xcconfig"; sourceTree = "<group>"; };
@@ -92,7 +90,6 @@
 				1F2314E91E25AD4500A84468 /* UserViewController.swift */,
 				1F90C43A1DD67FA20088B32E /* LoginAndCreateAccount.swift */,
 				1F4589721E2884250043D0EA /* LoginControllerExt+Handlers.swift */,
-				1FF0DDD81E29AFC0009A3CD2 /* FriendsTabsViewController.swift */,
 				1F2314EB1E25ADB400A84468 /* FriendsTableViewController.swift */,
 				1F039D651DDC029D008B63D6 /* ChatLogController.swift */,
 			);
@@ -332,7 +329,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F90C43B1DD67FA20088B32E /* LoginAndCreateAccount.swift in Sources */,
-				1FF0DDD91E29AFC0009A3CD2 /* FriendsTabsViewController.swift in Sources */,
 				1F2314EC1E25ADB400A84468 /* FriendsTableViewController.swift in Sources */,
 				1F4589731E2884250043D0EA /* LoginControllerExt+Handlers.swift in Sources */,
 				1FEE4DF21E28923F00D3C01D /* ChatInputContainerView.swift in Sources */,

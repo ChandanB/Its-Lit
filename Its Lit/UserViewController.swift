@@ -27,6 +27,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     let containerView = UIView()
     var viewController = self
     var interstitial: GADInterstitial!
+    var databaseHandleReceiving: FIRDatabaseHandle?
     
     //MARK: - Objects
     var locationManager = CLLocationManager()
@@ -42,8 +43,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var tapCounter = 0
     var locationsDictionary = [String: Location]()
 
-
-    
     @IBOutlet weak var tapLabel: UILabel!
     //MARK: - Colors and Animations
     var backgroundColours = [UIColor()]
@@ -62,7 +61,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         UINavigationBar.appearance().barTintColor = UIColor.rgb(254, green: 209, blue: 67)
         // get rid of black bar underneath navbar
         UINavigationBar.appearance().shadowImage = UIImage()
@@ -184,6 +182,32 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         self.navigationItem.titleView = titleView
     }
     
+    func observeIfFriendsAreActive() {
+        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
+            return
+        }
+        
+        //Check if any request received
+        self.databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(toId).child(uid).observe(.childAdded, with: { (snapshot) in
+            
+            FIRDatabase.database().reference().child("Friend").child(toId).observeSingleEvent(of: .value, with: { (snapshot) in
+                
+                if (snapshot.value as? [String: AnyObject]) != nil {
+                    FIRDatabase.database().reference().child("Friend").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                        
+                        if (snapshot.value as? [String: AnyObject]) != nil {
+                            let image = UIImage(named: "love")
+                            let tintedImage = image?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+                            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: tintedImage, style: .plain, target: self, action: nil)
+                            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(254, green: 209, blue: 67)
+                        }
+                    })
+                }
+            })
+            
+        }, withCancel: nil)
+
+    }
     
     //MARK: - Functions
     @IBAction func showMap(_ sender: Any) {
@@ -269,6 +293,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
 
     
     func itsLitNoButton() {
+        
         peopleButton.shake()
         counter += 1
         tapCounter += 1
@@ -355,24 +380,16 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         rotateView()
         counter += 1
       //  tapLabel.text = String(tapCounter)
-        
-        if self.session.connectedPeers.count == 1 {
-            var peerCount = String(self.session.connectedPeers.count)
-            tapLabel.text = "Connected to: \(peerCount) person"
-        } else {
-            tapLabel.text = "You're not connected"
-        }
         UIView.animate(withDuration: 0.6, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.6, y: 0.6) }, completion: { _ in
             UIView.animate(withDuration: 0.6) {
                 self.itsLitImage.transform = CGAffineTransform.identity
             }
         })
-    
         if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
             UIAlertView(title: "Tip",
                         message: "Sign in to remove Ads",
                         delegate: self,
-                        cancelButtonTitle: "It's Lit").show()
+                        cancelButtonTitle: "Lit").show()
             counter = 0
             stopSpinning()
             createAndLoadInterstitial()
@@ -411,7 +428,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     //MARK: - Peer to Peer connection
     @IBAction func connectScreen(_ sender: AnyObject) {
         self.present(self.browser, animated: true, completion: nil)
-        
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -475,7 +491,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
     }
     
-    
     // Called when a peer sends an NSData to us
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         // This needs to run on the main queue
@@ -485,6 +500,14 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
+        if self.session.connectedPeers.count == 1 {
+            tapLabel.text = "Connected to: 1 person"
+        }else if self.session.connectedPeers.count > 1 {
+            let peerCount = String(self.session.connectedPeers.count)
+            tapLabel.text = "Connected to: \(peerCount)person"
+        } else {
+            tapLabel.text = "Connect with others over Wi-Fi"
+        }
         dismiss(animated: true, completion: nil)
     }
     func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
@@ -535,9 +558,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
 }
-
-
-
 
 public extension UIView {
     func shake(count : Float? = nil,for duration : TimeInterval? = nil,withTranslation translation : Float? = nil) {

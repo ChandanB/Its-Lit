@@ -116,9 +116,8 @@ class LoginViewController: UIViewController  {
             }
             
             //successfully logged in our user
-            
-            self.viewController?.fetchUserAndSetupNavBarTitle()
             self.viewController?.viewDidLoad()
+            self.viewController?.fetchUserAndSetupNavBarTitle()
             self.dismiss(animated: true, completion: nil)
             
         })

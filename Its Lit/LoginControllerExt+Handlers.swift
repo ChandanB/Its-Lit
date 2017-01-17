@@ -74,8 +74,8 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
             let user = User()
             //this setter potentially crashes if keys don't match
             user.setValuesForKeys(values)
-            self.viewController?.setupNavBarWithUser(user)
             self.viewController?.viewDidLoad()
+            self.viewController?.setupNavBarWithUser(user)
             self.dismiss(animated: true, completion: nil)
             
         })

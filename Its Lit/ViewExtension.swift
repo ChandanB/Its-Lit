@@ -98,7 +98,7 @@ extension ViewController: UIImagePickerControllerDelegate {
     
     func animateBackgroundColour () {
         
-        let origImage = UIImage(named: "people");
+        let origImage = UIImage(named: "people0");
         let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         
         let worldImage = UIImage(named: "World Icon");
