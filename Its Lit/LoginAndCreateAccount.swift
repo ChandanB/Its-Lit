@@ -268,9 +268,7 @@ class LoginViewController: UIViewController  {
         
        // errorTextField.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 12).isActive = true
         errorTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        errorTextField.bottomAnchor.constraint(equalTo: profileImageView.topAnchor, constant: -12).isActive = true
-        
-
+        errorTextField.bottomAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 18).isActive = true
     }
     
     var inputsContainerViewHeightAnchor: NSLayoutConstraint?

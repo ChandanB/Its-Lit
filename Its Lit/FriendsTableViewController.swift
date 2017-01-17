@@ -57,9 +57,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         navigationItem.leftBarButtonItem?.tintColor = UIColor.black
         navigationController?.navigationItem.title = "Search For Friends"
         
-        
         tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
-        
         
         searchController.delegate = self
         searchController.searchResultsUpdater = self
@@ -216,9 +214,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
                 DispatchQueue.main.async(execute: {
                     self.tableView.reloadData()
                 })
-                
             }
-            
         }, withCancel: nil)
     }
     

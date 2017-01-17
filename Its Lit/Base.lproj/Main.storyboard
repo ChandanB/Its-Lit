@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="twC-Os-jRJ">
-                                <rect key="frame" x="0.0" y="171" width="375" height="301"/>
+                                <rect key="frame" x="0.0" y="172" width="375" height="301"/>
                                 <gestureRecognizers/>
                                 <connections>
                                     <action selector="itsLit:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wLB-ez-wLj"/>
@@ -31,37 +31,13 @@
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Its Lit" translatesAutoresizingMaskIntoConstraints="NO" id="Tqx-ao-sX0">
-                                <rect key="frame" x="16" y="171" width="343" height="285"/>
+                                <rect key="frame" x="16" y="172" width="343" height="285"/>
                                 <gestureRecognizers/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xhu-gM-vAx">
-                                <rect key="frame" x="322" y="72" width="43" height="48"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="43" id="Y2a-sf-AH6"/>
-                                    <constraint firstAttribute="height" constant="48" id="lIX-CJ-hS8"/>
-                                </constraints>
-                                <state key="normal" title="Button" image="Music"/>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yMg-uP-lUQ">
-                                <rect key="frame" x="152" y="538" width="71" height="77"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="71" id="49h-34-qvp"/>
-                                </constraints>
-                                <state key="normal" image="Destination"/>
-                                <connections>
-                                    <action selector="showMap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="juN-NX-hA8"/>
-                                </connections>
-                            </button>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="wiH-GT-dgy">
-                                <rect key="frame" x="16" y="64" width="349" height="113"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="113" id="GGQ-jS-Waz"/>
-                                </constraints>
-                            </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ycu-GT-ru0">
-                                <rect key="frame" x="16" y="538" width="101" height="77"/>
+                                <rect key="frame" x="16" y="589" width="343" height="34"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="77" id="wHm-LG-qjD"/>
+                                    <constraint firstAttribute="height" constant="34" id="zbu-cJ-5QQ"/>
                                 </constraints>
                                 <state key="normal" title="Connect" image="people">
                                     <color key="titleColor" red="0.14901960784313725" green="0.066666666666666666" blue="0.019607843137254902" alpha="1" colorSpace="calibratedRGB"/>
@@ -71,28 +47,54 @@
                                     <action selector="connectScreen:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qnX-8M-jXi"/>
                                 </connections>
                             </button>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="wiH-GT-dgy">
+                                <rect key="frame" x="0.0" y="64" width="375" height="114"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="114" id="b2z-hv-QcF"/>
+                                </constraints>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yMg-uP-lUQ">
+                                <rect key="frame" x="318" y="72" width="48" height="49"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="48" id="A7x-Hc-3Rq"/>
+                                    <constraint firstAttribute="height" constant="49" id="obQ-CN-6kO"/>
+                                </constraints>
+                                <state key="normal" image="World Icon"/>
+                                <connections>
+                                    <action selector="showMap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="juN-NX-hA8"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You're not connected" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SvS-gx-6Fe">
+                                <rect key="frame" x="38" y="555" width="299" height="26"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="26" id="JsC-or-4xT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.93333333333333335" green="0.62352941176470589" blue="0.15294117647058825" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="yMg-uP-lUQ" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="bottom" constant="82" id="40F-uu-Qfw"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerX" secondItem="twC-Os-jRJ" secondAttribute="centerX" id="4Bk-xZ-pL3"/>
-                            <constraint firstItem="wiH-GT-dgy" firstAttribute="leading" secondItem="Tqx-ao-sX0" secondAttribute="leading" id="781-wz-bp7"/>
-                            <constraint firstItem="wiH-GT-dgy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="7JN-a9-159"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="7ea-nu-S8R"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Ycu-GT-ru0" secondAttribute="bottom" constant="8" symbolic="YES" id="8lp-6x-EaR"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="top" id="Gsd-ho-zmY"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="yMg-uP-lUQ" secondAttribute="bottom" constant="8" symbolic="YES" id="JS0-b0-Q6r"/>
-                            <constraint firstItem="Ycu-GT-ru0" firstAttribute="top" secondItem="twC-Os-jRJ" secondAttribute="bottom" constant="66" id="PD2-DD-4Ph"/>
-                            <constraint firstAttribute="trailing" secondItem="twC-Os-jRJ" secondAttribute="trailing" id="SGM-rT-o2z"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="centerX" secondItem="yMg-uP-lUQ" secondAttribute="centerX" id="Sjh-19-N96"/>
-                            <constraint firstItem="wiH-GT-dgy" firstAttribute="trailing" secondItem="Xhu-gM-vAx" secondAttribute="trailing" id="TKB-zi-jNC"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Xhu-gM-vAx" secondAttribute="trailing" constant="-6" id="Xan-fj-gu8"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="Ycu-GT-ru0" secondAttribute="leading" id="Xln-Vq-DM6"/>
-                            <constraint firstItem="wiH-GT-dgy" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="bNb-g6-KbX"/>
-                            <constraint firstItem="yMg-uP-lUQ" firstAttribute="leading" secondItem="Ycu-GT-ru0" secondAttribute="trailing" constant="35" id="esH-L4-nOq"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="Xhu-gM-vAx" secondAttribute="bottom" constant="51" id="jwn-d0-g9e"/>
-                            <constraint firstItem="Ycu-GT-ru0" firstAttribute="top" secondItem="yMg-uP-lUQ" secondAttribute="top" id="o3V-bO-izH"/>
-                            <constraint firstItem="Xhu-gM-vAx" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="zOS-Em-YB0"/>
+                            <constraint firstItem="wiH-GT-dgy" firstAttribute="trailing" secondItem="twC-Os-jRJ" secondAttribute="trailing" id="0e5-Yk-sWQ"/>
+                            <constraint firstItem="yMg-uP-lUQ" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="4Aj-Yi-PSG"/>
+                            <constraint firstItem="Ycu-GT-ru0" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="7l4-X1-1qi"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="trailing" secondItem="Ycu-GT-ru0" secondAttribute="trailing" id="DoO-D5-pWa"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="yMg-uP-lUQ" secondAttribute="trailing" constant="-7" id="Jdw-x6-7yj"/>
+                            <constraint firstItem="Ycu-GT-ru0" firstAttribute="top" secondItem="SvS-gx-6Fe" secondAttribute="bottom" constant="8" symbolic="YES" id="KY2-ze-7EX"/>
+                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="top" id="Ly8-Zq-eBd"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerX" secondItem="twC-Os-jRJ" secondAttribute="centerX" id="OPg-pj-ePf"/>
+                            <constraint firstAttribute="trailing" secondItem="wiH-GT-dgy" secondAttribute="trailing" id="PUM-e4-G1c"/>
+                            <constraint firstItem="SvS-gx-6Fe" firstAttribute="top" secondItem="twC-Os-jRJ" secondAttribute="bottom" constant="82" id="a7A-qK-mU2"/>
+                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="yMg-uP-lUQ" secondAttribute="bottom" constant="51" id="oGs-y0-QrL"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="Ycu-GT-ru0" secondAttribute="leading" id="p0J-cH-3Ez"/>
+                            <constraint firstItem="SvS-gx-6Fe" firstAttribute="centerX" secondItem="Ycu-GT-ru0" secondAttribute="centerX" id="qmP-lI-7cv"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="sYu-ys-hbd"/>
+                            <constraint firstItem="wiH-GT-dgy" firstAttribute="leading" secondItem="twC-Os-jRJ" secondAttribute="leading" id="vQ6-ya-2EG"/>
+                            <constraint firstItem="wiH-GT-dgy" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="xOv-Na-un1"/>
+                            <constraint firstItem="wiH-GT-dgy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="xrT-76-J1D"/>
+                            <constraint firstItem="SvS-gx-6Fe" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="bottom" constant="98" id="yZu-9n-mvN"/>
+                            <constraint firstItem="SvS-gx-6Fe" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="22" id="yoe-BD-Ad4"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
@@ -102,8 +104,8 @@
                         <outlet property="ItsLitButton" destination="Tqx-ao-sX0" id="7uY-jl-xAQ"/>
                         <outlet property="itsLitImage" destination="Tqx-ao-sX0" id="5ct-Lt-8my"/>
                         <outlet property="map" destination="wiH-GT-dgy" id="KZO-bv-TXB"/>
-                        <outlet property="musicButton" destination="Xhu-gM-vAx" id="Zln-ox-Ds1"/>
                         <outlet property="peopleButton" destination="Ycu-GT-ru0" id="gO9-eM-pTO"/>
+                        <outlet property="tapLabel" destination="SvS-gx-6Fe" id="Cy6-P6-Isp"/>
                         <outlet property="worldButton" destination="yMg-uP-lUQ" id="WUI-CH-bgo"/>
                     </connections>
                 </viewController>
@@ -136,9 +138,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Destination" width="512" height="512"/>
         <image name="Its Lit" width="1000" height="1000"/>
-        <image name="Music" width="512" height="512"/>
-        <image name="people" width="512" height="248"/>
+        <image name="World Icon" width="200" height="200"/>
+        <image name="people" width="628" height="57"/>
     </resources>
 </document>

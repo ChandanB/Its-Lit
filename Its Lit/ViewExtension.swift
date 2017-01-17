@@ -15,12 +15,10 @@ extension ViewController: UIImagePickerControllerDelegate {
     func setupMap() {
         if map.isHidden == false  {
             map.isHidden = true
-       //     rotateWorldView()
             locationManager.stopUpdatingLocation()
             locationManager.stopUpdatingHeading()
         } else {
             map.isHidden = false
-            rotateWorldView()
         }
         
         map.layer.cornerRadius = 30
@@ -87,6 +85,7 @@ extension ViewController: UIImagePickerControllerDelegate {
         if let selectedImage = selectedImageFromPicker {
             profileImageView.image = selectedImage
         }
+        
         profilePicUpdate()
         
         dismiss(animated: true, completion: nil)
@@ -101,51 +100,13 @@ extension ViewController: UIImagePickerControllerDelegate {
         
         let origImage = UIImage(named: "people");
         let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        
+        let worldImage = UIImage(named: "World Icon");
+        let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        
         counter += 1
         
-        if FIRAuth.auth()?.currentUser?.uid == nil {
-            if (counter == 3) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 0
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-                    self.peopleButton.setImage(tintedImage, for: .normal)
-                    self.peopleButton.tintColor = UIColor.white
-                }, completion: nil)
-                
-            } else if (counter == 6) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 1
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                }, completion: nil)
-                
-            } else if (counter == 9) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 2
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                }, completion: nil)
-                
-            } else if (counter == 12) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 3
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                    self.navigationItem.leftBarButtonItem?.tintColor = UIColor.black
-                    self.peopleButton.tintColor = UIColor.black
-                }, completion: nil)
-                
-            } else if (counter == 15) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 4
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                }, completion: nil)
-            }
-            
-        } else {
+        if FIRAuth.auth()?.currentUser?.uid != nil {
             if (counter == 3) {
                 UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                     self.backgroundLoop = 0
@@ -155,9 +116,11 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.peopleButton.setImage(tintedImage, for: .normal)
                     self.peopleButton.tintColor = UIColor.white
                     self.nameLabel.textColor = UIColor.white
-                    self.musicButton.tintColor = UIColor.white
                     self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+                    self.worldButton.setImage(worldTintedImage, for: .normal)
+                    self.worldButton.tintColor = UIColor.white
                 }, completion: nil)
+                
             } else if (counter == 6) {
                 UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                     self.backgroundLoop = 1
@@ -171,6 +134,7 @@ extension ViewController: UIImagePickerControllerDelegate {
                     UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
                     self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
                 }, completion: nil)
+                
             } else if (counter == 12) {
                 UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                     self.backgroundLoop = 3
@@ -179,12 +143,12 @@ extension ViewController: UIImagePickerControllerDelegate {
                     self.navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
                     self.peopleButton.tintColor = UIColor.rgb(51, green: 21, blue: 1)
                     self.navigationItem.titleView?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-                    self.musicButton.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-
                     self.nameLabel.textColor = UIColor.rgb(51, green: 21, blue: 1)
                     self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+                    self.worldButton.tintColor = UIColor.rgb(51, green: 21, blue: 1)
                     
                 }, completion: nil)
+                
             } else if (counter == 15) {
                 UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                     self.backgroundLoop = 4

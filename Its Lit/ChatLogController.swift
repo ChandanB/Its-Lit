@@ -16,7 +16,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     let viewController: ViewController? = nil
     let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-
+    
+    var startingFrame: CGRect?
+    var blackBackgroundView: UIView?
+    var startingImageView: UIImageView?
+    
     var user: User? {
         didSet {
             navigationItem.title = user?.name
@@ -70,13 +74,16 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }, withCancel: nil)
     }
     
-    
-    
     let cellId = "cellId"
     var ref: FIRDatabaseReference?
     var databaseHandle: FIRDatabaseHandle?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let image = UIImage(named: "add friend")
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(addFriend))
         
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
             return
@@ -88,7 +95,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 print("Failed to delete litness:", error as Any)
                 return
             }
-            
         })
         
         navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(254, green: 209, blue: 67)
@@ -98,7 +104,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         collectionView?.alwaysBounceVertical = true
         collectionView?.backgroundColor = UIColor.white
         collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
-        
         collectionView?.keyboardDismissMode = .interactive
         
         setupKeyboardObservers()
@@ -138,6 +143,44 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             }
         }
         
+    }
+    
+    func addFriend(){
+        let alert = UIAlertController(title: "Add Friend?", message: "Do you want to add this user to your friend list?", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: { action in
+
+    
+            let ref = FIRDatabase.database().reference().child("Friends")
+            let childRef = ref.childByAutoId()
+            let toId = self.user!.id!
+            let fromId = FIRAuth.auth()!.currentUser!.uid
+            let friendRef = FIRDatabase.database().reference().child("Friend").child(fromId).child(toId)
+        
+            let friends = childRef.key
+            let recipientRef = FIRDatabase.database().reference().child("Friend").child(toId).child(fromId)
+            
+            friendRef.updateChildValues([friends: true])
+          //  recipientRef.updateChildValues([friends: true])
+            
+            FIRDatabase.database().reference().child("Friend").child(toId).observeSingleEvent(of: .value, with: { (snapshot) in
+                
+                if (snapshot.value as? [String: AnyObject]) != nil {
+                    
+                    FIRDatabase.database().reference().child("Friend").child(fromId).observeSingleEvent(of: .value, with: { (snapshot) in
+                        
+                        if (snapshot.value as? [String: AnyObject]) != nil {
+                            print ("Users are friends")
+                            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Friends", style: .plain, target: self, action: nil)
+                        }
+                    })
+                } else {
+                    print ("Users aren't friends")
+                }
+            }, withCancel: nil)
+        }))
+
+        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default, handler: nil))
+         self.present(alert, animated: true, completion: nil)
     }
     
     func invite() {
@@ -238,9 +281,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             cell.bubbleWidthAnchor?.constant = 200
             cell.textView.isHidden = true
         }
-        
-        
-        
         return cell
     }
     
@@ -285,14 +325,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let message = messages[(indexPath as NSIndexPath).item]
         if let text = message.text {
             height = estimateFrameForText(text).height + 20
+            
         } else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
-            
-            // h1 / w1 = h2 / w2
-            // solve for h1
-            // h1 = h2 / w2 * w1
-            
             height = CGFloat(imageHeight / imageWidth * 200)
-            
         }
         
         let width = UIScreen.main.bounds.width
@@ -364,9 +399,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }
     }
     
-    var startingFrame: CGRect?
-    var blackBackgroundView: UIView?
-    var startingImageView: UIImageView?
+    
     
     //my custom zooming logic
     func performZoomInForStartingImageView(_ startingImageView: UIImageView) {
@@ -417,7 +450,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             zoomOutImageView.layer.cornerRadius = 16
             zoomOutImageView.clipsToBounds = true
             
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                 
                 zoomOutImageView.frame = self.startingFrame!
                 self.blackBackgroundView?.alpha = 0
