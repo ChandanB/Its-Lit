@@ -1,7 +1,7 @@
 # It's Lit - Flashlight
 ## Utility made fun
 
-It's Lit is a flashlight app can creates lightshows by connecting with other users. A major use case is for concerts, where everyone attending can sync their flashlights and create a star like spectacle. Also, flashlights are pretty fun.
+It's Lit is a flashlight app that creates lightshows by connecting with other users. A major use case is for concerts, where everyone attending can sync their flashlights and create a star like spectacle. Also, flashlights are pretty fun.
 
 
 ## Installation
