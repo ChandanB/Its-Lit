@@ -110,13 +110,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 }
             })
             
-            FIRDatabase.database().reference().child("Lit").child(toId).child(uid).removeValue(completionBlock: { (error, ref) in
-                if error != nil {
-                    print("Failed to delete litness:", error as Any)
-                    return
-                }
-            })
-            
             let messageId = snapshot.key
             let messagesRef = FIRDatabase.database().reference().child("messages").child(messageId)
             messagesRef.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -163,27 +156,24 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     func itsLitNoButton() {
-        
-        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
-            return
-        }
-        if (device?.hasTorch)! {
-            do {
-                try device?.lockForConfiguration()
-                if (device?.torchMode == AVCaptureTorchMode.on) {
-                    device?.torchMode = AVCaptureTorchMode.off
-                } else {
-                    do {
-                        try device?.setTorchModeOnWithLevel(1.0)
-                    } catch {
-                        print(error)
-                    }
-                }
-                device?.unlockForConfiguration()
-            } catch {
-                print(error)
-            }
-        }
+    
+//        if (device?.hasTorch)! {
+//            do {
+//                try device?.lockForConfiguration()
+//                if (device?.torchMode == AVCaptureTorchMode.on) {
+//                    device?.torchMode = AVCaptureTorchMode.off
+//                } else {
+//                    do {
+//                        try device?.setTorchModeOnWithLevel(1.0)
+//                    } catch {
+//                        print(error)
+//                    }
+//                }
+//                device?.unlockForConfiguration()
+//            } catch {
+//                print(error)
+//            }
+//        }
     }
     
     func addFriend(){
@@ -205,7 +195,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let friendRef = FIRDatabase.database().reference().child("Friend").child(fromId).child(toId)
         
         let friends = childRef.key
-        let recipientRef = FIRDatabase.database().reference().child("Friend").child(toId).child(fromId)
+       // let recipientRef = FIRDatabase.database().reference().child("Friend").child(toId).child(fromId)
         
         friendRef.updateChildValues([friends: true])
         //  recipientRef.updateChildValues([friends: true])
@@ -281,7 +271,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     func handleKeyboardDidShow() {
         if messages.count > 0 {
-            let indexPath = IndexPath(item: messages.count - 1, section: 0)
+        //    let indexPath = IndexPath(item: messages.count - 1, section: 0)
             //    collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
         }
     }

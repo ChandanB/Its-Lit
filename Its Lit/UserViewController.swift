@@ -27,7 +27,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     let containerView = UIView()
     var viewController = self
     var interstitial: GADInterstitial!
-    var databaseHandleReceiving: FIRDatabaseHandle?
+    
     
     //MARK: - Objects
     var locationManager = CLLocationManager()
@@ -42,6 +42,13 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var counter = 0
     var tapCounter = 0
     var locationsDictionary = [String: Location]()
+    var users: [User?] = [] {
+        didSet {
+            observeFriendsAndSendLitness()
+        }
+    }
+    var otherUser: User?
+    var databaseHandleReceiving: FIRDatabaseHandle?
 
     @IBOutlet weak var tapLabel: UILabel!
     //MARK: - Colors and Animations
@@ -57,6 +64,8 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var assistant : MCAdvertiserAssistant!
     var session   : MCSession!
     var peerID    : MCPeerID!
+    var litness = [Lit]()
+
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -97,6 +106,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             present(navController, animated: true, completion: nil)
             
         } else {
+            self.groupUsers(users as! [User])
         //  peopleButton.isHidden = true
             self.worldButton.isHidden = true
             profileImageView.isHidden = false
@@ -182,31 +192,55 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         self.navigationItem.titleView = titleView
     }
     
-    func observeIfFriendsAreActive() {
-        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
+    func observeFriendsAndSendLitness() {
+        
+//        let ref = FIRDatabase.database().reference().child("Litness")
+//        let toId = otherUser?.id!
+//        let fromId = FIRAuth.auth()!.currentUser!.uid
+//        let timestamp = NSNumber(value: Int(Date().timeIntervalSince1970))
+        
+//        var values: [String: AnyObject] = ["toId": toId as AnyObject, "fromId": fromId as AnyObject, "timestamp": timestamp]
+//        
+//        //append properties dictionary onto values somehow??
+//        //key $0, value $1
+//        
+//        childRef.updateChildValues(values) { (error, ref) in
+//            if error != nil {
+//                print(error as Any)
+//                return
+//            }
+//            
+//            let userLitRef = FIRDatabase.database().reference().child("Litness").child(fromId).child(toId!)
+//            
+//            let litId = childRef.key
+//            userLitRef.updateChildValues([litId: 1])
+//            
+//            let recipientUserMessagesRef = FIRDatabase.database().reference().child("Litness").child(toId!).child(fromId)
+//            recipientUserMessagesRef.updateChildValues([litId: 1])
+//        }
+
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
             return
         }
         
-        //Check if any request received
-        self.databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(toId).child(uid).observe(.childAdded, with: { (snapshot) in
-            
-            FIRDatabase.database().reference().child("Friend").child(toId).observeSingleEvent(of: .value, with: { (snapshot) in
+        databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(uid).observe(.value, with: { (snapshot) in
+            let litId = snapshot.key
+            let litRef = FIRDatabase.database().reference().child("Litness").child(litId)
+            litRef.observeSingleEvent(of: .value, with: { (snapshot) in
                 
-                if (snapshot.value as? [String: AnyObject]) != nil {
-                    FIRDatabase.database().reference().child("Friend").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-                        
-                        if (snapshot.value as? [String: AnyObject]) != nil {
-                            let image = UIImage(named: "love")
-                            let tintedImage = image?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: tintedImage, style: .plain, target: self, action: nil)
-                            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(254, green: 209, blue: 67)
-                        }
-                    })
+                guard let dictionary = snapshot.value as? [String: AnyObject] else {
+                    return
                 }
-            })
-            
-        }, withCancel: nil)
-
+                self.litness.append(Lit(dictionary: dictionary))
+                DispatchQueue.main.async(execute: {
+                    self.itsLitNoButton()
+                })
+            }, withCancel: nil)
+        })
+    }
+    
+    func groupUsers(_ users: [User]) {
+        self.users = users
     }
     
     //MARK: - Functions
@@ -299,32 +333,41 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         tapCounter += 1
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
-        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 25 {
-            UIAlertView(title: "Tip",
-                        message: "Sign in to remove Ads",
-                        delegate: self,
-                        cancelButtonTitle: "It's Lit").show()
-            counter = 0
-        }
-    
-        if (device?.hasTorch)! {
-            do {
-                try device?.lockForConfiguration()
-                if (device?.torchMode == AVCaptureTorchMode.on) {
-                    device?.torchMode = AVCaptureTorchMode.off
-                } else {
-                    do {
-                        try device?.setTorchModeOnWithLevel(1.0)
-                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-                    } catch {
-                        print(error)
-                    }
-                }
-                device?.unlockForConfiguration()
-            } catch {
-                print(error)
+        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
+            if interstitial.isReady {
+                interstitial.present(fromRootViewController: self)
+            } else {
+                print("Ad wasn't ready")
             }
+            
+            let alert = UIAlertController(title: "Tip", message: "Sign in to remove Ads", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            
+            counter = 0
+            stopSpinning()
+            createAndLoadInterstitial()
         }
+
+    
+//        if (device?.hasTorch)! {
+//            do {
+//                try device?.lockForConfiguration()
+//                if (device?.torchMode == AVCaptureTorchMode.on) {
+//                    device?.torchMode = AVCaptureTorchMode.off
+//                } else {
+//                    do {
+//                        try device?.setTorchModeOnWithLevel(1.0)
+//                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+//                    } catch {
+//                        print(error)
+//                    }
+//                }
+//                device?.unlockForConfiguration()
+//            } catch {
+//                print(error)
+//            }
+//        }
     }
     
     
@@ -338,39 +381,30 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
         if motion == .motionShake {
             sendInfo()
-            let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-            if (device?.hasTorch)! {
-                do {
-                    try device?.lockForConfiguration()
-                    if (device?.torchMode == AVCaptureTorchMode.on) {
-                        device?.torchMode = AVCaptureTorchMode.off
-                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-                        
-                    } else {
-                        
-                        do {
-                            try device?.setTorchModeOnWithLevel(1.0)
-                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-                        } catch {
-                            print(error)
-                        }
-                    }
-                    device?.unlockForConfiguration()
-                } catch {
-                    print(error)
-                }
-            }
+//            let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+//            if (device?.hasTorch)! {
+//                do {
+//                    try device?.lockForConfiguration()
+//                    if (device?.torchMode == AVCaptureTorchMode.on) {
+//                        device?.torchMode = AVCaptureTorchMode.off
+//                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+//                        
+//                    } else {
+//                        
+//                        do {
+//                            try device?.setTorchModeOnWithLevel(1.0)
+//                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+//                        } catch {
+//                            print(error)
+//                        }
+//                    }
+//                    device?.unlockForConfiguration()
+//                } catch {
+//                    print(error)
+//                }
+//            }
             
         }
-    }
-    
-    func alertView(_ alertView: UIAlertView, willDismissWithButtonIndex buttonIndex: Int) {
-        if interstitial.isReady {
-            interstitial.present(fromRootViewController: self)
-        } else {
-            print("Ad wasn't ready")
-        }
-        // Give user the option to start the next game.
     }
     
     @IBAction func itsLit(_ sender: UIButton) {
@@ -379,50 +413,59 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         ItsLitButton.shake()
         rotateView()
         counter += 1
+        observeFriendsAndSendLitness()
+
       //  tapLabel.text = String(tapCounter)
         UIView.animate(withDuration: 0.6, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.6, y: 0.6) }, completion: { _ in
             UIView.animate(withDuration: 0.6) {
                 self.itsLitImage.transform = CGAffineTransform.identity
             }
         })
+        
         if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
-            UIAlertView(title: "Tip",
-                        message: "Sign in to remove Ads",
-                        delegate: self,
-                        cancelButtonTitle: "Lit").show()
+            if interstitial.isReady {
+                interstitial.present(fromRootViewController: self)
+            } else {
+                print("Ad wasn't ready")
+            }
+            
+            let alert = UIAlertController(title: "Tip", message: "Sign in to remove Ads", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+
             counter = 0
             stopSpinning()
             createAndLoadInterstitial()
         }
         
-        let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+      //  let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
-                if (device?.hasTorch)! {
-                    do {
-                        try device?.lockForConfiguration()
-                        if (device?.torchMode == AVCaptureTorchMode.on) {
-                            stopSpinning()
-                            device?.torchMode = AVCaptureTorchMode.off
-                        } else {
-                            do {
-                                try device?.setTorchModeOnWithLevel(1.0)
-                                if self.session.connectedPeers.count < 6 && self.session.connectedPeers.count > 4 {
-                                    playItsLitSound()
-                                }
-                                if self.session.connectedPeers.count == 6 {
-                                    playWeLitSound()
-                                }
-                            } catch {
-                                print(error)
-                            }
-                        }
-                        device?.unlockForConfiguration()
-                    } catch {
-                        print(error)
-                    }
-                } else {
-                    print ("The Mac is Lit")
-                }
+//                if (device?.hasTorch)! {
+//                    do {
+//                        try device?.lockForConfiguration()
+//                        if (device?.torchMode == AVCaptureTorchMode.on) {
+//                            stopSpinning()
+//                            device?.torchMode = AVCaptureTorchMode.off
+//                        } else {
+//                            do {
+//                                try device?.setTorchModeOnWithLevel(1.0)
+//                                if self.session.connectedPeers.count < 6 && self.session.connectedPeers.count > 4 {
+//                                    playItsLitSound()
+//                                }
+//                                if self.session.connectedPeers.count == 6 {
+//                                    playWeLitSound()
+//                                }
+//                            } catch {
+//                                print(error)
+//                            }
+//                        }
+//                        device?.unlockForConfiguration()
+//                    } catch {
+//                        print(error)
+//                    }
+//                } else {
+//                    print ("The Mac is Lit")
+//                }
     }
     
     //MARK: - Peer to Peer connection
@@ -439,7 +482,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         map.setRegion(region, animated: true)
         map.setUserTrackingMode(.follow, animated: true)
         let uid = (FIRAuth.auth()!.currentUser!.uid)
-        let ref = FIRDatabase.database().reference()
+      //  let ref = FIRDatabase.database().reference()
         let values = ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
         
         let locationRef = FIRDatabase.database().reference().child("user-locations").child(uid)

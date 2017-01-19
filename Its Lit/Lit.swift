@@ -9,6 +9,7 @@
 import Firebase
 
 class Lit: NSObject {
+    
     var fromId: String?
     var toId: String?
     
