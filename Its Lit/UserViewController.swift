@@ -291,6 +291,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     @IBAction func changeBackground(gesture: UILongPressGestureRecognizer) {
+        
         backgroundColours = [redColor, UIColor.darkGray, blueColor, UIColor.white, defaultColor]
         UIView.animate(withDuration: 1.0, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.1, y: 0.1) }, completion: { _ in
             UIView.animate(withDuration: 0.3) {
@@ -350,24 +351,24 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
 
     
-//        if (device?.hasTorch)! {
-//            do {
-//                try device?.lockForConfiguration()
-//                if (device?.torchMode == AVCaptureTorchMode.on) {
-//                    device?.torchMode = AVCaptureTorchMode.off
-//                } else {
-//                    do {
-//                        try device?.setTorchModeOnWithLevel(1.0)
-//                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-//                    } catch {
-//                        print(error)
-//                    }
-//                }
-//                device?.unlockForConfiguration()
-//            } catch {
-//                print(error)
-//            }
-//        }
+        if (device?.hasTorch)! {
+            do {
+                try device?.lockForConfiguration()
+                if (device?.torchMode == AVCaptureTorchMode.on) {
+                    device?.torchMode = AVCaptureTorchMode.off
+                } else {
+                    do {
+                        try device?.setTorchModeOnWithLevel(1.0)
+                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                    } catch {
+                        print(error)
+                    }
+                }
+                device?.unlockForConfiguration()
+            } catch {
+                print(error)
+            }
+        }
     }
     
     
@@ -381,28 +382,28 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
         if motion == .motionShake {
             sendInfo()
-//            let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-//            if (device?.hasTorch)! {
-//                do {
-//                    try device?.lockForConfiguration()
-//                    if (device?.torchMode == AVCaptureTorchMode.on) {
-//                        device?.torchMode = AVCaptureTorchMode.off
-//                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-//                        
-//                    } else {
-//                        
-//                        do {
-//                            try device?.setTorchModeOnWithLevel(1.0)
-//                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-//                        } catch {
-//                            print(error)
-//                        }
-//                    }
-//                    device?.unlockForConfiguration()
-//                } catch {
-//                    print(error)
-//                }
-//            }
+            let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+            if (device?.hasTorch)! {
+                do {
+                    try device?.lockForConfiguration()
+                    if (device?.torchMode == AVCaptureTorchMode.on) {
+                        device?.torchMode = AVCaptureTorchMode.off
+                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                        
+                    } else {
+                        
+                        do {
+                            try device?.setTorchModeOnWithLevel(1.0)
+                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                        } catch {
+                            print(error)
+                        }
+                    }
+                    device?.unlockForConfiguration()
+                } catch {
+                    print(error)
+                }
+            }
             
         }
     }
@@ -438,34 +439,34 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             createAndLoadInterstitial()
         }
         
-      //  let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+        let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
-//                if (device?.hasTorch)! {
-//                    do {
-//                        try device?.lockForConfiguration()
-//                        if (device?.torchMode == AVCaptureTorchMode.on) {
-//                            stopSpinning()
-//                            device?.torchMode = AVCaptureTorchMode.off
-//                        } else {
-//                            do {
-//                                try device?.setTorchModeOnWithLevel(1.0)
-//                                if self.session.connectedPeers.count < 6 && self.session.connectedPeers.count > 4 {
-//                                    playItsLitSound()
-//                                }
-//                                if self.session.connectedPeers.count == 6 {
-//                                    playWeLitSound()
-//                                }
-//                            } catch {
-//                                print(error)
-//                            }
-//                        }
-//                        device?.unlockForConfiguration()
-//                    } catch {
-//                        print(error)
-//                    }
-//                } else {
-//                    print ("The Mac is Lit")
-//                }
+                if (device?.hasTorch)! {
+                    do {
+                        try device?.lockForConfiguration()
+                        if (device?.torchMode == AVCaptureTorchMode.on) {
+                            stopSpinning()
+                            device?.torchMode = AVCaptureTorchMode.off
+                        } else {
+                            do {
+                                try device?.setTorchModeOnWithLevel(1.0)
+                                if self.session.connectedPeers.count < 6 && self.session.connectedPeers.count > 4 {
+                                    playItsLitSound()
+                                }
+                                if self.session.connectedPeers.count == 6 {
+                                    playWeLitSound()
+                                }
+                            } catch {
+                                print(error)
+                            }
+                        }
+                        device?.unlockForConfiguration()
+                    } catch {
+                        print(error)
+                    }
+                } else {
+                    print ("The Mac is Lit")
+                }
     }
     
     //MARK: - Peer to Peer connection

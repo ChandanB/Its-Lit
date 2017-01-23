@@ -110,7 +110,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <pongPressGestureRecognizer allowableMovement="2" minimumPressDuration="1" id="yK2-Sy-bTW">
+                <pongPressGestureRecognizer allowableMovement="1" minimumPressDuration="0.84999999999999998" id="yK2-Sy-bTW">
                     <connections>
                         <action selector="changeBackgroundWithGesture:" destination="BYZ-38-t0r" id="t18-3g-U06"/>
                     </connections>

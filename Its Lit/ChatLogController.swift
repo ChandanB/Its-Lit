@@ -157,23 +157,23 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     func itsLitNoButton() {
     
-//        if (device?.hasTorch)! {
-//            do {
-//                try device?.lockForConfiguration()
-//                if (device?.torchMode == AVCaptureTorchMode.on) {
-//                    device?.torchMode = AVCaptureTorchMode.off
-//                } else {
-//                    do {
-//                        try device?.setTorchModeOnWithLevel(1.0)
-//                    } catch {
-//                        print(error)
-//                    }
-//                }
-//                device?.unlockForConfiguration()
-//            } catch {
-//                print(error)
-//            }
-//        }
+        if (device?.hasTorch)! {
+            do {
+                try device?.lockForConfiguration()
+                if (device?.torchMode == AVCaptureTorchMode.on) {
+                    device?.torchMode = AVCaptureTorchMode.off
+                } else {
+                    do {
+                        try device?.setTorchModeOnWithLevel(1.0)
+                    } catch {
+                        print(error)
+                    }
+                }
+                device?.unlockForConfiguration()
+            } catch {
+                print(error)
+            }
+        }
     }
     
     func addFriend(){
