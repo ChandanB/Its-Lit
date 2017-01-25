@@ -29,13 +29,36 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     var user: User? {
         didSet {
             navigationItem.title = user?.name
-            
             observeMessages()
             observeFriendRequest()
         }
     }
     
     var messages = [Message]()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add Friend", style: .plain, target: self, action: #selector(addFriend))
+        
+        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
+            return
+        }
+        
+        FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
+            if error != nil {
+                print("Failed to delete litness:", error as Any)
+                return
+            }
+        })
+        
+        collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+        collectionView?.alwaysBounceVertical = true
+        collectionView?.backgroundColor = UIColor.rgb(230, green: 230, blue: 230)
+        collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.keyboardDismissMode = .interactive
+        setupKeyboardObservers()
+    }
     
     func observeFriendRequest() {
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
@@ -54,7 +77,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                             let image = UIImage(named: "love")
                             let tintedImage = image?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
                             self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: tintedImage, style: .plain, target: self, action: nil)
-                            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(254, green: 209, blue: 67)
+                            self.navigationItem.rightBarButtonItem?.tintColor = .red
                         } else {
                             let alert = UIAlertController(title: "Friend Request Received", message: "This user wants to be your friend! Add them to get lit anywhere, anytime.", preferredStyle: UIAlertControllerStyle.alert)
                             alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: { action in
@@ -72,11 +95,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         //Confirm Request Was Sent
         databaseHandle = FIRDatabase.database().reference().child("Friend").child(uid).child(toId).observe(.childAdded, with: { (snapshot) in
             if (snapshot.value as? [String: AnyObject]) == nil {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Waiting", style: .plain, target: self, action: nil)
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Waiting", style: .plain, target: self, action: nil)
             }
         })
     }
-
+    
     func observeMessages() {
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
             return
@@ -131,32 +154,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }, withCancel: nil)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add Friend", style: .plain, target: self, action: #selector(addFriend))
-        
-        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
-            return
-        }
-        
-        FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
-            if error != nil {
-                print("Failed to delete litness:", error as Any)
-                return
-            }
-        })
-        navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(254, green: 209, blue: 67)
-        collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-        collectionView?.alwaysBounceVertical = true
-        collectionView?.backgroundColor = UIColor.white
-        collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.keyboardDismissMode = .interactive
-        setupKeyboardObservers()
-    }
-    
     func itsLitNoButton() {
-    
         if (device?.hasTorch)! {
             do {
                 try device?.lockForConfiguration()
@@ -195,7 +193,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let friendRef = FIRDatabase.database().reference().child("Friend").child(fromId).child(toId)
         
         let friends = childRef.key
-       // let recipientRef = FIRDatabase.database().reference().child("Friend").child(toId).child(fromId)
+        // let recipientRef = FIRDatabase.database().reference().child("Friend").child(toId).child(fromId)
         
         friendRef.updateChildValues([friends: true])
         //  recipientRef.updateChildValues([friends: true])
@@ -266,14 +264,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
-    }
-    
-    func handleKeyboardDidShow() {
-        if messages.count > 0 {
-        //    let indexPath = IndexPath(item: messages.count - 1, section: 0)
-            //    collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -284,7 +275,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     func handleKeyboardWillShow(_ notification: Notification) {
         let keyboardFrame = ((notification as NSNotification).userInfo?[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
         let keyboardDuration = ((notification as NSNotification).userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
-        
         containerViewBottomAnchor?.constant = -keyboardFrame!.height
         UIView.animate(withDuration: keyboardDuration!, animations: {
             self.view.layoutIfNeeded()
@@ -293,7 +283,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     func handleKeyboardWillHide(_ notification: Notification) {
         let keyboardDuration = ((notification as NSNotification).userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
-        
         containerViewBottomAnchor?.constant = 0
         UIView.animate(withDuration: keyboardDuration!, animations: {
             self.view.layoutIfNeeded()
@@ -327,16 +316,17 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         if message.fromId == FIRAuth.auth()?.currentUser?.uid {
             //outgoing yellow
-            cell.bubbleView.backgroundColor = UIColor.black
-            cell.textView.textColor = UIColor.white
+            cell.bubbleView.backgroundColor = .white
+            cell.textView.textColor = UIColor.black
             cell.profileImageView.isHidden = true
             cell.bubbleViewRightAnchor?.isActive = true
             cell.bubbleViewLeftAnchor?.isActive = false
             
         } else {
+            
             //incoming gray
             let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(imageTapped))
-            cell.bubbleView.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
+            cell.bubbleView.backgroundColor = .red
             cell.textView.textColor = UIColor.white
             cell.profileImageView.isHidden = false
             cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
@@ -381,19 +371,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }
     }
     
-    func imageTapped(sender: UITapGestureRecognizer) {
-        let imageView = sender.view as! UIImageView
-        let newImageView = UIImageView(image: imageView.image)
-        navigationController?.isNavigationBarHidden = true
-        newImageView.frame = self.view.frame
-        newImageView.backgroundColor = .black
-        newImageView.contentMode = .scaleAspectFit
-        newImageView.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target:self, action:#selector(dismissFullscreenImage))
-        newImageView.addGestureRecognizer(tap)
-        self.view.addSubview(newImageView)
-    }
-    
     func dismissFullscreenImage(sender: UITapGestureRecognizer) {
         navigationController?.isNavigationBarHidden = false
         sender.view?.removeFromSuperview()
@@ -430,6 +407,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }
     }
     
+    func imageTapped(sender: UITapGestureRecognizer) {
+        let imageView = sender.view as! UIImageView
+        performZoomInForStartingImageView(imageView)
+    }
+    
     //my custom zooming logic
     func performZoomInForStartingImageView(_ startingImageView: UIImageView) {
         
@@ -437,23 +419,25 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         self.startingImageView?.isHidden = true
         startingFrame = startingImageView.superview?.convert(startingImageView.frame, to: nil)
         let zoomingImageView = UIImageView(frame: startingFrame!)
-        zoomingImageView.backgroundColor = UIColor.red
+        zoomingImageView.backgroundColor = .clear
         zoomingImageView.image = startingImageView.image
         zoomingImageView.isUserInteractionEnabled = true
         zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
         
         if let keyWindow = UIApplication.shared.keyWindow {
+            
             blackBackgroundView = UIView(frame: keyWindow.frame)
-            blackBackgroundView?.backgroundColor = UIColor.black
-            blackBackgroundView?.alpha = 0
+            blackBackgroundView?.backgroundColor = .clear
+            blackBackgroundView?.alpha = 1
+            blackBackgroundView?.addBlurEffect()
             keyWindow.addSubview(blackBackgroundView!)
             
             keyWindow.addSubview(zoomingImageView)
             
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                 
-                self.blackBackgroundView?.alpha = 1
                 self.inputContainerView.alpha = 0
+                self.blackBackgroundView?.alpha = 1
                 
                 // h2 / w1 = h1 / w1
                 // h2 = h1 / w1 * w1

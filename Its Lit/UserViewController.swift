@@ -40,6 +40,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     let nameLabel = UILabel()
     var counter = 0
     var interactionCounter = 0
+    var heldDownFor = 0
     var tapCounter = 0
     var locationsDictionary = [String: Location]()
     var users: [User?] = [] {
@@ -61,6 +62,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     let defaultColor = UIColor(r: 254, g: 209, b: 67)
     let darkColor = UIColor(r: 38, g: 17, b: 5)
     let blackColor = UIColor.black
+    let worldImage = UIImage(named: "World Icon");
     
     //Variables for Peer to Peer.
     var browser   : MCBrowserViewController!
@@ -322,13 +324,16 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     @IBAction func changeBackground(gesture: UILongPressGestureRecognizer) {
         
-        backgroundColours = [redColor, UIColor.darkGray, blackColor, UIColor.white, defaultColor]
+        backgroundColours = [redColor, UIColor.darkGray, blackColor, UIColor.white, blueColor, defaultColor]
+        
+        if self.tapCounterLabel.text == "500" {
         UIView.animate(withDuration: 1.0, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.1, y: 0.1) }, completion: { _ in
             UIView.animate(withDuration: 0.3) {
                 self.itsLitImage.transform = CGAffineTransform.identity
+                self.changeToBlack()
             }
-        })
-        self.animateBackgroundColour()
+         })
+        }
     }
     
     //MARK: - Functions for Flash
@@ -430,7 +435,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                     print(error)
                 }
             }
-            
         }
     }
     
@@ -472,6 +476,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         if (device?.hasTorch)! {
             do {
                 try device?.lockForConfiguration()
+                
                 if (device?.torchMode == AVCaptureTorchMode.on) {
                     stopSpinning()
                     itsLitImage.layer.shadowOpacity = 0
@@ -498,8 +503,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             } catch {
                 print(error)
             }
-        } else {
-            print ("The Mac is Lit")
         }
     }
     

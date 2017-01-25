@@ -29,7 +29,6 @@
 		1FEE4DF41E28923F00D3C01D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DEC1E28923F00D3C01D /* User.swift */; };
 		1FEE4DF51E28923F00D3C01D /* imageHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DED1E28923F00D3C01D /* imageHandle.swift */; };
 		1FEE4DF61E28923F00D3C01D /* Lit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DEE1E28923F00D3C01D /* Lit.swift */; };
-		1FEE4DF71E28923F00D3C01D /* musicHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DEF1E28923F00D3C01D /* musicHelper.swift */; };
 		1FEE4DF81E28923F00D3C01D /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DF01E28923F00D3C01D /* ChatMessageCell.swift */; };
 		1FEE4DF91E28923F00D3C01D /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DF11E28923F00D3C01D /* UserCell.swift */; };
 		B5B91B11DBED834F4821E878 /* Pods_Its_Lit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D1CCC90587EA32F0F342E3A /* Pods_Its_Lit.framework */; };
@@ -62,7 +61,6 @@
 		1FEE4DEC1E28923F00D3C01D /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1FEE4DED1E28923F00D3C01D /* imageHandle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = imageHandle.swift; sourceTree = "<group>"; };
 		1FEE4DEE1E28923F00D3C01D /* Lit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lit.swift; sourceTree = "<group>"; };
-		1FEE4DEF1E28923F00D3C01D /* musicHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = musicHelper.swift; sourceTree = "<group>"; };
 		1FEE4DF01E28923F00D3C01D /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		1FEE4DF11E28923F00D3C01D /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		2D1CCC90587EA32F0F342E3A /* Pods_Its_Lit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Its_Lit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,7 +115,6 @@
 				1F50B4741E29771E00486886 /* Location.swift */,
 				1FEE4DED1E28923F00D3C01D /* imageHandle.swift */,
 				1FEE4DEE1E28923F00D3C01D /* Lit.swift */,
-				1FEE4DEF1E28923F00D3C01D /* musicHelper.swift */,
 				1FEE4DF01E28923F00D3C01D /* ChatMessageCell.swift */,
 				1FEE4DF11E28923F00D3C01D /* UserCell.swift */,
 			);
@@ -337,7 +334,6 @@
 				1F4589711E2883C80043D0EA /* MessagingExtension.swift in Sources */,
 				1FEE4DF41E28923F00D3C01D /* User.swift in Sources */,
 				1FEE4DF61E28923F00D3C01D /* Lit.swift in Sources */,
-				1FEE4DF71E28923F00D3C01D /* musicHelper.swift in Sources */,
 				1FEE4DF51E28923F00D3C01D /* imageHandle.swift in Sources */,
 				1F2314EA1E25AD4500A84468 /* UserViewController.swift in Sources */,
 				1F45896F1E2883B00043D0EA /* AppDelegate.swift in Sources */,

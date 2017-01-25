@@ -24,11 +24,8 @@ func addConstraintsWithFormat(_ format: String, views: UIView...) {
         func loadImageUsingUrlString(_ urlString: String) {
             
             imageUrlString = urlString
-            
             let url = URL(string: urlString)
-            
             image = nil
-            
             
             URLSession.shared.dataTask(with: url!, completionHandler: { (data, respones, error) in
                 
@@ -40,7 +37,6 @@ func addConstraintsWithFormat(_ format: String, views: UIView...) {
                 DispatchQueue.main.async(execute: {
                     
                     let imageToCache = UIImage(data: data!)
-                    
                     if self.imageUrlString == urlString {
                         self.image = imageToCache
                     }

@@ -19,5 +19,6 @@ pod 'Firebase/Messaging'
 pod 'Firebase/RemoteConfig'
 pod 'Firebase/Storage'
 pod 'Firebase/Core'
+pod 'JSSAlertView'
 
 end

@@ -22,32 +22,32 @@ extension ViewController: UIImagePickerControllerDelegate {
         
         map.layer.cornerRadius = 30
     }
-   
+    
     func profilePicUpdate() {
         let user = FIRAuth.auth()?.currentUser
-            guard (user?.uid) != nil else {
-                return
-            }
-            //successfully authenticated user
-            let imageName = UUID().uuidString
-            let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
-            let metadata = FIRStorageMetadata()
-            if let profileImage = self.profileImageView.image, let uploadData = UIImageJPEGRepresentation(profileImage, 0.1) {
+        guard (user?.uid) != nil else {
+            return
+        }
+        //successfully authenticated user
+        let imageName = UUID().uuidString
+        let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
+        let metadata = FIRStorageMetadata()
+        if let profileImage = self.profileImageView.image, let uploadData = UIImageJPEGRepresentation(profileImage, 0.1) {
+            
+            storageRef.put(uploadData, metadata: metadata, completion: { (metadata, error) in
                 
-                storageRef.put(uploadData, metadata: metadata, completion: { (metadata, error) in
+                if error != nil {
+                    print(error as Any)
+                    return
+                }
+                
+                if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
                     
-                    if error != nil {
-                        print(error as Any)
-                        return
-                    }
-                    
-                    if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
-                        
-                        let values = ["profileImageUrl": profileImageUrl]
-                        self.registerUserIntoDatabaseWithUID((user?.uid)!, values: values as [String : AnyObject])
-                    }
-                })
-            }
+                    let values = ["profileImageUrl": profileImageUrl]
+                    self.registerUserIntoDatabaseWithUID((user?.uid)!, values: values as [String : AnyObject])
+                }
+            })
+        }
     }
     
     fileprivate func registerUserIntoDatabaseWithUID(_ uid: String, values: [String: AnyObject]) {
@@ -55,12 +55,12 @@ extension ViewController: UIImagePickerControllerDelegate {
         let ref = FIRDatabase.database().reference().child("users").child(uid)
         
         ref.updateChildValues(values, withCompletionBlock: { (err, ref) in
-        
+            
             self.dismiss(animated: true, completion: nil)
         })
     }
     
-
+    
     func handleSelectProfileImageView() {
         let picker = UIImagePickerController()
         
@@ -95,116 +95,143 @@ extension ViewController: UIImagePickerControllerDelegate {
         dismiss(animated: true, completion: nil)
     }
     
-    func animateBackgroundColour () {
-        
-        let worldImage = UIImage(named: "World Icon");
+    func changeToRed() {
         let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        UIView.animate(withDuration: 2, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+            self.backgroundLoop = 0
+            UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
+            self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
+            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
+            self.nameLabel.textColor = UIColor.white
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+            self.worldButton.setImage(worldTintedImage, for: .normal)
+            self.worldButton.tintColor = UIColor.white
+            self.tapCounterLabel.tintColor = .white
+        }, completion: nil)
+    }
+    
+    func changeToGrey() {
+        let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        UIView.animate(withDuration: 2, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+            UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
+            self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
+            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
+            self.nameLabel.textColor = UIColor.white
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+            self.worldButton.setImage(worldTintedImage, for: .normal)
+            self.worldButton.tintColor = UIColor.white
+            self.tapCounterLabel.tintColor = .white
+        }, completion: nil)
+    }
+    
+    func changeToBlack() {
+        let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        UIView.animate(withDuration: 2, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+            self.backgroundLoop = 2
+            UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
+            self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
+            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
+            self.nameLabel.textColor = UIColor.white
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+            self.worldButton.setImage(worldTintedImage, for: .normal)
+            self.worldButton.tintColor = UIColor.white
+            self.tapCounterLabel.tintColor = .white
+        }, completion: nil)
         
-        counter += 1
+    }
+    
+    func changeToWhite() {
+        UIView.animate(withDuration: 2, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+            self.backgroundLoop = 3
+            UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
+            self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
+            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+            self.navigationItem.titleView?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+            self.nameLabel.textColor = UIColor.rgb(51, green: 21, blue: 1)
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+            self.worldButton.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+            self.tapCounterLabel.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+            
+        }, completion: nil)
+    }
+    
+    func changeToDefault() {
+        UIView.animate(withDuration: 2, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+            self.backgroundLoop = 4
+            UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
+            self.profileImageView.backgroundColor = self.backgroundColours[self.backgroundLoop]
+            self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
+            self.tapCounterLabel.tintColor = .white
+        }, completion: nil)
         
-        if FIRAuth.auth()?.currentUser?.uid != nil {
-            if (counter == 3) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 0
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                    self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-                    self.nameLabel.textColor = UIColor.white
-                    self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-                    self.worldButton.setImage(worldTintedImage, for: .normal)
-                    self.worldButton.tintColor = UIColor.white
-                }, completion: nil)
-                
-            } else if (counter == 6) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 1
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                }, completion: nil)
-                
-            } else if (counter == 9) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 2
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                }, completion: nil)
-                
-            } else if (counter == 12) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 3
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                    self.navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-                    self.navigationItem.titleView?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-                    self.nameLabel.textColor = UIColor.rgb(51, green: 21, blue: 1)
-                    self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-                    self.worldButton.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-                    
-                }, completion: nil)
-                
-            } else if (counter == 15) {
-                UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.backgroundLoop = 4
-                    UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
-                    self.profileImageView.backgroundColor = self.backgroundColours[self.backgroundLoop]
-                    self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
-                }, completion: nil)
-            }
-        }
-        
-        if counter > 15 {
-            counter = 0
-        }
     }
     
-    func rotateView() {
-        if(!animating) {
-            animating = true;
-            spinWithOptions(options: UIViewAnimationOptions.curveEaseIn);
-        }
+    func changeToBlue() {
+        let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        UIView.animate(withDuration: 2, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+            UINavigationBar.appearance().barTintColor = self.backgroundColours[self.backgroundLoop]
+            self.view.backgroundColor =  self.backgroundColours[self.backgroundLoop]
+            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
+            self.nameLabel.textColor = UIColor.white
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+            self.worldButton.setImage(worldTintedImage, for: .normal)
+            self.worldButton.tintColor = UIColor.white
+            self.tapCounterLabel.tintColor = .white
+        }, completion: nil)
+
     }
-    
-    func stopSpinning() {
-        animating = false
-    }
-    
-    func spinWithOptions(options: UIViewAnimationOptions) {
-        UIView.animate(withDuration: 0.5, delay: 0.0, options: options, animations: { () -> Void in
-            let val : CGFloat = CGFloat((M_PI / Double(2.0)));
-            self.itsLitImage.transform = self.itsLitImage.transform.rotated(by: val)
-        }) { (finished: Bool) -> Void in
-            if(finished) {
-                if(self.animating){
-                    self.spinWithOptions(options: UIViewAnimationOptions.curveLinear)
-                } else if (options != UIViewAnimationOptions.curveEaseOut) {
-                    self.spinWithOptions(options: UIViewAnimationOptions.curveEaseOut)
-                }
-            }
-        }
-    }
-    
-    func rotateWorldView() {
-        if(!animating) {
-            animating = true;
-            spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseIn);
-        } else {
-            animating = false
-        }
+    func animateBackgroundColour () {
+        changeToBlack()
     }
 
-    
-    func spinWorldWithOptions(options: UIViewAnimationOptions) {
-        UIView.animate(withDuration: 10.0, delay: 0.0, options: options, animations: { () -> Void in
-            let val : CGFloat = CGFloat((M_PI / Double(5.0)));
-            self.worldButton.transform = self.worldButton.transform.rotated(by: val)
-        }) { (finished: Bool) -> Void in
-            if(finished) {
-                if(self.animating){
-                    self.spinWorldWithOptions(options: UIViewAnimationOptions.curveLinear)
-                } else if (options != UIViewAnimationOptions.curveEaseOut) {
-                    self.spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseOut)
-                }
+func rotateView() {
+    if(!animating) {
+        animating = true;
+        spinWithOptions(options: UIViewAnimationOptions.curveEaseIn);
+    }
+}
+
+func stopSpinning() {
+    animating = false
+}
+
+func spinWithOptions(options: UIViewAnimationOptions) {
+    UIView.animate(withDuration: 0.5, delay: 0.0, options: options, animations: { () -> Void in
+        let val : CGFloat = CGFloat((M_PI / Double(2.0)));
+        self.itsLitImage.transform = self.itsLitImage.transform.rotated(by: val)
+    }) { (finished: Bool) -> Void in
+        if(finished) {
+            if(self.animating){
+                self.spinWithOptions(options: UIViewAnimationOptions.curveLinear)
+            } else if (options != UIViewAnimationOptions.curveEaseOut) {
+                self.spinWithOptions(options: UIViewAnimationOptions.curveEaseOut)
             }
         }
     }
+}
+
+func rotateWorldView() {
+    if(!animating) {
+        animating = true;
+        spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseIn);
+    } else {
+        animating = false
+    }
+}
+
+func spinWorldWithOptions(options: UIViewAnimationOptions) {
+    UIView.animate(withDuration: 10.0, delay: 0.0, options: options, animations: { () -> Void in
+        let val : CGFloat = CGFloat((M_PI / Double(5.0)));
+        self.worldButton.transform = self.worldButton.transform.rotated(by: val)
+    }) { (finished: Bool) -> Void in
+        if(finished) {
+            if(self.animating){
+                self.spinWorldWithOptions(options: UIViewAnimationOptions.curveLinear)
+            } else if (options != UIViewAnimationOptions.curveEaseOut) {
+                self.spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseOut)
+            }
+        }
+    }
+}
+
 }
