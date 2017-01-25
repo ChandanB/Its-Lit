@@ -19,15 +19,14 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     //MARK: - Objects In View
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var worldButton: UIButton!
-    @IBOutlet weak var peopleButton: UIButton!
     @IBOutlet weak var itsLitImage: UIImageView!
     @IBOutlet weak var ItsLitButton: UIImageView!
+    @IBOutlet weak var tapCounterLabel: UILabel!
     let profileImageView = UIImageView()
     let titleView = UIView()
     let containerView = UIView()
     var viewController = self
     var interstitial: GADInterstitial!
-    
     
     //MARK: - Objects
     var locationManager = CLLocationManager()
@@ -40,6 +39,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     let itsLitSound = Bundle.main.url(forResource: "ItsLit", withExtension: "aiff")!
     let nameLabel = UILabel()
     var counter = 0
+    var interactionCounter = 0
     var tapCounter = 0
     var locationsDictionary = [String: Location]()
     var users: [User?] = [] {
@@ -47,10 +47,12 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             observeFriendsAndSendLitness()
         }
     }
+    
+    var timer = Timer()
     var otherUser: User?
     var databaseHandleReceiving: FIRDatabaseHandle?
-
     @IBOutlet weak var tapLabel: UILabel!
+    
     //MARK: - Colors and Animations
     var backgroundColours = [UIColor()]
     var backgroundLoop = 0
@@ -58,6 +60,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     let redColor = UIColor(r: 228, g: 36, b: 18)
     let defaultColor = UIColor(r: 254, g: 209, b: 67)
     let darkColor = UIColor(r: 38, g: 17, b: 5)
+    let blackColor = UIColor.black
     
     //Variables for Peer to Peer.
     var browser   : MCBrowserViewController!
@@ -65,13 +68,12 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var session   : MCSession!
     var peerID    : MCPeerID!
     var litness = [Lit]()
-
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+
         UINavigationBar.appearance().barTintColor = UIColor.rgb(254, green: 209, blue: 67)
-        // get rid of black bar underneath navbar
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         view.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
@@ -84,12 +86,35 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         func canBecomeFirstResponder() -> Bool {
             return true
         }
+        
+        let uid = FIRAuth.auth()!.currentUser!.uid
+        let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let firScore = dictionary["Score"] as? Int
+                self.tapCounter = firScore!
+            }
+        }, withCancel: nil)
+        
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countForInteraction), userInfo: nil, repeats: true)
+    }
+    
+    func countForInteraction() {
+        interactionCounter += 1
+        
+        if interactionCounter == 3 {
+            view.isUserInteractionEnabled = true
+            timer.invalidate()
+        } else {
+            view.isUserInteractionEnabled = false
+        }
     }
     
     //MARK: - Background Functions
     
     //Check if logged in
     func checkIfUserIsLoggedIn() {
+        
         // If user isn't logged in
         if FIRAuth.auth()?.currentUser?.uid == nil {
             self.worldButton.isHidden = true
@@ -106,8 +131,11 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             present(navController, animated: true, completion: nil)
             
         } else {
+            
+            view.isUserInteractionEnabled = false
+
             self.groupUsers(users as! [User])
-        //  peopleButton.isHidden = true
+            //  peopleButton.isHidden = true
             self.worldButton.isHidden = true
             profileImageView.isHidden = false
             navigationItem.rightBarButtonItem?.isEnabled = true
@@ -115,12 +143,13 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             locationManager.requestWhenInUseAuthorization()
             
             fetchUserAndSetupNavBarTitle()
-            let image = UIImage(named: "love")
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(goToFriendsPage))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Friends", style: .plain, target: self, action: #selector(goToFriendsPage))
+            navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
             navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(handleLogout))
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Connect", style: .done, target: self, action: #selector(connectScreen(_:)))
             navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 67)
             navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
+            
         }
     }
     
@@ -190,35 +219,36 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         
         self.navigationItem.titleView = titleView
+
     }
     
     func observeFriendsAndSendLitness() {
         
-//        let ref = FIRDatabase.database().reference().child("Litness")
-//        let toId = otherUser?.id!
-//        let fromId = FIRAuth.auth()!.currentUser!.uid
-//        let timestamp = NSNumber(value: Int(Date().timeIntervalSince1970))
+        //        let ref = FIRDatabase.database().reference().child("Litness")
+        //        let toId = otherUser?.id!
+        //        let fromId = FIRAuth.auth()!.currentUser!.uid
+        //        let timestamp = NSNumber(value: Int(Date().timeIntervalSince1970))
         
-//        var values: [String: AnyObject] = ["toId": toId as AnyObject, "fromId": fromId as AnyObject, "timestamp": timestamp]
-//        
-//        //append properties dictionary onto values somehow??
-//        //key $0, value $1
-//        
-//        childRef.updateChildValues(values) { (error, ref) in
-//            if error != nil {
-//                print(error as Any)
-//                return
-//            }
-//            
-//            let userLitRef = FIRDatabase.database().reference().child("Litness").child(fromId).child(toId!)
-//            
-//            let litId = childRef.key
-//            userLitRef.updateChildValues([litId: 1])
-//            
-//            let recipientUserMessagesRef = FIRDatabase.database().reference().child("Litness").child(toId!).child(fromId)
-//            recipientUserMessagesRef.updateChildValues([litId: 1])
-//        }
-
+        //        var values: [String: AnyObject] = ["toId": toId as AnyObject, "fromId": fromId as AnyObject, "timestamp": timestamp]
+        //
+        //        //append properties dictionary onto values somehow??
+        //        //key $0, value $1
+        //
+        //        childRef.updateChildValues(values) { (error, ref) in
+        //            if error != nil {
+        //                print(error as Any)
+        //                return
+        //            }
+        //
+        //            let userLitRef = FIRDatabase.database().reference().child("Litness").child(fromId).child(toId!)
+        //
+        //            let litId = childRef.key
+        //            userLitRef.updateChildValues([litId: 1])
+        //
+        //            let recipientUserMessagesRef = FIRDatabase.database().reference().child("Litness").child(toId!).child(fromId)
+        //            recipientUserMessagesRef.updateChildValues([litId: 1])
+        //        }
+        
         guard let uid = FIRAuth.auth()?.currentUser?.uid else {
             return
         }
@@ -292,7 +322,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     @IBAction func changeBackground(gesture: UILongPressGestureRecognizer) {
         
-        backgroundColours = [redColor, UIColor.darkGray, blueColor, UIColor.white, defaultColor]
+        backgroundColours = [redColor, UIColor.darkGray, blackColor, UIColor.white, defaultColor]
         UIView.animate(withDuration: 1.0, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.1, y: 0.1) }, completion: { _ in
             UIView.animate(withDuration: 0.3) {
                 self.itsLitImage.transform = CGAffineTransform.identity
@@ -325,11 +355,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             print(error.description)
         }
     }
-
+    
     
     func itsLitNoButton() {
-        
-        peopleButton.shake()
         counter += 1
         tapCounter += 1
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
@@ -349,8 +377,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             stopSpinning()
             createAndLoadInterstitial()
         }
-
-    
+        
         if (device?.hasTorch)! {
             do {
                 try device?.lockForConfiguration()
@@ -377,7 +404,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         // Shake Animation
         navigationController?.navigationBar.shake()
         ItsLitButton.shake()
-        peopleButton.shake()
         worldButton.shake()
         
         if motion == .motionShake {
@@ -410,13 +436,15 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     @IBAction func itsLit(_ sender: UIButton) {
         sendInfo()
-        self.tapCounter += 1
         ItsLitButton.shake()
         rotateView()
         counter += 1
         observeFriendsAndSendLitness()
-
-      //  tapLabel.text = String(tapCounter)
+        itsLitImage.layer.shadowOffset = CGSize(width: 0, height: 0)
+        itsLitImage.layer.shadowRadius = 10.0
+        itsLitImage.layer.shadowColor = UIColor.rgb(254, green: 209, blue: 67).cgColor
+        
+        //  tapLabel.text = String(tapCounter)
         UIView.animate(withDuration: 0.6, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.6, y: 0.6) }, completion: { _ in
             UIView.animate(withDuration: 0.6) {
                 self.itsLitImage.transform = CGAffineTransform.identity
@@ -433,7 +461,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             let alert = UIAlertController(title: "Tip", message: "Sign in to remove Ads", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-
+            
             counter = 0
             stopSpinning()
             createAndLoadInterstitial()
@@ -441,34 +469,69 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
-                if (device?.hasTorch)! {
+        if (device?.hasTorch)! {
+            do {
+                try device?.lockForConfiguration()
+                if (device?.torchMode == AVCaptureTorchMode.on) {
+                    stopSpinning()
+                    itsLitImage.layer.shadowOpacity = 0
+                    device?.torchMode = AVCaptureTorchMode.off
+                } else {
                     do {
-                        try device?.lockForConfiguration()
-                        if (device?.torchMode == AVCaptureTorchMode.on) {
-                            stopSpinning()
-                            device?.torchMode = AVCaptureTorchMode.off
-                        } else {
-                            do {
-                                try device?.setTorchModeOnWithLevel(1.0)
-                                if self.session.connectedPeers.count < 6 && self.session.connectedPeers.count > 4 {
-                                    playItsLitSound()
-                                }
-                                if self.session.connectedPeers.count == 6 {
-                                    playWeLitSound()
-                                }
-                            } catch {
-                                print(error)
-                            }
+                        if FIRAuth.auth()?.currentUser?.uid != nil {
+                        self.tapCounter += 1
+                        updateUserTapCounter()
                         }
-                        device?.unlockForConfiguration()
+                        itsLitImage.layer.shadowOpacity = 1
+                        try device?.setTorchModeOnWithLevel(1.0)
+                        if self.session.connectedPeers.count < 6 && self.session.connectedPeers.count > 4 {
+                            playItsLitSound()
+                        }
+                        if self.session.connectedPeers.count == 6 {
+                            playWeLitSound()
+                        }
                     } catch {
                         print(error)
                     }
-                } else {
-                    print ("The Mac is Lit")
                 }
+                device?.unlockForConfiguration()
+            } catch {
+                print(error)
+            }
+        } else {
+            print ("The Mac is Lit")
+        }
     }
     
+    func updateUserTapCounter() {
+        let uid = FIRAuth.auth()!.currentUser!.uid
+        let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
+        let score = self.tapCounter
+        let values: [String: AnyObject] = ["Score": score as AnyObject]
+
+        ref.updateChildValues(values) { (error, ref) in
+            if error != nil {
+                print(error as Any)
+                return
+            }
+        }
+        updateScoreLabel(score)
+    }
+    
+    func updateScoreLabel(_ score: Int) {
+        let uid = FIRAuth.auth()!.currentUser!.uid
+        var newScore = score
+        let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let firScore = dictionary["Score"] as? Int
+                newScore = firScore!
+                self.tapCounter = newScore
+                self.tapCounterLabel.text = String(newScore)
+            }
+        }, withCancel: nil)
+    }
+  
     //MARK: - Peer to Peer connection
     @IBAction func connectScreen(_ sender: AnyObject) {
         self.present(self.browser, animated: true, completion: nil)
@@ -483,7 +546,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         map.setRegion(region, animated: true)
         map.setUserTrackingMode(.follow, animated: true)
         let uid = (FIRAuth.auth()!.currentUser!.uid)
-      //  let ref = FIRDatabase.database().reference()
+        //  let ref = FIRDatabase.database().reference()
         let values = ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
         
         let locationRef = FIRDatabase.database().reference().child("user-locations").child(uid)
@@ -494,7 +557,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 return
             }
         }
-
+        
         locationRef.observe(.childAdded, with: { (snapshot) in
             
             let userId = snapshot.key
@@ -511,9 +574,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                             self.locationsDictionary[locationPartnerId] = locations
                         }
                     }
-                
+                    
                 }, withCancel: nil)
-
+                
             }, withCancel: nil)
             
         }, withCancel: nil)
@@ -548,15 +611,17 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             tapLabel.text = "Connected to: 1 person"
         }else if self.session.connectedPeers.count > 1 {
             let peerCount = String(self.session.connectedPeers.count)
-            tapLabel.text = "Connected to: \(peerCount)person"
+            tapLabel.text = "Connected to: \(peerCount) people"
         } else {
             tapLabel.text = "Connect with others over Wi-Fi"
         }
         dismiss(animated: true, completion: nil)
     }
+    
     func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
         dismiss(animated: true, completion: nil)
     }
+    
     func browserViewController(_ browserViewController: MCBrowserViewController, shouldPresentNearbyPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) -> Bool {
         
         return true
