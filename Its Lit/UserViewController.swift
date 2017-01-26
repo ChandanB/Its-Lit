@@ -13,16 +13,21 @@ import GoogleMobileAds
 import Firebase
 import MediaPlayer
 import MapKit
+import JSSAlertView
+import Spring
+import SCLAlertView
 
 class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate, CLLocationManagerDelegate {
     
     //MARK: - Objects In View
+    
+    @IBOutlet weak var smallItsLitButton: SpringImageView!
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var worldButton: UIButton!
-    @IBOutlet weak var itsLitImage: UIImageView!
+    @IBOutlet weak var itsLitImage: SpringImageView!
     @IBOutlet weak var ItsLitButton: UIImageView!
     @IBOutlet weak var tapCounterLabel: UILabel!
-    let profileImageView = UIImageView()
+    let profileImageView = SpringImageView()
     let titleView = UIView()
     let containerView = UIView()
     var viewController = self
@@ -62,7 +67,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     let defaultColor = UIColor(r: 254, g: 209, b: 67)
     let darkColor = UIColor(r: 38, g: 17, b: 5)
     let blackColor = UIColor.black
-    let worldImage = UIImage(named: "World Icon");
+    let worldImage = UIImage(named: "World Icon")
     
     //Variables for Peer to Peer.
     var browser   : MCBrowserViewController!
@@ -74,7 +79,10 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        itsLitImage.animation = "slideUp"
+        itsLitImage.animate()
+        
         UINavigationBar.appearance().barTintColor = UIColor.rgb(254, green: 209, blue: 67)
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
@@ -97,17 +105,66 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 self.tapCounter = firScore!
             }
         }, withCancel: nil)
-        
+        smallItsLitButton.isHidden = true
+        smallItsLitButton.isUserInteractionEnabled = true
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countForInteraction), userInfo: nil, repeats: true)
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(littleLitTapped))
+        
+        smallItsLitButton.addGestureRecognizer(tapGestureRecognizer)
+        self.backgroundColours = [UIColor(r: 228, g: 36, b: 18), UIColor.darkGray, blackColor, UIColor.white, UIColor(r: 110, g: 148, b: 208), UIColor(r: 254, g: 209, b: 67)]
+
+    }
+    
+    func littleLitTapped(sender: UITapGestureRecognizer) {
+        smallItsLitButton.animation = "swing"
+        smallItsLitButton.animate()
+        let appearance = SCLAlertView.SCLAppearance(
+            kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
+            kTextFont: UIFont(name: "AmericanTypewriter", size: 14)!,
+            kButtonFont: UIFont(name: "AmericanTypewriter-Bold", size: 14)!,
+            showCloseButton: true
+        )
+        let alertViewIcon = UIImage(named: "ios emoji")
+        let alert = SCLAlertView(appearance: appearance)
+        alert.addButton("WHITE", backgroundColor: .black, textColor: .white) {
+            self.changeToWhite()
+        }
+        alert.addButton("RED", backgroundColor: self.redColor, textColor: .white) {
+            self.changeToRed()
+        }
+        alert.addButton("BLUE", backgroundColor: self.blueColor, textColor: .white) {
+            self.changeToBlue()
+        }
+        alert.addButton("GOLD", backgroundColor: self.defaultColor, textColor: .white) {
+            self.changeToDefault()
+        }
+        alert.addButton("GREY", backgroundColor: .darkGray, textColor: .white) {
+            self.changeToGrey()
+        }
+        alert.showSuccess("OG FLAME", subTitle: "Let's Change The Background", colorStyle: 0x000000, circleIconImage: alertViewIcon)
+        
+        // Upon displaying, change/close view
+       // alertViewResponder.setTitle("Sup") // Rename title
+       // alertViewResponder.setSubTitle("Choose Color") // Rename subtitle
+      //  alertViewResponder.close() // Close view
     }
     
     func countForInteraction() {
+        
         interactionCounter += 1
         
-        if interactionCounter == 3 {
+        if interactionCounter == 4 {
+            if self.tapCounter > 1000 {
+                smallItsLitButton.isHidden = false
+                smallItsLitButton.animation = "fadeInUp"
+                smallItsLitButton.animate()
+                setupLabel()
+            }
             view.isUserInteractionEnabled = true
             timer.invalidate()
         } else {
+            updateUserTapCounter()
             view.isUserInteractionEnabled = false
         }
     }
@@ -151,7 +208,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Connect", style: .done, target: self, action: #selector(connectScreen(_:)))
             navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 67)
             navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
-            
         }
     }
     
@@ -322,11 +378,11 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         present(navController, animated: true, completion: nil)
     }
     
+    
     @IBAction func changeBackground(gesture: UILongPressGestureRecognizer) {
         
-        backgroundColours = [redColor, UIColor.darkGray, blackColor, UIColor.white, blueColor, defaultColor]
         
-        if self.tapCounterLabel.text == "500" {
+        if self.tapCounter >= 500 {
         UIView.animate(withDuration: 1.0, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.1, y: 0.1) }, completion: { _ in
             UIView.animate(withDuration: 0.3) {
                 self.itsLitImage.transform = CGAffineTransform.identity
@@ -337,35 +393,22 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     //MARK: - Functions for Flash
-    func playWeLitSound() {
-        do {
-            player = try AVAudioPlayer(contentsOf: weLitSound)
-            guard let player = player else {
-                return }
-            player.prepareToPlay()
-            player.play()
-        } catch let error as NSError {
-            print(error.description)
-        }
-    }
-    
-    func playItsLitSound() {
-        do {
-            player = try AVAudioPlayer(contentsOf: itsLitSound)
-            guard let player = player else {
-                return }
-            player.prepareToPlay()
-            player.play()
-        } catch let error as NSError {
-            print(error.description)
-        }
-    }
-    
     
     func itsLitNoButton() {
         counter += 1
         tapCounter += 1
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+        
+        if self.tapCounter == 500 {
+            JSSAlertView().show(
+                self,
+                title: "Black Background Unlocked!",
+                text: "Hold down the lighter to change background color",
+                buttonText: "Right on",
+                color: UIColor(r: 254, g: 209, b: 67),
+                iconImage: nil)
+        }
+        
         
         if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
             if interstitial.isReady {
@@ -438,6 +481,52 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
     }
     
+    lazy var flameImageView: SpringImageView = {
+        let imageView = SpringImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = false
+        return imageView
+    }()
+    
+    lazy var plusOneText: UILabel = {
+        let label = UILabel()
+        label.text = "+1"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        label.isHidden = true
+        label.font.withSize(36)
+        
+        return label
+    }()
+    
+    lazy var plusOneText3: UILabel = {
+        let label = UILabel()
+        label.text = "+1"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        label.isHidden = true
+        label.font.withSize(36)
+        
+        return label
+    }()
+    
+    func setupLabel() {
+        view.addSubview(plusOneText)
+        view.addSubview(plusOneText3)
+        
+        plusOneText.centerYAnchor.constraint(equalTo: smallItsLitButton.centerYAnchor).isActive = true
+        plusOneText.centerXAnchor.constraint(equalTo: smallItsLitButton.centerXAnchor).isActive = true
+        plusOneText.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        plusOneText.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        
+        
+        plusOneText3.centerYAnchor.constraint(equalTo: smallItsLitButton.centerYAnchor).isActive = true
+        plusOneText3.centerXAnchor.constraint(equalTo: smallItsLitButton.centerXAnchor, constant: -30).isActive = true
+        plusOneText3.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        plusOneText3.heightAnchor.constraint(equalToConstant: 20).isActive = true
+    }
+    
     @IBAction func itsLit(_ sender: UIButton) {
         sendInfo()
         ItsLitButton.shake()
@@ -455,7 +544,40 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             }
         })
         
-        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
+        if self.tapCounter == 25 {
+            
+        }
+        
+        if self.tapCounter == 500 {
+                let alertView = JSSAlertView().show(
+                    self,
+                    title: "Background Unlocked!",
+                    text: "Hold down the lighter to change the background color to BLACK",
+                    buttonText: "It's Lit?",
+                    color: .black,
+                    iconImage: nil)
+            //    alertview.addAction(myCallback) // Method to run after dismissal
+                alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+                alertView.setTextFont("AmericanTypewriter") // Alert body text font
+                alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+                alertView.setTextTheme(.light)
+            }
+        
+        if self.tapCounter == 1000 {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "OG Flame Unlocked!",
+                text: "OG Flame has joined your squad!",
+                buttonText: "It's Lit!",
+                color: .white,
+                iconImage: nil)
+            alertView.addAction(animateLighter) // Method to run after dismissal
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+        }
+        
+        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 25 {
             if interstitial.isReady {
                 interstitial.present(fromRootViewController: self)
             } else {
@@ -487,15 +609,12 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                         self.tapCounter += 1
                         updateUserTapCounter()
                         }
+                        if self.tapCounter > 1000 {
+                            animateLighter()
+                        }
                         itsLitImage.layer.shadowOpacity = 1
                         try device?.setTorchModeOnWithLevel(1.0)
-                        if self.session.connectedPeers.count < 6 && self.session.connectedPeers.count > 4 {
-                            playItsLitSound()
-                        }
-                        if self.session.connectedPeers.count == 6 {
-                            playWeLitSound()
-                        }
-                    } catch {
+                        } catch {
                         print(error)
                     }
                 }
@@ -506,25 +625,78 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
     }
     
+    func animateLighter() {
+      //  layer.animation = "squeezeDown"
+      //  layer.animate()
+      //  flameImageView.loadGif("Lit Gif")
+      //  setupFlames()
+      //  flameImageView.animation = "squeezeDown"
+      //  flameImageView.animate()
+        smallItsLitButton.animation = "morph"
+        smallItsLitButton.animateToNext {
+            self.smallItsLitButton.animation = "wobble"
+            self.smallItsLitButton.animateTo()
+        }
+        
+        UIView.animate(withDuration: 2, animations: {
+            self.plusOneText.isHidden = false
+            self.plusOneText.shakePoints()
+            self.plusOneText.alpha = 1
+            
+            self.plusOneText3.isHidden = false
+            self.plusOneText3.shakePoints3()
+            self.plusOneText3.alpha = 1
+            self.tapCounter += 1
+        })
+        
+        UIView.animate(withDuration: 1, animations: {
+            self.plusOneText.alpha = 0
+            self.plusOneText3.alpha = 0
+        })
+    }
+    
     func updateUserTapCounter() {
         let uid = FIRAuth.auth()!.currentUser!.uid
         let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
-        let score = self.tapCounter
-        let values: [String: AnyObject] = ["Score": score as AnyObject]
-
-        ref.updateChildValues(values) { (error, ref) in
-            if error != nil {
-                print(error as Any)
-                return
+        var score = self.tapCounter
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let firScore = dictionary["Score"] as? Int
+                let currentScore = firScore!
+                if currentScore > 0 {
+                self.tapCounterLabel.text = String(describing: self.tapCounter)
+                score = self.tapCounter
+                print (score)
+                self.updateScoreLabel(score)
+                } else {
+                    score = 0
+                    let values: [String: AnyObject] = ["Score": score as AnyObject]
+                    ref.updateChildValues(values) { (error, ref) in
+                        if error != nil {
+                            print(error as Any)
+                            return
+                        }
+                    }
+                    self.updateScoreLabel(score)
+                }
             }
-        }
-        updateScoreLabel(score)
+        }, withCancel: nil)
     }
     
     func updateScoreLabel(_ score: Int) {
         let uid = FIRAuth.auth()!.currentUser!.uid
         var newScore = score
         let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
+        
+        let values: [String: AnyObject] = ["Score": score as AnyObject]
+        
+        ref.updateChildValues(values) { (error, ref) in
+            if error != nil {
+                print(error as Any)
+                return
+            }
+        }
+
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 let firScore = dictionary["Score"] as? Int
@@ -671,16 +843,5 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
 }
 
-public extension UIView {
-    func shake(count : Float? = nil,for duration : TimeInterval? = nil,withTranslation translation : Float? = nil) {
-        let animation : CABasicAnimation = CABasicAnimation(keyPath: "transform.translation.x")
-        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
-        
-        animation.repeatCount = count ?? 2
-        animation.duration = (duration ?? 0.2)/TimeInterval(animation.repeatCount)
-        animation.autoreverses = true
-        animation.byValue = translation ?? -15
-        layer.add(animation, forKey: "shake")
-    }
-}
+
 

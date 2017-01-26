@@ -20,5 +20,6 @@ pod 'Firebase/RemoteConfig'
 pod 'Firebase/Storage'
 pod 'Firebase/Core'
 pod 'JSSAlertView'
-
+pod 'Spring', :git => 'https://github.com/MengTo/Spring.git', :branch => 'swift3'
+pod 'SCLAlertView'
 end

@@ -89,7 +89,6 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/JSSAlertView/JSSAlertView.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SCLAlertView/SCLAlertView.framework"
   install_framework "$BUILT_PRODUCTS_DIR/Spring/Spring.framework"
-  install_framework "$BUILT_PRODUCTS_DIR/SwiftGifOrigin/SwiftGifOrigin.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/GTMSessionFetcher/GTMSessionFetcher.framework"
@@ -97,5 +96,4 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/JSSAlertView/JSSAlertView.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SCLAlertView/SCLAlertView.framework"
   install_framework "$BUILT_PRODUCTS_DIR/Spring/Spring.framework"
-  install_framework "$BUILT_PRODUCTS_DIR/SwiftGifOrigin/SwiftGifOrigin.framework"
 fi

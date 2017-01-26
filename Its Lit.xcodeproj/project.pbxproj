@@ -18,6 +18,8 @@
 		1F4589751E2884540043D0EA /* RandomExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4589741E2884540043D0EA /* RandomExtensions.swift */; };
 		1F4589771E28848A0043D0EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F4589761E28848A0043D0EA /* LaunchScreen.storyboard */; };
 		1F50B4751E29771E00486886 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F50B4741E29771E00486886 /* Location.swift */; };
+		1F8E36041E395BF200564CAF /* Lit Gif.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1F8E36031E395BF200564CAF /* Lit Gif.gif */; };
+		1F8E36061E395CAF00564CAF /* FLAMES.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1F8E36051E395CAF00564CAF /* FLAMES.gif */; };
 		1F90C4381DD511380088B32E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F90C4371DD511380088B32E /* GoogleService-Info.plist */; };
 		1F90C43B1DD67FA20088B32E /* LoginAndCreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F90C43A1DD67FA20088B32E /* LoginAndCreateAccount.swift */; };
 		1FC7386B1DEFCBE40076040B /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC7386A1DEFCBE40076040B /* ViewExtension.swift */; };
@@ -46,6 +48,8 @@
 		1F4589741E2884540043D0EA /* RandomExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomExtensions.swift; sourceTree = "<group>"; };
 		1F4589761E28848A0043D0EA /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1F50B4741E29771E00486886 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		1F8E36031E395BF200564CAF /* Lit Gif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "Lit Gif.gif"; sourceTree = "<group>"; };
+		1F8E36051E395CAF00564CAF /* FLAMES.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = FLAMES.gif; sourceTree = "<group>"; };
 		1F90C4331DD4FAC00088B32E /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		1F90C4371DD511380088B32E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1F90C4391DD5228C0088B32E /* Its Lit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Its Lit.entitlements"; sourceTree = "<group>"; };
@@ -97,7 +101,9 @@
 			children = (
 				1F90C4371DD511380088B32E /* GoogleService-Info.plist */,
 				1F039D541DD704A5008B63D6 /* We Lit.mp3 */,
+				1F8E36031E395BF200564CAF /* Lit Gif.gif */,
 				1F039D521DD703A4008B63D6 /* ItsLit.aiff */,
+				1F8E36051E395CAF00564CAF /* FLAMES.gif */,
 				1F4589761E28848A0043D0EA /* LaunchScreen.storyboard */,
 				1FE1BA0A1D59BB67003545ED /* Images.xcassets */,
 				1FE1B9FB1D59A724003545ED /* Assets.xcassets */,
@@ -211,7 +217,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Gaming Recess";
 				TargetAttributes = {
 					1FE1B9F01D59A724003545ED = {
@@ -259,9 +265,11 @@
 				1F039D551DD704A5008B63D6 /* We Lit.mp3 in Resources */,
 				1FE1BA0B1D59BB67003545ED /* Images.xcassets in Resources */,
 				1F4589771E28848A0043D0EA /* LaunchScreen.storyboard in Resources */,
+				1F8E36061E395CAF00564CAF /* FLAMES.gif in Resources */,
 				1FE1B9FC1D59A724003545ED /* Assets.xcassets in Resources */,
 				1F90C4381DD511380088B32E /* GoogleService-Info.plist in Resources */,
 				1F039D531DD703A4008B63D6 /* ItsLit.aiff in Resources */,
+				1F8E36041E395BF200564CAF /* Lit Gif.gif in Resources */,
 				1FE1B9FA1D59A724003545ED /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -377,7 +385,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -447,6 +454,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 571F8332AE04D23B6E8D3193 /* Pods-Its Lit.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				CODE_SIGN_ENTITLEMENTS = "Its Lit/Its Lit.entitlements";
@@ -467,6 +475,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 36765741619ECD86C73FEE06 /* Pods-Its Lit.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				CODE_SIGN_ENTITLEMENTS = "Its Lit/Its Lit.entitlements";

@@ -18,6 +18,4 @@ class User: NSObject {
     var email: String?
     var profileImageUrl: String?
     var friends: [String?] = []
-    
-
 }

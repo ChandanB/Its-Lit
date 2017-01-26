@@ -95,7 +95,6 @@ PODS:
   - JSSAlertView (3.0.4)
   - SCLAlertView (0.7.0)
   - Spring (1.0.3)
-  - SwiftGifOrigin (1.6.1)
 
 DEPENDENCIES:
   - Firebase
@@ -114,7 +113,6 @@ DEPENDENCIES:
   - JSSAlertView
   - SCLAlertView
   - Spring (from `https://github.com/MengTo/Spring.git`, branch `swift3`)
-  - SwiftGifOrigin
 
 EXTERNAL SOURCES:
   Spring:
@@ -147,8 +145,7 @@ SPEC CHECKSUMS:
   JSSAlertView: 7d8345c88e6fd8b515bc49f0fc8d8c69f6776b9c
   SCLAlertView: 8a14ffc40590c619e183eed2298b854385f30be1
   Spring: 3f02b5dc3308572ef177b3cad0fa7bbc4b0706f7
-  SwiftGifOrigin: d6679d3ebe9df2e049a84bc52582635107b581f6
 
-PODFILE CHECKSUM: 5b088cea802c567ff7bd0a40155561abc1c16b5c
+PODFILE CHECKSUM: 728ff9652321a6183d72c15352e9163604b1a440
 
 COCOAPODS: 1.0.1
