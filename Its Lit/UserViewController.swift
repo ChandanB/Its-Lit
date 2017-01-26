@@ -97,14 +97,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             return true
         }
         
-        let uid = FIRAuth.auth()!.currentUser!.uid
-        let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
-        ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                let firScore = dictionary["Score"] as? Int
-                self.tapCounter = firScore!
-            }
-        }, withCancel: nil)
         smallItsLitButton.isHidden = true
         smallItsLitButton.isUserInteractionEnabled = true
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countForInteraction), userInfo: nil, repeats: true)
@@ -143,11 +135,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             self.changeToGrey()
         }
         alert.showSuccess("OG FLAME", subTitle: "Let's Change The Background", colorStyle: 0x000000, circleIconImage: alertViewIcon)
-        
-        // Upon displaying, change/close view
-       // alertViewResponder.setTitle("Sup") // Rename title
-       // alertViewResponder.setSubTitle("Choose Color") // Rename subtitle
-      //  alertViewResponder.close() // Close view
+      
     }
     
     func countForInteraction() {
@@ -160,6 +148,26 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 smallItsLitButton.animation = "fadeInUp"
                 smallItsLitButton.animate()
                 setupLabel()
+            }
+            if self.tapCounter < 2 {
+                let score = 1
+                let values: [String: AnyObject] = ["Score": score as AnyObject]
+                let uid = FIRAuth.auth()!.currentUser!.uid
+                let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
+                ref.observeSingleEvent(of: .value, with: { (snapshot) in
+                    if let dictionary = snapshot.value as? [String: AnyObject] {
+                        let firScore = dictionary["Score"] as? Int
+                        self.tapCounter = firScore!
+                    }
+                }, withCancel: nil)
+
+                ref.updateChildValues(values) { (error, ref) in
+                    if error != nil {
+                        print(error as Any)
+                        return
+                    }
+                }
+                self.updateScoreLabel(score)
             }
             view.isUserInteractionEnabled = true
             timer.invalidate()
@@ -191,6 +199,27 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             
         } else {
             
+            let uid = FIRAuth.auth()!.currentUser!.uid
+            let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
+            ref.observeSingleEvent(of: .value, with: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    let firScore = dictionary["Score"] as? Int
+                    self.tapCounter = firScore!
+                }
+            }, withCancel: nil)
+            
+            if tapCounter < 2 {
+            let score = 1
+            let values: [String: AnyObject] = ["Score": score as AnyObject]
+            ref.updateChildValues(values) { (error, ref) in
+                if error != nil {
+                    print(error as Any)
+                    return
+                }
+            }
+            self.updateScoreLabel(score)
+            }
+            
             view.isUserInteractionEnabled = false
 
             self.groupUsers(users as! [User])
@@ -205,10 +234,42 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Friends", style: .plain, target: self, action: #selector(goToFriendsPage))
             navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
             navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Connect", style: .done, target: self, action: #selector(connectScreen(_:)))
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Connect", style: .plain, target: self, action: #selector(connectAlert))
             navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 67)
             navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
         }
+    }
+    
+    func connectAlert() {
+        
+        let appearance = SCLAlertView.SCLAppearance(
+            kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
+            kTextFont: UIFont(name: "AmericanTypewriter", size: 14)!,
+            kButtonFont: UIFont(name: "AmericanTypewriter-Bold", size: 14)!,
+            showCloseButton: false
+        )
+        
+        let wifiAlertAppearance = SCLAlertView.SCLAppearance(
+            kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
+            kTextFont: UIFont(name: "AmericanTypewriter", size: 16)!
+        )
+        let wifiConnectAlert = SCLAlertView(appearance: wifiAlertAppearance)
+
+        let alertViewIcon = UIImage(named: "people0")
+        let alert = SCLAlertView(appearance: appearance)
+        alert.addButton("Connect Over Wifi", backgroundColor: .black, textColor: .white) {
+            
+            wifiConnectAlert.showWarning("Pro Tip", subTitle: "You need to be on the same WiFi", duration: 5.0, colorStyle: 0xFFFFFF)
+            self.connectScreen(self)
+        }
+        alert.addButton("Connect With Friends", backgroundColor: .black, textColor: .white) {
+            
+        }
+        alert.addButton("Location", backgroundColor: .black, textColor: .white) {
+        }
+        alert.addButton("No, Solo Dolo", backgroundColor: .red, textColor: .white) {
+        }
+        alert.showSuccess("Connect", subTitle: "You can connect multiple ways", colorStyle: 0xFFFFFF, circleIconImage: alertViewIcon)
     }
     
     // Fetch user
@@ -529,69 +590,12 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     @IBAction func itsLit(_ sender: UIButton) {
         sendInfo()
-        ItsLitButton.shake()
-        rotateView()
-        counter += 1
         observeFriendsAndSendLitness()
+        checkForAnimations()
+
         itsLitImage.layer.shadowOffset = CGSize(width: 0, height: 0)
         itsLitImage.layer.shadowRadius = 10.0
         itsLitImage.layer.shadowColor = UIColor.rgb(254, green: 209, blue: 67).cgColor
-        
-        //  tapLabel.text = String(tapCounter)
-        UIView.animate(withDuration: 0.6, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.6, y: 0.6) }, completion: { _ in
-            UIView.animate(withDuration: 0.6) {
-                self.itsLitImage.transform = CGAffineTransform.identity
-            }
-        })
-        
-        if self.tapCounter == 25 {
-            
-        }
-        
-        if self.tapCounter == 500 {
-                let alertView = JSSAlertView().show(
-                    self,
-                    title: "Background Unlocked!",
-                    text: "Hold down the lighter to change the background color to BLACK",
-                    buttonText: "It's Lit?",
-                    color: .black,
-                    iconImage: nil)
-            //    alertview.addAction(myCallback) // Method to run after dismissal
-                alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
-                alertView.setTextFont("AmericanTypewriter") // Alert body text font
-                alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
-                alertView.setTextTheme(.light)
-            }
-        
-        if self.tapCounter == 1000 {
-            let alertView = JSSAlertView().show(
-                self,
-                title: "OG Flame Unlocked!",
-                text: "OG Flame has joined your squad!",
-                buttonText: "It's Lit!",
-                color: .white,
-                iconImage: nil)
-            alertView.addAction(animateLighter) // Method to run after dismissal
-            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
-            alertView.setTextFont("AmericanTypewriter") // Alert body text font
-            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
-        }
-        
-        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 25 {
-            if interstitial.isReady {
-                interstitial.present(fromRootViewController: self)
-            } else {
-                print("Ad wasn't ready")
-            }
-            
-            let alert = UIAlertController(title: "Tip", message: "Sign in to remove Ads", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-            
-            counter = 0
-            stopSpinning()
-            createAndLoadInterstitial()
-        }
         
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
@@ -622,6 +626,10 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             } catch {
                 print(error)
             }
+        }
+        
+        if FIRAuth.auth()?.currentUser?.uid == nil {
+            startAD()
         }
     }
     
@@ -666,10 +674,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 if currentScore > 0 {
                 self.tapCounterLabel.text = String(describing: self.tapCounter)
                 score = self.tapCounter
-                print (score)
                 self.updateScoreLabel(score)
                 } else {
-                    score = 0
+                    score = 1
                     let values: [String: AnyObject] = ["Score": score as AnyObject]
                     ref.updateChildValues(values) { (error, ref) in
                         if error != nil {
@@ -705,11 +712,16 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 self.tapCounterLabel.text = String(newScore)
             }
         }, withCancel: nil)
+        
+        checkForUnlocks()
     }
   
     //MARK: - Peer to Peer connection
     @IBAction func connectScreen(_ sender: AnyObject) {
-        self.present(self.browser, animated: true, completion: nil)
+        self.present(self.browser, animated: true, completion: { _ in
+            self.browser.navigationController?.delegate = self
+            self.browser.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Friends", style: .done, target: self, action: #selector(self.handleLogout))
+        })
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -839,6 +851,123 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         // an ad request is made.
         request.testDevices = [ kGADSimulatorID, "2077ef9a63d2b398840261c8221a0c9b" ]
         interstitial.load(request)
+    }
+    
+    func startAD() {
+        createAndLoadInterstitial()
+        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 25 {
+            if interstitial.isReady {
+                interstitial.present(fromRootViewController: self)
+            } else {
+                print("Ad wasn't ready")
+            }
+            
+            let alert = UIAlertController(title: "Tip", message: "Sign in to remove Ads", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            
+            counter = 0
+            stopSpinning()
+        } else if FIRAuth.auth()?.currentUser?.uid == nil {
+            counter += 1
+        }
+
+    }
+    
+    func checkForAnimations() {
+        if self.tapCounter > 10 {
+            UIView.animate(withDuration: 0.6, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.6, y: 0.6) }, completion: { _ in
+                UIView.animate(withDuration: 0.6) {
+                    self.itsLitImage.transform = CGAffineTransform.identity
+                }
+            })
+        }
+        if self.tapCounter > 25 {
+            ItsLitButton.shake()
+        }
+        
+        if self.tapCounter > 50 {
+            rotateView()
+        }
+    }
+    
+    func checkForUnlocks() {
+
+        if self.tapCounter == 10  {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "New Animation Unlocked!",
+                text: "As you get lit, you'll unlock more cool stuff. 🔥",
+                buttonText: "It's Lit",
+                color: .black,
+                iconImage: nil)
+            //    alertview.addAction(myCallback) // Method to run after dismissal
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+            alertView.setTextTheme(.light)
+            
+        }
+        
+        if self.tapCounter == 25 {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "New Animation Unlocked!",
+                text: "IT'S LIT 🔥",
+                buttonText: "Okay",
+                color: .white,
+                iconImage: nil)
+            //    alertview.addAction(myCallback) // Method to run after dismissal
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+            alertView.setTextTheme(.dark)
+        }
+        
+        if self.tapCounter == 50 {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "SPIN ANIMATION UNLOCKED!",
+                text: "WHIP! 🔥",
+                buttonText: "It's Lit",
+                color: .white,
+                iconImage: nil)
+            //    alertview.addAction(myCallback) // Method to run after dismissal
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+            alertView.setTextTheme(.dark)
+        }
+        
+        if self.tapCounter == 500 {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "Background Unlocked!",
+                text: "Hold down the lighter to change the background color to BLACK",
+                buttonText: "It's Lit?",
+                color: .black,
+                iconImage: nil)
+            //    alertview.addAction(myCallback) // Method to run after dismissal
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+            alertView.setTextTheme(.light)
+        }
+        
+        if self.tapCounter == 1000 {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "OG Flame Unlocked!",
+                text: "OG Flame has joined your squad!",
+                buttonText: "It's Lit!",
+                color: .white,
+                iconImage: nil)
+            alertView.addAction(animateLighter) // Method to run after dismissal
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+        }
+
     }
     
 }
