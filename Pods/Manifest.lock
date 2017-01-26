@@ -1,36 +1,36 @@
 PODS:
-  - Firebase (3.11.0):
-    - Firebase/Core (= 3.11.0)
-  - Firebase/AdMob (3.11.0):
+  - Firebase (3.11.1):
+    - Firebase/Core (= 3.11.1)
+  - Firebase/AdMob (3.11.1):
     - Firebase/Core
     - Google-Mobile-Ads-SDK (= 7.16.0)
-  - Firebase/Analytics (3.11.0):
+  - Firebase/Analytics (3.11.1):
     - Firebase/Core
-  - Firebase/AppIndexing (3.11.0):
+  - Firebase/AppIndexing (3.11.1):
     - Firebase/Core
     - FirebaseAppIndexing (= 1.2.0)
-  - Firebase/Auth (3.11.0):
+  - Firebase/Auth (3.11.1):
     - Firebase/Core
     - FirebaseAuth (= 3.1.0)
-  - Firebase/Core (3.11.0):
+  - Firebase/Core (3.11.1):
     - FirebaseAnalytics (= 3.6.0)
-    - FirebaseCore (= 3.4.6)
-  - Firebase/Crash (3.11.0):
+    - FirebaseCore (= 3.4.7)
+  - Firebase/Crash (3.11.1):
     - Firebase/Core
     - FirebaseCrash (= 1.1.4)
-  - Firebase/Database (3.11.0):
+  - Firebase/Database (3.11.1):
     - Firebase/Core
     - FirebaseDatabase (= 3.1.1)
-  - Firebase/DynamicLinks (3.11.0):
+  - Firebase/DynamicLinks (3.11.1):
     - Firebase/Core
     - FirebaseDynamicLinks (= 1.3.2)
-  - Firebase/Messaging (3.11.0):
+  - Firebase/Messaging (3.11.1):
     - Firebase/Core
     - FirebaseMessaging (= 1.2.1)
-  - Firebase/RemoteConfig (3.11.0):
+  - Firebase/RemoteConfig (3.11.1):
     - Firebase/Core
-    - FirebaseRemoteConfig (= 1.3.1)
-  - Firebase/Storage (3.11.0):
+    - FirebaseRemoteConfig (= 1.3.2)
+  - Firebase/Storage (3.11.1):
     - Firebase/Core
     - FirebaseStorage (= 1.0.5)
   - FirebaseAnalytics (3.6.0):
@@ -44,8 +44,9 @@ PODS:
     - FirebaseAnalytics (~> 3.6)
     - GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)
     - GTMSessionFetcher/Core (~> 1.1)
-  - FirebaseCore (3.4.6):
+  - FirebaseCore (3.4.7):
     - GoogleInterchangeUtilities (~> 1.2)
+    - GoogleSymbolUtilities (~> 1.1)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
   - FirebaseCrash (1.1.4):
     - FirebaseAnalytics (~> 3.5)
@@ -65,8 +66,8 @@ PODS:
     - GoogleInterchangeUtilities (~> 1.2)
     - GoogleSymbolUtilities (~> 1.1)
     - GoogleToolboxForMac/Logger (~> 2.1)
-  - FirebaseRemoteConfig (1.3.1):
-    - FirebaseAnalytics (~> 3.4)
+  - FirebaseRemoteConfig (1.3.2):
+    - FirebaseAnalytics (~> 3.6)
     - FirebaseInstanceID (~> 1.0)
     - GoogleInterchangeUtilities (~> 1.2)
     - GoogleSymbolUtilities (~> 1.1)
@@ -91,6 +92,10 @@ PODS:
     - GoogleToolboxForMac/NSString+URLArguments (= 2.1.1)
   - GoogleToolboxForMac/NSString+URLArguments (2.1.1)
   - GTMSessionFetcher/Core (1.1.8)
+  - JSSAlertView (3.0.4)
+  - SCLAlertView (0.7.0)
+  - Spring (1.0.3)
+  - SwiftGifOrigin (1.6.1)
 
 DEPENDENCIES:
   - Firebase
@@ -106,26 +111,44 @@ DEPENDENCIES:
   - Firebase/RemoteConfig
   - Firebase/Storage
   - Google-Mobile-Ads-SDK
+  - JSSAlertView
+  - SCLAlertView
+  - Spring (from `https://github.com/MengTo/Spring.git`, branch `swift3`)
+  - SwiftGifOrigin
+
+EXTERNAL SOURCES:
+  Spring:
+    :branch: swift3
+    :git: https://github.com/MengTo/Spring.git
+
+CHECKOUT OPTIONS:
+  Spring:
+    :commit: 3a9227c6e9157e7b47f5ac1ee5abab2a56b50002
+    :git: https://github.com/MengTo/Spring.git
 
 SPEC CHECKSUMS:
-  Firebase: b8134e285eb33201115bc688bc5d7f112923bc1f
+  Firebase: 53b2343db1ebfa3eb16bdb4318b8bb65360b2220
   FirebaseAnalytics: 9c67af0ebeb8d2146c9b4ea2616439affa947b58
   FirebaseAppIndexing: d0fa52ce0ad13f4b5b2f09e4b47fb0dc2213f4e9
   FirebaseAuth: b436e4ecebe068bf8e8c6e4e29de5756ffe7ee24
-  FirebaseCore: 03da1cb32615569bbc2830a22f9ad753d9a02ef5
+  FirebaseCore: 46afaf2c2e0419ea7d3acfb08cf26a461a75fe85
   FirebaseCrash: 34f0349908ec87945a5ae96c402e7201a3f3aede
   FirebaseDatabase: 6de92187481ff0e8e124064f21742e95ee883b02
   FirebaseDynamicLinks: c135f328a320316f0095f24aa599ff832fdebcec
   FirebaseInstanceID: ba1e640935235e5fac39dfa816fe7660e72e1a8a
   FirebaseMessaging: acf66347e43c5637c697060c3001d25c809a4131
-  FirebaseRemoteConfig: 383a9afe0a9291ada949e3f615257928a823b594
+  FirebaseRemoteConfig: a03e73abef495c0a0063e2ff461f0c4e8af4b57f
   FirebaseStorage: 5738284835edb57f0e81d4ae5832bb17c1e4b5fa
   Google-Mobile-Ads-SDK: 92dff0e9ce1cfdfe640d9d80ab86d5e4371e478f
   GoogleInterchangeUtilities: d5bc4d88d5b661ab72f9d70c58d02ca8c27ad1f7
   GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMSessionFetcher: 6f8d8b28b7e345549ac471071608170b31cb4977
+  JSSAlertView: 7d8345c88e6fd8b515bc49f0fc8d8c69f6776b9c
+  SCLAlertView: 8a14ffc40590c619e183eed2298b854385f30be1
+  Spring: 3f02b5dc3308572ef177b3cad0fa7bbc4b0706f7
+  SwiftGifOrigin: d6679d3ebe9df2e049a84bc52582635107b581f6
 
-PODFILE CHECKSUM: 204c607ebc30d32baab5fdb3a213deb74b9b4861
+PODFILE CHECKSUM: 5b088cea802c567ff7bd0a40155561abc1c16b5c
 
 COCOAPODS: 1.0.1
