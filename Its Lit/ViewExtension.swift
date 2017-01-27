@@ -8,19 +8,47 @@
 
 import Foundation
 import Firebase
+import SCLAlertView
+import MapKit
+import GoogleMaps
+import MultipeerConnectivity
 
 extension ViewController: UIImagePickerControllerDelegate {
     
     func setupMap() {
-        if map.isHidden == false  {
-            map.isHidden = true
-            locationManager.stopUpdatingLocation()
-            locationManager.stopUpdatingHeading()
-        } else {
-            map.isHidden = false
-        }
+                
+        let appearance = SCLAlertView.SCLAppearance(
+            kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
+            kTextFont: UIFont(name: "AmericanTypewriter", size: 14)!,
+            kButtonFont: UIFont(name: "AmericanTypewriter-Bold", size: 14)!,
+            showCloseButton: false
+        )
         
-        map.layer.cornerRadius = 30
+        // Initialize SCLAlertView using custom Appearance
+        let alert = SCLAlertView(appearance: appearance)
+        
+        // Creat the subview
+        let subView = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 400))
+        subView.superview?.autoresizesSubviews = false
+        
+        // Add MapView
+        let camera = GMSCameraPosition.camera(withLatitude: (locationManager.location?.coordinate.latitude)!, longitude: (locationManager.location?.coordinate.longitude)!, zoom: 14)
+        
+        let mapView = GMSMapView.map(withFrame: CGRect(x: 0, y: 0, width: subView.frame.width, height: subView.frame.height), camera: camera)
+        
+        let marker = GMSMarker()
+        marker.position = camera.target
+        marker.snippet = "Hello World"
+        marker.appearAnimation = kGMSMarkerAnimationPop
+        marker.map = mapView
+        
+        mapView.layer.cornerRadius = 5
+        subView.addSubview(mapView)
+        
+        // Add the subview to the alert's UI property
+        let alertViewIcon = UIImage(named: "World Icon")
+        alert.customSubview = subView
+        alert.showInfo("Searching...", subTitle: "", duration: 10, colorStyle: 0xFFFFFF, circleIconImage: alertViewIcon)
     }
     
     func profilePicUpdate() {
@@ -96,43 +124,37 @@ extension ViewController: UIImagePickerControllerDelegate {
     }
     
     func changeToRed() {
-        let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+      //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[0]
             self.view.backgroundColor =  self.backgroundColours[0]
             self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
             self.nameLabel.textColor = UIColor.white
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            self.worldButton.setImage(worldTintedImage, for: .normal)
-            self.worldButton.tintColor = UIColor.white
             self.tapCounterLabel.tintColor = .white
         }, completion: nil)
     }
     
     func changeToGrey() {
-        let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+      //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[1]
             self.view.backgroundColor =  self.backgroundColours[1]
             self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
             self.nameLabel.textColor = UIColor.white
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            self.worldButton.setImage(worldTintedImage, for: .normal)
-            self.worldButton.tintColor = UIColor.white
             self.tapCounterLabel.tintColor = .white
         }, completion: nil)
     }
     
     func changeToBlack() {
-        let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+      //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[2]
             self.view.backgroundColor =  self.backgroundColours[2]
             self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
             self.nameLabel.textColor = UIColor.white
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            self.worldButton.setImage(worldTintedImage, for: .normal)
-            self.worldButton.tintColor = UIColor.white
             self.tapCounterLabel.tintColor = .white
         }, completion: nil)
         
@@ -146,7 +168,6 @@ extension ViewController: UIImagePickerControllerDelegate {
             self.navigationItem.titleView?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
             self.nameLabel.textColor = UIColor.rgb(51, green: 21, blue: 1)
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-            self.worldButton.tintColor = UIColor.rgb(51, green: 21, blue: 1)
             self.tapCounterLabel.tintColor = .black
             
         }, completion: nil)
@@ -163,15 +184,13 @@ extension ViewController: UIImagePickerControllerDelegate {
     }
     
     func changeToBlue() {
-        let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+       // let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[4]
             self.view.backgroundColor =  self.backgroundColours[4]
             self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
             self.nameLabel.textColor = UIColor.white
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            self.worldButton.setImage(worldTintedImage, for: .normal)
-            self.worldButton.tintColor = UIColor.white
             self.tapCounterLabel.tintColor = .white
         }, completion: nil)
 
@@ -217,8 +236,7 @@ func rotateWorldView() {
 
 func spinWorldWithOptions(options: UIViewAnimationOptions) {
     UIView.animate(withDuration: 10.0, delay: 0.0, options: options, animations: { () -> Void in
-        let val : CGFloat = CGFloat((M_PI / Double(5.0)));
-        self.worldButton.transform = self.worldButton.transform.rotated(by: val)
+     //   let val : CGFloat = CGFloat((M_PI / Double(5.0)));
     }) { (finished: Bool) -> Void in
         if(finished) {
             if(self.animating){
@@ -229,5 +247,59 @@ func spinWorldWithOptions(options: UIViewAnimationOptions) {
         }
     }
 }
+    func sendInfo() {
+        if self.session.connectedPeers.count > 0 {
+            let firstNameVar = "It's"
+            let lastNameVar = "Lit"
+            myDictionary = ["itemA" : "\(firstNameVar)", "itemB" : "\(lastNameVar)"]
+            do {
+                let data =  NSKeyedArchiver.archivedData(withRootObject: myDictionary)
+                try self.session.send(data, toPeers: self.session.connectedPeers, with: MCSessionSendDataMode.unreliable)
+            } catch let error as NSError {
+                let ac = UIAlertController(title: "Send error", message: error.localizedDescription, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                present(ac, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    // Called when a peer sends an NSData to us
+    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        // This needs to run on the main queue
+        DispatchQueue.main.async {
+            self.itsLitNoButton()
+        }
+    }
+    
+    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func browserViewController(_ browserViewController: MCBrowserViewController, shouldPresentNearbyPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) -> Bool {
+        return true
+    }
+    
+    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        
+        switch state {
+        case MCSessionState.connected:
+            print("Connected: \(peerID.displayName)")
+        case MCSessionState.connecting:
+            print("Connecting: \(peerID.displayName)")
+        case MCSessionState.notConnected:
+            print("Not Connected: \(peerID.displayName)")
+        }
+    }
+    
+    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
+    }
+    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
+    }
+    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+    }
 
 }

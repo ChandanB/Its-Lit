@@ -30,62 +30,42 @@
                                     <outletCollection property="gestureRecognizers" destination="yK2-Sy-bTW" appends="YES" id="5mk-xU-aIp"/>
                                 </connections>
                             </button>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="wiH-GT-dgy">
-                                <rect key="frame" x="0.0" y="64" width="375" height="114"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="114" id="YOu-fX-HJT"/>
-                                </constraints>
-                            </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yMg-uP-lUQ">
-                                <rect key="frame" x="318" y="72" width="48" height="49"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="49" id="nNi-SE-DW4"/>
-                                </constraints>
-                                <state key="normal" image="World Icon"/>
-                                <connections>
-                                    <action selector="showMap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="juN-NX-hA8"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JAO-U0-uLG">
                                 <rect key="frame" x="62" y="98" width="251" height="53"/>
-                                <fontDescription key="fontDescription" name="AmericanTypewriter" family="American Typewriter" pointSize="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="53" id="KWh-pk-IlM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AmericanTypewriter-Bold" family="American Typewriter" pointSize="45"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ios emoji" translatesAutoresizingMaskIntoConstraints="NO" id="dAp-Dw-G08" customClass="SpringImageView" customModule="Spring">
-                                <rect key="frame" x="135" y="539" width="104" height="84"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="104" id="9bk-5a-qNJ"/>
-                                </constraints>
-                            </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Its Lit" translatesAutoresizingMaskIntoConstraints="NO" id="Tqx-ao-sX0" customClass="SpringImageView" customModule="Spring">
                                 <rect key="frame" x="16" y="159" width="343" height="349"/>
                                 <gestureRecognizers/>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ios emoji" translatesAutoresizingMaskIntoConstraints="NO" id="dAp-Dw-G08" customClass="SpringImageView" customModule="Spring">
+                                <rect key="frame" x="137" y="527" width="101" height="96"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="101" id="3d5-49-QUJ"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.93333333333333335" green="0.62352941176470589" blue="0.15294117647058825" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="yMg-uP-lUQ" firstAttribute="leading" secondItem="JAO-U0-uLG" secondAttribute="trailing" constant="5" id="4q4-qo-VpF"/>
-                            <constraint firstItem="JAO-U0-uLG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="46" id="AzY-Ll-wvJ"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="twC-Os-jRJ" secondAttribute="leading" id="BMT-dS-v5F"/>
-                            <constraint firstItem="JAO-U0-uLG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="34" id="C1U-UG-9dw"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="yMg-uP-lUQ" secondAttribute="trailing" constant="-7" id="Dhn-V8-9Yk"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="FfO-H1-OrL"/>
-                            <constraint firstItem="wiH-GT-dgy" firstAttribute="centerX" secondItem="JAO-U0-uLG" secondAttribute="centerX" id="HpO-rg-bxW"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="top" secondItem="yMg-uP-lUQ" secondAttribute="bottom" constant="38" id="LhL-CO-9Vh"/>
-                            <constraint firstItem="wiH-GT-dgy" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="OOI-E9-ciy"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="centerX" secondItem="dAp-Dw-G08" secondAttribute="centerX" id="QCp-O6-ofG"/>
-                            <constraint firstItem="dAp-Dw-G08" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="WEr-Jr-cvQ"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="trailing" secondItem="Tqx-ao-sX0" secondAttribute="trailing" id="WsK-8v-ZDY"/>
-                            <constraint firstItem="yMg-uP-lUQ" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="XIg-r8-gsI"/>
-                            <constraint firstItem="dAp-Dw-G08" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="bottom" constant="31" id="ZYM-2L-GF7"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="JAO-U0-uLG" secondAttribute="bottom" constant="8" symbolic="YES" id="a5l-Kx-Zk5"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="top" secondItem="twC-Os-jRJ" secondAttribute="top" id="h8D-F5-ucj"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="iHe-Ip-GbV"/>
-                            <constraint firstItem="JAO-U0-uLG" firstAttribute="centerX" secondItem="twC-Os-jRJ" secondAttribute="centerX" id="kKq-8Z-ZE5"/>
-                            <constraint firstItem="wiH-GT-dgy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="kWF-h8-wf7"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="bottom" secondItem="Tqx-ao-sX0" secondAttribute="bottom" id="mJV-XU-Bn4"/>
-                            <constraint firstAttribute="trailing" secondItem="wiH-GT-dgy" secondAttribute="trailing" id="qaU-rG-MaI"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="bottom" secondItem="twC-Os-jRJ" secondAttribute="bottom" id="092-aK-M50"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerX" secondItem="dAp-Dw-G08" secondAttribute="centerX" id="2fK-tK-UHu"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="top" secondItem="twC-Os-jRJ" secondAttribute="top" id="65s-pJ-BeS"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="top" secondItem="JAO-U0-uLG" secondAttribute="bottom" constant="8" symbolic="YES" id="6Mk-g5-xo4"/>
+                            <constraint firstItem="twC-Os-jRJ" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="EbG-5Y-3jn"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="trailing" secondItem="twC-Os-jRJ" secondAttribute="trailing" id="KJh-aM-1rf"/>
+                            <constraint firstItem="dAp-Dw-G08" firstAttribute="top" secondItem="twC-Os-jRJ" secondAttribute="bottom" constant="19" id="MKO-kY-Yhv"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="twC-Os-jRJ" secondAttribute="leading" id="NBF-Lt-TPO"/>
+                            <constraint firstItem="JAO-U0-uLG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="34" id="Rhr-ln-gOA"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="SRj-qb-RgZ"/>
+                            <constraint firstItem="dAp-Dw-G08" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="TFr-nL-G7W"/>
+                            <constraint firstItem="JAO-U0-uLG" firstAttribute="centerX" secondItem="twC-Os-jRJ" secondAttribute="centerX" id="V4U-FE-TeR"/>
+                            <constraint firstItem="JAO-U0-uLG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="46" id="Ybk-eh-oXm"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="xVy-Wr-NKv"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="OBs-pb-2cG"/>
@@ -95,10 +75,8 @@
                     <connections>
                         <outlet property="ItsLitButton" destination="Tqx-ao-sX0" id="7uY-jl-xAQ"/>
                         <outlet property="itsLitImage" destination="Tqx-ao-sX0" id="5ct-Lt-8my"/>
-                        <outlet property="map" destination="wiH-GT-dgy" id="KZO-bv-TXB"/>
                         <outlet property="smallItsLitButton" destination="dAp-Dw-G08" id="q1a-aP-jpa"/>
                         <outlet property="tapCounterLabel" destination="JAO-U0-uLG" id="YAA-dZ-gVC"/>
-                        <outlet property="worldButton" destination="yMg-uP-lUQ" id="WUI-CH-bgo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -131,7 +109,6 @@
     </scenes>
     <resources>
         <image name="Its Lit" width="1000" height="1000"/>
-        <image name="World Icon" width="200" height="200"/>
         <image name="ios emoji" width="220" height="230"/>
     </resources>
 </document>

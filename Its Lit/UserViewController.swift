@@ -16,14 +16,14 @@ import MapKit
 import JSSAlertView
 import Spring
 import SCLAlertView
+import GoogleMaps
+import GooglePlaces
 
-class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate, CLLocationManagerDelegate {
+class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate, CLLocationManagerDelegate, GMSMapViewDelegate {
     
     //MARK: - Objects In View
     
     @IBOutlet weak var smallItsLitButton: SpringImageView!
-    @IBOutlet weak var map: MKMapView!
-    @IBOutlet weak var worldButton: UIButton!
     @IBOutlet weak var itsLitImage: SpringImageView!
     @IBOutlet weak var ItsLitButton: UIImageView!
     @IBOutlet weak var tapCounterLabel: UILabel!
@@ -32,7 +32,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     let containerView = UIView()
     var viewController = self
     var interstitial: GADInterstitial!
-    
+        
     //MARK: - Objects
     var locationManager = CLLocationManager()
     var animating : Bool = false
@@ -48,11 +48,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var heldDownFor = 0
     var tapCounter = 0
     var locationsDictionary = [String: Location]()
-    var users: [User?] = [] {
-        didSet {
-            observeFriendsAndSendLitness()
-        }
-    }
+
     
     var timer = Timer()
     var otherUser: User?
@@ -75,10 +71,15 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var session   : MCSession!
     var peerID    : MCPeerID!
     var litness = [Lit]()
+    let user = User()
+
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        GMSPlacesClient.provideAPIKey("AIzaSyBElxJuZMRg3VIPdRwPr5KwV_SgXMSOfqY")
+        GMSServices.provideAPIKey("AIzaSyBElxJuZMRg3VIPdRwPr5KwV_SgXMSOfqY")
         
         itsLitImage.animation = "slideUp"
         itsLitImage.animate()
@@ -87,10 +88,8 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         view.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
-        self.map.isHidden = true
         
         checkIfUserIsLoggedIn()
-        loadPeerToPeer()
         
         self.becomeFirstResponder()
         func canBecomeFirstResponder() -> Bool {
@@ -99,7 +98,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
         smallItsLitButton.isHidden = true
         smallItsLitButton.isUserInteractionEnabled = true
-        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countForInteraction), userInfo: nil, repeats: true)
         
         let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(littleLitTapped))
         
@@ -184,7 +182,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
         // If user isn't logged in
         if FIRAuth.auth()?.currentUser?.uid == nil {
-            self.worldButton.isHidden = true
             setupNavBarWithoutUser()
             createAndLoadInterstitial()
             do {
@@ -198,33 +195,31 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             present(navController, animated: true, completion: nil)
             
         } else {
-            
+            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countForInteraction), userInfo: nil, repeats: true)
             let uid = FIRAuth.auth()!.currentUser!.uid
             let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
             ref.observeSingleEvent(of: .value, with: { (snapshot) in
                 if let dictionary = snapshot.value as? [String: AnyObject] {
                     let firScore = dictionary["Score"] as? Int
                     self.tapCounter = firScore!
+                    
+                    if self.tapCounter <= 0 {
+                        let score = 1
+                        let values: [String: AnyObject] = ["Score": score as AnyObject]
+                        ref.updateChildValues(values) { (error, ref) in
+                            if error != nil {
+                                print(error as Any)
+                                return
+                            }
+                        }
+                        self.updateScoreLabel(score)
+                    }
+
                 }
             }, withCancel: nil)
             
-            if tapCounter < 2 {
-            let score = 1
-            let values: [String: AnyObject] = ["Score": score as AnyObject]
-            ref.updateChildValues(values) { (error, ref) in
-                if error != nil {
-                    print(error as Any)
-                    return
-                }
-            }
-            self.updateScoreLabel(score)
-            }
-            
             view.isUserInteractionEnabled = false
 
-            self.groupUsers(users as! [User])
-            //  peopleButton.isHidden = true
-            self.worldButton.isHidden = true
             profileImageView.isHidden = false
             navigationItem.rightBarButtonItem?.isEnabled = true
             locationManager.requestAlwaysAuthorization()
@@ -232,11 +227,11 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             
             fetchUserAndSetupNavBarTitle()
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Friends", style: .plain, target: self, action: #selector(goToFriendsPage))
-            navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
+            navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter", size: 18)!], for: UIControlState.normal)
             navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Connect", style: .plain, target: self, action: #selector(connectAlert))
             navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 67)
-            navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter-Bold", size: 18)!], for: UIControlState.normal)
+            navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter", size: 18)!], for: UIControlState.normal)
         }
     }
     
@@ -257,19 +252,20 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
 
         let alertViewIcon = UIImage(named: "people0")
         let alert = SCLAlertView(appearance: appearance)
-        alert.addButton("Connect Over Wifi", backgroundColor: .black, textColor: .white) {
+        alert.addButton("Connect Over WiFi", backgroundColor: .black, textColor: .white) {
             
             wifiConnectAlert.showWarning("Pro Tip", subTitle: "You need to be on the same WiFi", duration: 5.0, colorStyle: 0xFFFFFF)
             self.connectScreen(self)
         }
         alert.addButton("Connect With Friends", backgroundColor: .black, textColor: .white) {
-            
+            self.observeFriendsAndSendLitness(self.user)
         }
         alert.addButton("Location", backgroundColor: .black, textColor: .white) {
+            self.showMap(self)
         }
         alert.addButton("No, Solo Dolo", backgroundColor: .red, textColor: .white) {
         }
-        alert.showSuccess("Connect", subTitle: "You can connect multiple ways", colorStyle: 0xFFFFFF, circleIconImage: alertViewIcon)
+        alert.showSuccess("Connect", subTitle: "Connect With Others", colorStyle: 0xFFFFFF, circleIconImage: alertViewIcon)
     }
     
     // Fetch user
@@ -283,9 +279,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 self.navigationItem.title = dictionary["name"] as? String
                 
-                let user = User()
-                user.setValuesForKeys(dictionary)
-                self.setupNavBarWithUser(user)
+                self.user.setValuesForKeys(dictionary)
+                self.setupNavBarWithUser(self.user)
+                self.loadPeerToPeer(self.user)
             }
         }, withCancel: nil)
     }
@@ -341,61 +337,48 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
 
     }
     
-    func observeFriendsAndSendLitness() {
+    func observeFriendsAndSendLitness(_ user: User) {
+                let uidName = user.name
+                let uid = FIRAuth.auth()!.currentUser!.uid
+                let ref = FIRDatabase.database().reference().child("Friend").child(uid)
+                let litRef = FIRDatabase.database().reference().child("Litness").child(uidName!)
+                //append properties dictionary onto values somehow??
+                //key $0, value $1
+                ref.observeSingleEvent(of: .value, with: { (snapshot) in
+                    
+                    if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                        var toId = self.otherUser?.id
+                        
+                        for snap in snapshots {
+                            let allFriends = [snap]
+                            print(allFriends)
+                            let litId = snap.key
+                            toId = litId
+                            let friendRef = FIRDatabase.database().reference().child("Friend").child(uid).child(toId!)
+                            
+                            if let friendSnaps = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                                    
+                                for snap in friendSnaps {
+                            
+                                let litId2 = snap.key
+                                let litRef2 = litRef.child(toId!)
+                                let values: [String: AnyObject] = ["FRIENDS": litId2 as AnyObject]
+                                litRef2.updateChildValues(values)
+                                }
+                            }
+                         }
+                    }
+                }, withCancel: nil)
         
-        //        let ref = FIRDatabase.database().reference().child("Litness")
-        //        let toId = otherUser?.id!
-        //        let fromId = FIRAuth.auth()!.currentUser!.uid
-        //        let timestamp = NSNumber(value: Int(Date().timeIntervalSince1970))
-        
-        //        var values: [String: AnyObject] = ["toId": toId as AnyObject, "fromId": fromId as AnyObject, "timestamp": timestamp]
-        //
-        //        //append properties dictionary onto values somehow??
-        //        //key $0, value $1
-        //
-        //        childRef.updateChildValues(values) { (error, ref) in
-        //            if error != nil {
-        //                print(error as Any)
-        //                return
-        //            }
-        //
-        //            let userLitRef = FIRDatabase.database().reference().child("Litness").child(fromId).child(toId!)
-        //
-        //            let litId = childRef.key
-        //            userLitRef.updateChildValues([litId: 1])
-        //
-        //            let recipientUserMessagesRef = FIRDatabase.database().reference().child("Litness").child(toId!).child(fromId)
-        //            recipientUserMessagesRef.updateChildValues([litId: 1])
-        //        }
-        
-        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
-            return
-        }
-        
-        databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(uid).observe(.value, with: { (snapshot) in
-            let litId = snapshot.key
-            let litRef = FIRDatabase.database().reference().child("Litness").child(litId)
-            litRef.observeSingleEvent(of: .value, with: { (snapshot) in
-                
-                guard let dictionary = snapshot.value as? [String: AnyObject] else {
-                    return
-                }
-                self.litness.append(Lit(dictionary: dictionary))
-                DispatchQueue.main.async(execute: {
-                    self.itsLitNoButton()
-                })
+        self.databaseHandleReceiving = litRef.observe(.value, with: { (snapshots) in
+                self.itsLitNoButton()
             }, withCancel: nil)
-        })
-    }
-    
-    func groupUsers(_ users: [User]) {
-        self.users = users
+        
     }
     
     //MARK: - Functions
-    @IBAction func showMap(_ sender: Any) {
+    func showMap(_ sender: Any) {
         setupMap()
-        //  rotateWorldView()
         if (CLLocationManager.locationServicesEnabled())
         {
             locationManager = CLLocationManager()
@@ -442,7 +425,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     @IBAction func changeBackground(gesture: UILongPressGestureRecognizer) {
         
-        
         if self.tapCounter >= 500 {
         UIView.animate(withDuration: 1.0, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.1, y: 0.1) }, completion: { _ in
             UIView.animate(withDuration: 0.3) {
@@ -450,26 +432,17 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 self.changeToBlack()
             }
          })
-        }
+       }
     }
     
     //MARK: - Functions for Flash
     
     func itsLitNoButton() {
         counter += 1
-        tapCounter += 1
+        self.tapCounter += 1
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
-        if self.tapCounter == 500 {
-            JSSAlertView().show(
-                self,
-                title: "Black Background Unlocked!",
-                text: "Hold down the lighter to change background color",
-                buttonText: "Right on",
-                color: UIColor(r: 254, g: 209, b: 67),
-                iconImage: nil)
-        }
-        
+        checkForUnlocks()
         
         if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
             if interstitial.isReady {
@@ -513,7 +486,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         // Shake Animation
         navigationController?.navigationBar.shake()
         ItsLitButton.shake()
-        worldButton.shake()
         
         if motion == .motionShake {
             sendInfo()
@@ -590,7 +562,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     @IBAction func itsLit(_ sender: UIButton) {
         sendInfo()
-        observeFriendsAndSendLitness()
         checkForAnimations()
 
         itsLitImage.layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -724,117 +695,10 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         })
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        let location = locations.last! as CLLocation
-        print (location)
-        let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-        map.setRegion(region, animated: true)
-        map.setUserTrackingMode(.follow, animated: true)
-        let uid = (FIRAuth.auth()!.currentUser!.uid)
-        //  let ref = FIRDatabase.database().reference()
-        let values = ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
-        
-        let locationRef = FIRDatabase.database().reference().child("user-locations").child(uid)
-        locationRef.updateChildValues(values) {
-            (error, ref) in
-            if error != nil {
-                print(error as Any)
-                return
-            }
-        }
-        
-        locationRef.observe(.childAdded, with: { (snapshot) in
-            
-            let userId = snapshot.key
-            FIRDatabase.database().reference().child("user-locations").child(uid).child(userId).observe(.childAdded, with: { (snapshot) in
-                
-                let locationId = snapshot.key
-                let locationsReference = FIRDatabase.database().reference().child("locations").child(locationId)
-                locationsReference.observeSingleEvent(of: .value, with: { (snapshot) in
-                    
-                    if let dictionary = snapshot.value as? [String: AnyObject] {
-                        let locations = Location(dictionary: dictionary)
-                        
-                        if let locationPartnerId = locations.locationPartnerId() {
-                            self.locationsDictionary[locationPartnerId] = locations
-                        }
-                    }
-                    
-                }, withCancel: nil)
-                
-            }, withCancel: nil)
-            
-        }, withCancel: nil)
-    }
-    
-    func sendInfo() {
-        if self.session.connectedPeers.count > 0 {
-            let firstNameVar = "It's"
-            let lastNameVar = "Lit"
-            myDictionary = ["itemA" : "\(firstNameVar)", "itemB" : "\(lastNameVar)"]
-            do {
-                let data =  NSKeyedArchiver.archivedData(withRootObject: myDictionary)
-                try self.session.send(data, toPeers: self.session.connectedPeers, with: MCSessionSendDataMode.unreliable)
-            } catch let error as NSError {
-                let ac = UIAlertController(title: "Send error", message: error.localizedDescription, preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                present(ac, animated: true, completion: nil)
-            }
-        }
-    }
-    
-    // Called when a peer sends an NSData to us
-    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        // This needs to run on the main queue
-        DispatchQueue.main.async {
-            self.itsLitNoButton()
-        }
-    }
-    
-    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
-        if self.session.connectedPeers.count == 1 {
-            tapLabel.text = "Connected to: 1 person"
-        }else if self.session.connectedPeers.count > 1 {
-            let peerCount = String(self.session.connectedPeers.count)
-            tapLabel.text = "Connected to: \(peerCount) people"
-        } else {
-            tapLabel.text = "Connect with others over Wi-Fi"
-        }
-        dismiss(animated: true, completion: nil)
-    }
-    
-    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    func browserViewController(_ browserViewController: MCBrowserViewController, shouldPresentNearbyPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) -> Bool {
-        
-        return true
-    }
-    
-    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        
-        switch state {
-        case MCSessionState.connected:
-            print("Connected: \(peerID.displayName)")
-        case MCSessionState.connecting:
-            print("Connecting: \(peerID.displayName)")
-        case MCSessionState.notConnected:
-            print("Not Connected: \(peerID.displayName)")
-        }
-    }
-    
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-    }
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
-    }
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-    }
-    
-    func loadPeerToPeer(){
-        self.peerID  = MCPeerID(displayName: UIDevice.current.name)
+
+    //Mark: PEER
+    func loadPeerToPeer(_ user: User){
+        self.peerID  = MCPeerID(displayName: user.name!)
         self.session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
         self.session = MCSession(peer: self.peerID)
         self.session.delegate = self
@@ -969,6 +833,11 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
 
     }
+    
+}
+
+
+struct CurrentUser {
     
 }
 

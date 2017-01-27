@@ -13,6 +13,7 @@ import Firebase
 import FirebaseInstanceID
 import FirebaseMessaging
 import GoogleMobileAds
+import GoogleMaps
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -54,6 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FIRApp.configure()
         // Initialize Google Mobile Ads SDK
         GADMobileAds.configure(withApplicationID: "ca-app-pub-8446644766706278~1782602542")
+        GMSServices.provideAPIKey("AIzaSyBElxJuZMRg3VIPdRwPr5KwV_SgXMSOfqY")
         
         UINavigationBar.appearance().barTintColor = UIColor.rgb(254, green: 209, blue: 67)
         

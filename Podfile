@@ -22,4 +22,6 @@ pod 'Firebase/Core'
 pod 'JSSAlertView'
 pod 'Spring', :git => 'https://github.com/MengTo/Spring.git', :branch => 'swift3'
 pod 'SCLAlertView'
+pod 'GoogleMaps'
+pod 'GooglePlaces'
 end

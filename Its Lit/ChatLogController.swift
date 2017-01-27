@@ -26,11 +26,22 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     var databaseHandle: FIRDatabaseHandle?
     var databaseHandleReceiving: FIRDatabaseHandle?
     
+    var currentUser = User()
+    
     var user: User? {
         didSet {
             navigationItem.title = user?.name
             observeMessages()
-            observeFriendRequest()
+            guard let uid = FIRAuth.auth()?.currentUser?.uid else {
+                return
+            }
+            
+            FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    self.currentUser.setValuesForKeys(dictionary)
+                }
+            }, withCancel: nil)
+            observeFriendRequest(currentUser)
         }
     }
     
@@ -41,9 +52,15 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add Friend", style: .plain, target: self, action: #selector(addFriend))
         
-        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
+        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = self.user?.id else {
             return
         }
+        
+        FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                self.currentUser.setValuesForKeys(dictionary)
+            }
+        }, withCancel: nil)
         
         FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
             if error != nil {
@@ -60,17 +77,23 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         setupKeyboardObservers()
     }
     
-    func observeFriendRequest() {
-        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else {
+    func observeFriendRequest(_ currentUser: User) {
+        
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
             return
         }
         
+        let toId = self.user?.name!
+        
+        let name = self.currentUser.name
+        
         //Check if any request received
-        self.databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(toId).child(uid).observe(.childAdded, with: { (snapshot) in
+        self.databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(toId!).child(name!).observe(.childAdded, with: { (snapshot) in
             
-            FIRDatabase.database().reference().child("Friend").child(toId).observeSingleEvent(of: .value, with: { (snapshot) in
+            FIRDatabase.database().reference().child("Friend").child(toId!).observeSingleEvent(of: .value, with: { (snapshot) in
                 
                 if (snapshot.value as? [String: AnyObject]) != nil {
+                    
                     FIRDatabase.database().reference().child("Friend").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
                         
                         if (snapshot.value as? [String: AnyObject]) != nil {
@@ -93,7 +116,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }, withCancel: nil)
         
         //Confirm Request Was Sent
-        databaseHandle = FIRDatabase.database().reference().child("Friend").child(uid).child(toId).observe(.childAdded, with: { (snapshot) in
+        databaseHandle = FIRDatabase.database().reference().child("Friend").child(uid).child(toId!).observe(.childAdded, with: { (snapshot) in
             if (snapshot.value as? [String: AnyObject]) == nil {
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Waiting", style: .plain, target: self, action: nil)
             }
@@ -185,14 +208,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     func friendAdded() {
-        
-        let ref = FIRDatabase.database().reference().child("Friends")
-        let childRef = ref.childByAutoId()
-        let toId = self.user!.id!
+        let toId = self.user!.name!
         let fromId = FIRAuth.auth()!.currentUser!.uid
         let friendRef = FIRDatabase.database().reference().child("Friend").child(fromId).child(toId)
         
-        let friends = childRef.key
+        let friends = toId
         // let recipientRef = FIRDatabase.database().reference().child("Friend").child(toId).child(fromId)
         
         friendRef.updateChildValues([friends: true])

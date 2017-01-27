@@ -118,6 +118,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
                 }
                 
                 self.messagesDictionary.removeValue(forKey: chatPartnerId)
+                self.attemptReloadOfTable()
                 self.messages.remove(at: indexPath.row)
                 self.attemptReloadOfTable()
                 
@@ -324,7 +325,6 @@ extension FriendsTableViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         filterContentForSearchText(searchText: searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
         self.attemptReloadOfTable()
-        
     }
 }
 

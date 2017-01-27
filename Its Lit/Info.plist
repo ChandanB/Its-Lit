@@ -29,9 +29,9 @@
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This is the music you will play while getting lit!</string>
 	<key>NSCameraUsageDescription</key>
-	<string>It's Lit would like to use your flashlight!</string>
+	<string>It&apos;s Lit would like to use your flashlight!</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>It's Lit would like to use your location</string>
+	<string>It&apos;s Lit would like to use your location</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>You can update your profile picture!</string>
 	<key>UIApplicationExitsOnSuspend</key>
@@ -48,6 +48,11 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>comgooglemaps</string>
+		<string>googlechromes</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
