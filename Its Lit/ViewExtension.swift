@@ -15,13 +15,66 @@ import MultipeerConnectivity
 
 extension ViewController: UIImagePickerControllerDelegate {
     
-    func setupMap() {
-                
+    func addAlert() {
         let appearance = SCLAlertView.SCLAppearance(
-            kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
-            kTextFont: UIFont(name: "AmericanTypewriter", size: 14)!,
-            kButtonFont: UIFont(name: "AmericanTypewriter-Bold", size: 14)!,
-            showCloseButton: false
+        kCircleIconHeight: 50,
+        kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
+        kTextFont: UIFont(name: "AmericanTypewriter", size: 14)!,
+        kButtonFont: UIFont(name: "AmericanTypewriter-Bold", size: 14)!,
+        showCloseButton: false
+        )
+        
+        let view = UIImageView()
+        view.contentMode = .scaleAspectFit
+        let alertViewIcon = UIImage(named: "ios emoji")
+        view.image = alertViewIcon
+        
+        let alert = SCLAlertView(appearance: appearance)
+        alert.addButton("WHITE", backgroundColor: .black, textColor: .white) {
+            self.changeToWhite()
+            self.ogFireButton.animation = "slideUp"
+            self.ogFireButton.duration = 2.0
+            self.ogFireButton.animate()
+        }
+        alert.addButton("RED", backgroundColor: self.redColor, textColor: .white) {
+            self.changeToRed()
+            self.ogFireButton.animation = "slideUp"
+            self.ogFireButton.duration = 2.0
+            self.ogFireButton.animate()
+        }
+        alert.addButton("BLUE", backgroundColor: self.blueColor, textColor: .white) {
+            self.changeToBlue()
+            self.ogFireButton.animation = "slideUp"
+            self.ogFireButton.duration = 2.0
+            self.ogFireButton.animate()
+        }
+        alert.addButton("GOLD", backgroundColor: self.defaultColor, textColor: .white) {
+            self.changeToDefault()
+            self.ogFireButton.animation = "slideUp"
+            self.ogFireButton.duration = 2.0
+            self.ogFireButton.animate()
+        }
+        alert.addButton("GREY", backgroundColor: .darkGray, textColor: .white) {
+            self.changeToGrey()
+            self.ogFireButton.animation = "slideUp"
+            self.ogFireButton.duration = 2.0
+            self.ogFireButton.animate()
+        }
+        alert.addButton("DONE", backgroundColor: .white, textColor: .black) {
+            self.ogFireButton.animation = "pop"
+            self.ogFireButton.duration = 2.0
+            self.ogFireButton.animate()
+        }
+        alert.showSuccess("OG FLAME", subTitle: "Let's Change The Background", colorStyle: 0x000000, circleIconImage: view.image, animationStyle: SCLAnimationStyle.bottomToTop)
+    }
+    
+    func setupMap() {
+        let appearance = SCLAlertView.SCLAppearance(
+         kCircleIconHeight: 55,
+         kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
+         kTextFont: UIFont(name: "AmericanTypewriter", size: 14)!,
+         kButtonFont: UIFont(name: "AmericanTypewriter-Bold", size: 14)!,
+         showCloseButton: false
         )
         
         // Initialize SCLAlertView using custom Appearance
@@ -124,7 +177,6 @@ extension ViewController: UIImagePickerControllerDelegate {
     }
     
     func changeToRed() {
-      //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[0]
             self.view.backgroundColor =  self.backgroundColours[0]
@@ -136,7 +188,7 @@ extension ViewController: UIImagePickerControllerDelegate {
     }
     
     func changeToGrey() {
-      //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[1]
             self.view.backgroundColor =  self.backgroundColours[1]
@@ -148,7 +200,7 @@ extension ViewController: UIImagePickerControllerDelegate {
     }
     
     func changeToBlack() {
-      //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[2]
             self.view.backgroundColor =  self.backgroundColours[2]
@@ -184,7 +236,7 @@ extension ViewController: UIImagePickerControllerDelegate {
     }
     
     func changeToBlue() {
-       // let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        // let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[4]
             self.view.backgroundColor =  self.backgroundColours[4]
@@ -193,60 +245,60 @@ extension ViewController: UIImagePickerControllerDelegate {
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
             self.tapCounterLabel.tintColor = .white
         }, completion: nil)
-
+        
     }
     func animateBackgroundColour () {
         changeToBlack()
     }
-
-func rotateView() {
-    if(!animating) {
-        animating = true;
-        spinWithOptions(options: UIViewAnimationOptions.curveEaseIn);
-    }
-}
-
-func stopSpinning() {
-    animating = false
-}
-
-func spinWithOptions(options: UIViewAnimationOptions) {
-    UIView.animate(withDuration: 0.5, delay: 0.0, options: options, animations: { () -> Void in
-        let val : CGFloat = CGFloat((M_PI / Double(2.0)));
-        self.itsLitImage.transform = self.itsLitImage.transform.rotated(by: val)
-    }) { (finished: Bool) -> Void in
-        if(finished) {
-            if(self.animating){
-                self.spinWithOptions(options: UIViewAnimationOptions.curveLinear)
-            } else if (options != UIViewAnimationOptions.curveEaseOut) {
-                self.spinWithOptions(options: UIViewAnimationOptions.curveEaseOut)
-            }
+    
+    func rotateView() {
+        if(!animating) {
+            animating = true;
+            spinWithOptions(options: UIViewAnimationOptions.curveEaseIn);
         }
     }
-}
-
-func rotateWorldView() {
-    if(!animating) {
-        animating = true;
-        spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseIn);
-    } else {
+    
+    func stopSpinning() {
         animating = false
     }
-}
-
-func spinWorldWithOptions(options: UIViewAnimationOptions) {
-    UIView.animate(withDuration: 10.0, delay: 0.0, options: options, animations: { () -> Void in
-     //   let val : CGFloat = CGFloat((M_PI / Double(5.0)));
-    }) { (finished: Bool) -> Void in
-        if(finished) {
-            if(self.animating){
-                self.spinWorldWithOptions(options: UIViewAnimationOptions.curveLinear)
-            } else if (options != UIViewAnimationOptions.curveEaseOut) {
-                self.spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseOut)
+    
+    func spinWithOptions(options: UIViewAnimationOptions) {
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: options, animations: { () -> Void in
+            let val : CGFloat = CGFloat((M_PI / Double(2.0)));
+            self.itsLitImage.transform = self.itsLitImage.transform.rotated(by: val)
+        }) { (finished: Bool) -> Void in
+            if(finished) {
+                if(self.animating){
+                    self.spinWithOptions(options: UIViewAnimationOptions.curveLinear)
+                } else if (options != UIViewAnimationOptions.curveEaseOut) {
+                    self.spinWithOptions(options: UIViewAnimationOptions.curveEaseOut)
+                }
             }
         }
     }
-}
+    
+    func rotateWorldView() {
+        if(!animating) {
+            animating = true;
+            spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseIn);
+        } else {
+            animating = false
+        }
+    }
+    
+    func spinWorldWithOptions(options: UIViewAnimationOptions) {
+        UIView.animate(withDuration: 10.0, delay: 0.0, options: options, animations: { () -> Void in
+            //   let val : CGFloat = CGFloat((M_PI / Double(5.0)));
+        }) { (finished: Bool) -> Void in
+            if(finished) {
+                if(self.animating){
+                    self.spinWorldWithOptions(options: UIViewAnimationOptions.curveLinear)
+                } else if (options != UIViewAnimationOptions.curveEaseOut) {
+                    self.spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseOut)
+                }
+            }
+        }
+    }
     func sendInfo() {
         if self.session.connectedPeers.count > 0 {
             let firstNameVar = "It's"
@@ -263,11 +315,24 @@ func spinWorldWithOptions(options: UIViewAnimationOptions) {
         }
     }
     
+    //Mark: PEER
+    func loadPeerToPeer(_ user: User){
+        self.peerID  = MCPeerID(displayName: user.name!)
+        self.session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
+        self.session = MCSession(peer: self.peerID)
+        self.session.delegate = self
+        self.assistant = MCAdvertiserAssistant(serviceType:"VBC-ShareCard", discoveryInfo:nil, session:self.session)
+        self.assistant.start()
+        self.browser = MCBrowserViewController(serviceType: "VBC-ShareCard", session: self.session)
+        self.browser.delegate = self
+    }
+    
     // Called when a peer sends an NSData to us
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         // This needs to run on the main queue
         DispatchQueue.main.async {
             self.itsLitNoButton()
+            self.tapCounter += 1
         }
     }
     
@@ -301,5 +366,47 @@ func spinWorldWithOptions(options: UIViewAnimationOptions) {
     }
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
     }
-
+    
+    func addSwipe() {
+        let directions: [UISwipeGestureRecognizerDirection] = [.right, .left, .up, .down]
+        for direction in directions {
+            let gesture = UISwipeGestureRecognizer(target: self, action:  #selector(self.swipeAnimations))
+            gesture.direction = direction
+            self.view.addGestureRecognizer(gesture)
+        }
+    }
+    
+    func swipeAnimations(sender: UISwipeGestureRecognizer) {
+        print(sender.direction)
+        if sender.direction == .up {
+            itsLitImage.animation = "pop"
+            itsLitImage.animate()
+            itsLitNoButton()
+        }
+        if sender.direction == .down {
+            itsLitImage.animation = "fall"
+            itsLitImage.animateToNext {
+                self.itsLitImage.animation = "pop"
+                self.itsLitImage.animateTo()
+            }
+            itsLitNoButton()
+        }
+        if sender.direction == .left {
+            itsLitImage.animation = "slideRight"
+            itsLitImage.animateToNext {
+                self.itsLitImage.animation = "pop"
+                self.itsLitImage.animateTo()
+            }
+            itsLitNoButton()
+        }
+        if sender.direction == .right {
+            itsLitImage.animation = "slideLeft"
+            itsLitImage.animateToNext {
+                self.itsLitImage.animation = "pop"
+                self.itsLitImage.animateTo()
+            }
+            itsLitNoButton()
+        }
+    }
+    
 }

@@ -37,6 +37,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
     var cellIndexPath: IndexPath!
     
     var chatLogController: ChatLogController?
+    var viewController: ViewController?
     let searchController = UISearchController(searchResultsController: nil)
     
     lazy var searchBar: UISearchBar = UISearchBar()
@@ -49,10 +50,12 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
     var messagesDictionary = [String: Message]()
     var searchActive : Bool = false
     var filtered = [User]()
+    var currentUser: User?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.leftBarButtonItem?.tintColor = UIColor.black
         navigationController?.navigationItem.title = "Search For Friends"
@@ -118,8 +121,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
                 }
                 
                 self.messagesDictionary.removeValue(forKey: chatPartnerId)
-                self.attemptReloadOfTable()
-                self.messages.remove(at: indexPath.row)
+             // self.messages.remove(at: indexPath.row)
                 self.attemptReloadOfTable()
                 
                 //                //this is one way of updating the table, but its actually not that safe..
@@ -196,9 +198,10 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         })
     }
     
-    func showChatControllerForUser(_ user: User) {
+    func showChatControllerForUser(_ user: User, _ currentUser: User) {
         let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
         chatLogController.user = user
+        chatLogController.currentUser = currentUser
         navigationController?.pushViewController(chatLogController, animated: true)
     }
     
@@ -248,10 +251,8 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
             cell.message = nil
             
         } else {
-            
             let message = messages[(indexPath as NSIndexPath).row]
             cell.message = message
-            
         }
         return cell
     }
@@ -267,15 +268,14 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 72
     }
-    
-    var viewController: ViewController?
-    
+        
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if searchController.isActive && searchController.searchBar.text != ""  {
             var user: User
+            
             user = self.filtered[(indexPath as NSIndexPath).row]
-            self.showChatControllerForUser(user)
+            self.showChatControllerForUser(user, self.currentUser!)
             
         } else {
             let message = messages[(indexPath as NSIndexPath).row]
@@ -293,7 +293,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
                 let user = User()
                 user.id = chatPartnerId
                 user.setValuesForKeys(dictionary)
-                self.showChatControllerForUser(user)
+                self.showChatControllerForUser(user, self.currentUser!)
                 
             }, withCancel: nil)
         }
@@ -311,12 +311,12 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
                 }
                 let controller = (segue.destination as! UINavigationController).topViewController as! ChatLogController
                 controller.user = user
+                controller.currentUser = self.currentUser
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
             }
         }
     }
-    
 }
 
 

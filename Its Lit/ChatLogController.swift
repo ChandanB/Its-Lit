@@ -14,7 +14,7 @@ import AVFoundation
 
 class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    let viewController: ViewController? = nil
+    var viewController: ViewController?
     let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
     
     var startingFrame: CGRect?
@@ -25,23 +25,17 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     var ref: FIRDatabaseReference?
     var databaseHandle: FIRDatabaseHandle?
     var databaseHandleReceiving: FIRDatabaseHandle?
-    
-    var currentUser = User()
+    var currentUser: User? {
+        didSet {
+            observeFriendRequest(self.currentUser!)
+        }
+    }
     
     var user: User? {
         didSet {
             navigationItem.title = user?.name
             observeMessages()
-            guard let uid = FIRAuth.auth()?.currentUser?.uid else {
-                return
-            }
-            
-            FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-                if let dictionary = snapshot.value as? [String: AnyObject] {
-                    self.currentUser.setValuesForKeys(dictionary)
-                }
-            }, withCancel: nil)
-            observeFriendRequest(currentUser)
+           
         }
     }
     
@@ -49,18 +43,12 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add Friend", style: .plain, target: self, action: #selector(addFriend))
         
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = self.user?.id else {
             return
         }
-        
-        FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                self.currentUser.setValuesForKeys(dictionary)
-            }
-        }, withCancel: nil)
         
         FIRDatabase.database().reference().child("Lit").child(uid).child(toId).removeValue(completionBlock: { (error, ref) in
             if error != nil {
@@ -75,22 +63,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.keyboardDismissMode = .interactive
         setupKeyboardObservers()
-    }
-    
-    func observeFriendRequest(_ currentUser: User) {
         
-        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
-            return
-        }
-        
-        let toId = self.user?.name!
-        
-        let name = self.currentUser.name
+        let name = currentUser?.name
         
         //Check if any request received
-        self.databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(toId!).child(name!).observe(.childAdded, with: { (snapshot) in
+        self.databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(toId).child(name!).observe(.childAdded, with: { (snapshot) in
             
-            FIRDatabase.database().reference().child("Friend").child(toId!).observeSingleEvent(of: .value, with: { (snapshot) in
+            FIRDatabase.database().reference().child("Friend").child(toId).observeSingleEvent(of: .value, with: { (snapshot) in
                 
                 if (snapshot.value as? [String: AnyObject]) != nil {
                     
@@ -116,7 +95,51 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }, withCancel: nil)
         
         //Confirm Request Was Sent
-        databaseHandle = FIRDatabase.database().reference().child("Friend").child(uid).child(toId!).observe(.childAdded, with: { (snapshot) in
+        databaseHandle = FIRDatabase.database().reference().child("Friend").child(uid).child(toId).observe(.childAdded, with: { (snapshot) in
+            if (snapshot.value as? [String: AnyObject]) == nil {
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Waiting", style: .plain, target: self, action: nil)
+            }
+        })
+
+    }
+    
+    func observeFriendRequest(_ currentUser: User) {
+        
+        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = self.user?.name else {
+            return
+        }
+        let name = currentUser.name
+        
+        //Check if any request received
+        self.databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(toId).child(name!).observe(.childAdded, with: { (snapshot) in
+            
+            FIRDatabase.database().reference().child("Friend").child(toId).observeSingleEvent(of: .value, with: { (snapshot) in
+                
+                if (snapshot.value as? [String: AnyObject]) != nil {
+                    
+                    FIRDatabase.database().reference().child("Friend").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                        
+                        if (snapshot.value as? [String: AnyObject]) != nil {
+                            let image = UIImage(named: "love")
+                            let tintedImage = image?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+                            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: tintedImage, style: .plain, target: self, action: nil)
+                            self.navigationItem.rightBarButtonItem?.tintColor = .red
+                        } else {
+                            let alert = UIAlertController(title: "Friend Request Received", message: "This user wants to be your friend! Add them to get lit anywhere, anytime.", preferredStyle: UIAlertControllerStyle.alert)
+                            alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: { action in
+                                self.friendAdded()
+                            }))
+                            alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        }
+                    })
+                }
+            })
+            
+        }, withCancel: nil)
+        
+        //Confirm Request Was Sent
+        databaseHandle = FIRDatabase.database().reference().child("Friend").child(uid).child(toId).observe(.childAdded, with: { (snapshot) in
             if (snapshot.value as? [String: AnyObject]) == nil {
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Waiting", style: .plain, target: self, action: nil)
             }

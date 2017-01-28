@@ -61,25 +61,14 @@ public extension UIView {
     }
     
     func shakePoints(count : Float? = nil,for duration : TimeInterval? = nil,withTranslation translation : Float? = nil) {
-        let animation : CABasicAnimation = CABasicAnimation(keyPath: "transform.translation.x")
+        let animation : CABasicAnimation = CABasicAnimation(keyPath: "transform.translation.y")
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
         
         animation.repeatCount = count ?? 1
-        animation.duration = (duration ?? 0.5)/TimeInterval(animation.repeatCount)
+        animation.duration = (duration ?? 1)/TimeInterval(animation.repeatCount)
         animation.autoreverses = false
-        animation.byValue = translation ?? -80
+        animation.byValue = translation ?? -300
         layer.add(animation, forKey: "shakePoints")
     }
     
-    func shakePoints3(count : Float? = nil,for duration : TimeInterval? = nil,withTranslation translation : Float? = nil) {
-        let animation : CABasicAnimation = CABasicAnimation(keyPath: "transform.translation.x")
-        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
-        
-        animation.repeatCount = count ?? 1
-        animation.duration = (duration ?? 0.5)/TimeInterval(animation.repeatCount)
-        animation.autoreverses = false
-        animation.byValue = translation ?? 80
-        layer.add(animation, forKey: "shakePoints")
     }
-    
-}

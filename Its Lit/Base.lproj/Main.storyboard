@@ -31,9 +31,9 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JAO-U0-uLG">
-                                <rect key="frame" x="62" y="98" width="251" height="53"/>
+                                <rect key="frame" x="16" y="98" width="343" height="53"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="53" id="KWh-pk-IlM"/>
+                                    <constraint firstAttribute="height" constant="53" id="IkI-Ul-6VT"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="AmericanTypewriter-Bold" family="American Typewriter" pointSize="45"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -43,29 +43,29 @@
                                 <rect key="frame" x="16" y="159" width="343" height="349"/>
                                 <gestureRecognizers/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ios emoji" translatesAutoresizingMaskIntoConstraints="NO" id="dAp-Dw-G08" customClass="SpringImageView" customModule="Spring">
-                                <rect key="frame" x="137" y="527" width="101" height="96"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ios emoji" translatesAutoresizingMaskIntoConstraints="NO" id="dAp-Dw-G08" customClass="SpringImageView" customModule="Spring">
+                                <rect key="frame" x="150" y="558" width="75" height="65"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="101" id="3d5-49-QUJ"/>
+                                    <constraint firstAttribute="width" constant="75" id="uih-xw-5d5"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.93333333333333335" green="0.62352941176470589" blue="0.15294117647058825" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="bottom" secondItem="twC-Os-jRJ" secondAttribute="bottom" id="092-aK-M50"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerX" secondItem="dAp-Dw-G08" secondAttribute="centerX" id="2fK-tK-UHu"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="top" secondItem="twC-Os-jRJ" secondAttribute="top" id="65s-pJ-BeS"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="top" secondItem="JAO-U0-uLG" secondAttribute="bottom" constant="8" symbolic="YES" id="6Mk-g5-xo4"/>
-                            <constraint firstItem="twC-Os-jRJ" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="EbG-5Y-3jn"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="trailing" secondItem="twC-Os-jRJ" secondAttribute="trailing" id="KJh-aM-1rf"/>
-                            <constraint firstItem="dAp-Dw-G08" firstAttribute="top" secondItem="twC-Os-jRJ" secondAttribute="bottom" constant="19" id="MKO-kY-Yhv"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="twC-Os-jRJ" secondAttribute="leading" id="NBF-Lt-TPO"/>
-                            <constraint firstItem="JAO-U0-uLG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="34" id="Rhr-ln-gOA"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="SRj-qb-RgZ"/>
-                            <constraint firstItem="dAp-Dw-G08" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="TFr-nL-G7W"/>
-                            <constraint firstItem="JAO-U0-uLG" firstAttribute="centerX" secondItem="twC-Os-jRJ" secondAttribute="centerX" id="V4U-FE-TeR"/>
-                            <constraint firstItem="JAO-U0-uLG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="46" id="Ybk-eh-oXm"/>
-                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="xVy-Wr-NKv"/>
+                            <constraint firstItem="twC-Os-jRJ" firstAttribute="centerX" secondItem="dAp-Dw-G08" secondAttribute="centerX" id="15T-7c-tAA"/>
+                            <constraint firstItem="JAO-U0-uLG" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="1lW-BZ-MuP"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="bottom" secondItem="twC-Os-jRJ" secondAttribute="bottom" id="488-M1-fth"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="leading" secondItem="twC-Os-jRJ" secondAttribute="leading" id="BiA-QB-qVj"/>
+                            <constraint firstItem="JAO-U0-uLG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="CUM-b5-zUL"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="EAA-0l-uT2"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="trailing" secondItem="twC-Os-jRJ" secondAttribute="trailing" id="GAe-tW-WLl"/>
+                            <constraint firstItem="Tqx-ao-sX0" firstAttribute="top" secondItem="JAO-U0-uLG" secondAttribute="bottom" constant="8" symbolic="YES" id="b23-4R-Xu3"/>
+                            <constraint firstItem="JAO-U0-uLG" firstAttribute="trailing" secondItem="Tqx-ao-sX0" secondAttribute="trailing" id="bRr-90-Avf"/>
+                            <constraint firstItem="dAp-Dw-G08" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="bottom" constant="50" id="cZ0-SE-bC1"/>
+                            <constraint firstItem="JAO-U0-uLG" firstAttribute="leading" secondItem="Tqx-ao-sX0" secondAttribute="leading" id="e5V-7F-GB6"/>
+                            <constraint firstItem="twC-Os-jRJ" firstAttribute="top" secondItem="Tqx-ao-sX0" secondAttribute="top" id="eyr-e2-TEp"/>
+                            <constraint firstItem="JAO-U0-uLG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="34" id="qey-ka-Y1D"/>
+                            <constraint firstItem="dAp-Dw-G08" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="vd0-e6-yde"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="OBs-pb-2cG"/>
@@ -75,7 +75,7 @@
                     <connections>
                         <outlet property="ItsLitButton" destination="Tqx-ao-sX0" id="7uY-jl-xAQ"/>
                         <outlet property="itsLitImage" destination="Tqx-ao-sX0" id="5ct-Lt-8my"/>
-                        <outlet property="smallItsLitButton" destination="dAp-Dw-G08" id="q1a-aP-jpa"/>
+                        <outlet property="ogFireButton" destination="dAp-Dw-G08" id="lAW-Yb-daX"/>
                         <outlet property="tapCounterLabel" destination="JAO-U0-uLG" id="YAA-dZ-gVC"/>
                     </connections>
                 </viewController>
@@ -93,7 +93,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="QUG-75-iWa" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="6Pu-wy-pPe">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="6Pu-wy-pPe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
