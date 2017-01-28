@@ -33,73 +33,70 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 class FriendsTableViewController: UITableViewController, UISearchControllerDelegate {
     
-    var location = CGPoint.zero
+    // Index
     var cellIndexPath: IndexPath!
+    var location = CGPoint.zero
     
-    var chatLogController: ChatLogController?
-    var viewController: ViewController?
+    // Search
     let searchController = UISearchController(searchResultsController: nil)
+    lazy var searchBar : UISearchBar = UISearchBar()
+    var searchActive   : Bool = false
     
-    lazy var searchBar: UISearchBar = UISearchBar()
+    // Instance
+    var chatLogController : ChatLogController?
+    var viewController    : ViewController?
     
-    let cellId = "cellId"
-    
-    var users = [User]()
-    var messages = [Message]()
-    var lit = [Lit]()
+    // Data to go in cells
     var messagesDictionary = [String: Message]()
-    var searchActive : Bool = false
+    var messages = [Message]()
     var filtered = [User]()
     var currentUser: User?
-
+    let cellId = "cellId"
+    var users  = [User]()
+    var timer: Timer?
+    var lit = [Lit]()
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleCancel))
-        navigationItem.leftBarButtonItem?.tintColor = UIColor.black
-        navigationController?.navigationItem.title = "Search For Friends"
+        navigationController?.navigationItem.title  = "Search For Friends"
+        navigationItem.leftBarButtonItem?.tintColor = .black
         
-        tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
-        
-        searchController.delegate = self
-        searchController.searchResultsUpdater = self
         searchController.dimsBackgroundDuringPresentation = false
-        definesPresentationContext = true
-        tableView.tableHeaderView = searchController.searchBar
+        searchController.searchResultsUpdater = self
+        searchController.delegate = self
         
+        tableView.tableHeaderView = searchController.searchBar
+        definesPresentationContext = true
+        
+        searchController.searchBar.tintColor = UIColor.rgb(51, green: 21, blue: 1)
         searchController.searchBar.searchBarStyle = UISearchBarStyle.prominent
         searchController.searchBar.placeholder = " Search For Friends"
-        searchController.searchBar.sizeToFit()
-        searchController.searchBar.isTranslucent = false
-        searchController.searchBar.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-        //searchController.searchBar.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
         searchController.searchBar.barTintColor = UIColor.white
+        searchController.searchBar.isTranslucent = false
         searchController.searchBar.delegate = self
-        //navigationItem.titleView = searchController.searchBar
+        searchController.searchBar.sizeToFit()
         
         fetchUser()
         observeUserMessages()
         
         tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
+        tableView.allowsMultipleSelectionDuringEditing = true
         
         if let splitViewController = splitViewController {
             let controllers = splitViewController.viewControllers
             chatLogController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? ChatLogController
         }
-        
-        tableView.allowsMultipleSelectionDuringEditing = true
-        
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        
         if searchController.isActive {
-            
             return false
-            
         } else {
-            
             return true
         }
     }
@@ -111,7 +108,6 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         }
         
         let message = self.messages[(indexPath as NSIndexPath).row]
-        
         if let chatPartnerId = message.chatPartnerId() {
             FIRDatabase.database().reference().child("user-messages").child(uid).child(chatPartnerId).removeValue(completionBlock: { (error, ref) in
                 
@@ -121,13 +117,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
                 }
                 
                 self.messagesDictionary.removeValue(forKey: chatPartnerId)
-             // self.messages.remove(at: indexPath.row)
                 self.attemptReloadOfTable()
-                
-                //                //this is one way of updating the table, but its actually not that safe..
-                //                self.messages.removeAtIndex(indexPath.row)
-                //                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                
             })
         }
     }
@@ -163,7 +153,6 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
     
     fileprivate func fetchMessageWithMessageId(_ messageId: String) {
         let messagesReference = FIRDatabase.database().reference().child("messages").child(messageId)
-        
         messagesReference.observeSingleEvent(of: .value, with: { (snapshot) in
             
             if let dictionary = snapshot.value as? [String: AnyObject] {
@@ -172,7 +161,6 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
                 if let chatPartnerId = message.chatPartnerId() {
                     self.messagesDictionary[chatPartnerId] = message
                 }
-                
                 self.attemptReloadOfTable()
             }
             
@@ -184,15 +172,12 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
     }
     
-    var timer: Timer?
-    
     func handleReloadTable() {
         self.messages = Array(self.messagesDictionary.values)
         self.messages.sort(by: { (message1, message2) -> Bool in
             return message1.timestamp?.int32Value > message2.timestamp?.int32Value
         })
         
-        //this will crash because of background thread, so lets call this on dispatch_async main thread
         DispatchQueue.main.async(execute: {
             self.tableView.reloadData()
         })
@@ -268,7 +253,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 72
     }
-        
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if searchController.isActive && searchController.searchBar.text != ""  {

@@ -12,9 +12,14 @@ import Firebase
 extension LoginViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func handleRegister() {
-        guard let email = emailTextField.text, let password = passwordTextField.text, let name = nameTextField.text else {
-            print("Form is not valid")
-            return
+        guard
+            
+            let password = passwordTextField.text,
+            let name  = nameTextField.text,
+            let email = emailTextField.text
+            else {
+                print("Form is not valid")
+                return
         }
         
         FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user: FIRUser?, error) in
@@ -72,7 +77,8 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
             self.viewController?.fetchUserAndSetupNavBarTitle()
             self.viewController?.navigationItem.title = values["name"] as? String
             let user = User()
-            //this setter potentially crashes if keys don't match
+            
+            //may crash if keys don't match
             user.setValuesForKeys(values)
             self.viewController?.viewDidLoad()
             self.viewController?.setupNavBarWithUser(user)
@@ -83,10 +89,8 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
     
     func handleSelectProfileImageView() {
         let picker = UIImagePickerController()
-        
-        picker.delegate = self
         picker.allowsEditing = true
-        
+        picker.delegate = self
         present(picker, animated: true, completion: nil)
     }
     
@@ -97,7 +101,6 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
         if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
             selectedImageFromPicker = editedImage
         } else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
-            
             selectedImageFromPicker = originalImage
         }
         

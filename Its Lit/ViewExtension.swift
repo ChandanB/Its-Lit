@@ -6,14 +6,46 @@
 //  Copyright © 2016 Gaming Recess. All rights reserved.
 //
 
-import Foundation
 import Firebase
 import SCLAlertView
 import MapKit
 import GoogleMaps
 import MultipeerConnectivity
+import AVFoundation
 
 extension ViewController: UIImagePickerControllerDelegate {
+    
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+        // Shake Animation
+        navigationController?.navigationBar.shake()
+        ItsLitButton.shake()
+        
+        if motion == .motionShake {
+            sendInfo()
+            let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+            if (device?.hasTorch)! {
+                do {
+                    try device?.lockForConfiguration()
+                    if (device?.torchMode == AVCaptureTorchMode.on) {
+                        device?.torchMode = AVCaptureTorchMode.off
+                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                        
+                    } else {
+                        
+                        do {
+                            try device?.setTorchModeOnWithLevel(1.0)
+                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                        } catch {
+                            print(error)
+                        }
+                    }
+                    device?.unlockForConfiguration()
+                } catch {
+                    print(error)
+                }
+            }
+        }
+    }
     
     func addAlert() {
         let appearance = SCLAlertView.SCLAppearance(

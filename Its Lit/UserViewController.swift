@@ -22,43 +22,44 @@ import GooglePlaces
 class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate, CLLocationManagerDelegate, GMSMapViewDelegate {
     
     //MARK: - Objects In View and Views
-    @IBOutlet weak var ogFireButton      : SpringImageView!
-    @IBOutlet weak var itsLitImage       : SpringImageView!
-    @IBOutlet weak var ItsLitButton      : UIImageView!
-    @IBOutlet weak var tapCounterLabel   : UILabel!
-    var viewController   = self
+    @IBOutlet weak var ogFireButton    : SpringImageView!
+    @IBOutlet weak var itsLitImage     : SpringImageView!
+    @IBOutlet weak var ItsLitButton    : UIImageView!
+    @IBOutlet weak var tapCounterLabel : UILabel!
     let profileImageView = SpringImageView()
     let titleView        = UIView()
     let containerView    = UIView()
+    var viewController   = self
     
     lazy var flameImageView: SpringImageView = {
         let imageView = SpringImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
         imageView.isUserInteractionEnabled = false
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
     lazy var bonusPointTextForOgFlame: UILabel = {
         let label = UILabel()
-        label.text = "+1"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
-        label.isHidden = true
         label.font.withSize(36)
-        
+        label.isHidden = true
+        label.text = "+1"
         return label
     }()
-
+    
     //MARK: - Objects
-    var locationManager     = CLLocationManager()
     let loginViewController = LoginViewController()
-    var myDictionary:NSDictionary = [:]
-    let nameLabel = UILabel()
-    var counter    = 0
+    var locationsDictionary = [String: Location]()
+    var locationManager     = CLLocationManager()
+    var myDictionary        : NSDictionary = [:]
     var interactionCounter  = 0
     var tapCounter          = 0
-    var locationsDictionary = [String: Location]()
+    let nameLabel = UILabel()
+    let user      = User()
+    var litness   = [Lit]()
+    var counter   = 0
     
     //MARK: - Colors and Animations
     let blueColor     = UIColor(r: 110, g: 148, b: 208)
@@ -71,52 +72,47 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var timer = Timer()
     
     //MARK: - Variables for Peer to Peer.
-    var browser   : MCBrowserViewController!
-    var assistant : MCAdvertiserAssistant!
-    var session   : MCSession!
-    var peerID    : MCPeerID!
-    var otherUser : User?
-    var litness   = [Lit]()
-    let user      = User()
     var databaseHandleReceiving : FIRDatabaseHandle?
-    var selfRef : FIRDatabaseReference?
+    var browser      : MCBrowserViewController!
+    var assistant    : MCAdvertiserAssistant!
+    var selfRef      : FIRDatabaseReference?
     var interstitial : GADInterstitial!
+    var session      : MCSession!
+    var peerID       : MCPeerID!
+    var otherUser    : User?
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //Setup Google Maps
+        // Setup Google Maps
         GMSPlacesClient.provideAPIKey("AIzaSyBElxJuZMRg3VIPdRwPr5KwV_SgXMSOfqY")
         GMSServices.provideAPIKey("AIzaSyBElxJuZMRg3VIPdRwPr5KwV_SgXMSOfqY")
         
-        //Animate In It's Lit Image
+        // Animate In It's Lit Image
         itsLitImage.animation = "slideUp"
         itsLitImage.duration = 3.0
         itsLitImage.animate()
         
-        //Setup Nav Bar
+        // Setup Nav Bar
         UINavigationBar.appearance().barTintColor = UIColor.rgb(254, green: 209, blue: 67)
-        UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         view.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
+        UINavigationBar.appearance().shadowImage = UIImage()
         
         checkIfUserIsLoggedIn()
         
-        //Check whether or not to show ogFireButton
+        // Check whether or not to show ogFireButton
         if self.tapCounter < 1000 {
-            self.backgroundColours =
-            [redColor,
-             UIColor.darkGray,
-             blackColor,
-             UIColor.white,
-             blueColor,
-             defaultColor
-            ]
-            ogFireButton.isHidden = true
-            ogFireButton.isUserInteractionEnabled = true
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action:#selector(ogFireButtonTapped))
             ogFireButton.addGestureRecognizer(tapGestureRecognizer)
+            ogFireButton.isUserInteractionEnabled = true
+            ogFireButton.isHidden = true
+            
+            self.backgroundColours =
+                [redColor  , UIColor.darkGray,
+                 blackColor, UIColor.white,
+                 blueColor , defaultColor]
         }
         
         self.becomeFirstResponder()
@@ -125,160 +121,25 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
     }
     
-    
     //MARK: - Functions
-    func goToFriendsPage() {
-        friendsTableView(self.user)
-    }
-    
-    func friendsTableView(_ currentUser: User) {
-        let friendsTableViewController = FriendsTableViewController()
-        let navController = UINavigationController(rootViewController: friendsTableViewController)
-        friendsTableViewController.currentUser = currentUser
-        present(navController, animated: true, completion: nil)
-    }
-    
-    func handleLogout() {
-        do {
-            locationManager.stopUpdatingLocation()
-            locationManager.stopUpdatingHeading()
-            try FIRAuth.auth()?.signOut()
-        } catch let logoutError {
-            print(logoutError)
-        }
-        let loginController = LoginViewController()
-        loginController.viewController = self
-        present(loginController, animated: true, completion: nil)
-    }
-    
-    func showMap(_ sender: Any) {
-        setupMap()
-        if (CLLocationManager.locationServicesEnabled()) {
-            locationManager = CLLocationManager()
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.startUpdatingLocation()
-        }
-    }
-    
-    func ogFireButtonTapped(sender: UITapGestureRecognizer) {
-        ogFireButton.duration = 3.0
-        self.ogFireButton.animation = "fall"
-        ogFireButton.animate()
-        addAlert()
-    }
-
-    
-    @IBAction func changeBackground(gesture: UILongPressGestureRecognizer) {
-        if self.tapCounter >= 500 {
-            UIView.animate(withDuration: 1.0, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.1, y: 0.1) }, completion: { _ in
-                UIView.animate(withDuration: 0.3) {
-                    self.itsLitImage.transform = CGAffineTransform.identity
-                    self.changeToBlack()
-                }
-            })
-        }
-    }
-    
-    //MARK: - Functions for Flashlight
-    func itsLitNoButton() {
-        let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-        counter += 1
-        checkForUnlocks()
-        
-        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
-            if interstitial.isReady {
-                interstitial.present(fromRootViewController: self)
-            } else {
-                print("Ad wasn't ready")
-            }
-            
-            if (device?.hasTorch)! {
-                do {
-                    try device?.lockForConfiguration()
-                    if (device?.torchMode == AVCaptureTorchMode.on) {
-                        device?.torchMode = AVCaptureTorchMode.off
-                    } else {
-                        do {
-                            try device?.setTorchModeOnWithLevel(1.0)
-                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-                        } catch {
-                            print(error)
-                        }
-                    }
-                    device?.unlockForConfiguration()
-                } catch {
-                    print(error)
-                }
-            }
-            
-            let alert = UIAlertController(title: "Tip", message: "Sign in to remove Ads", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-            
-            counter = 0
-            stopSpinning()
-            createAndLoadInterstitial()
-        }
-    }
-    
-    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
-        // Shake Animation
-        navigationController?.navigationBar.shake()
-        ItsLitButton.shake()
-        
-        if motion == .motionShake {
-            sendInfo()
-            let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-            if (device?.hasTorch)! {
-                do {
-                    try device?.lockForConfiguration()
-                    if (device?.torchMode == AVCaptureTorchMode.on) {
-                        device?.torchMode = AVCaptureTorchMode.off
-                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-                        
-                    } else {
-                        
-                        do {
-                            try device?.setTorchModeOnWithLevel(1.0)
-                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-                        } catch {
-                            print(error)
-                        }
-                    }
-                    device?.unlockForConfiguration()
-                } catch {
-                    print(error)
-                }
-            }
-        }
-    }
-    
-    func setupLabel() {
-        view.addSubview(bonusPointTextForOgFlame)
-        bonusPointTextForOgFlame.centerYAnchor.constraint(equalTo: ogFireButton.centerYAnchor).isActive = true
-        bonusPointTextForOgFlame.centerXAnchor.constraint(equalTo: ogFireButton.centerXAnchor).isActive = true
-        bonusPointTextForOgFlame.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        bonusPointTextForOgFlame.heightAnchor.constraint(equalToConstant: 40).isActive = true
-    }
-    
+    // Turn on flashlight
     @IBAction func itsLit(_ sender: UIButton) {
-        sendInfo()
-        checkForAnimations()
-        itsLitImage.layer.shadowRadius = 10.0
-        itsLitImage.layer.shadowOffset = CGSize(width: 0, height: 0)
-        itsLitImage.layer.shadowColor  = UIColor.rgb(254, green: 209, blue: 67).cgColor
-        
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+        itsLitImage.layer.shadowOffset = CGSize(width: 0, height: 0)
+        itsLitImage.layer.shadowColor  = defaultColor.cgColor
+        itsLitImage.layer.shadowRadius = 10.0
+        checkForAnimations()
+        sendInfo()
+        
         if (device?.hasTorch)! {
-            
             do {
                 try device?.lockForConfiguration()
                 if (device?.torchMode == AVCaptureTorchMode.on) {
-                    stopSpinning()
-                    itsLitImage.layer.shadowOpacity = 0
                     device?.torchMode = AVCaptureTorchMode.off
+                    itsLitImage.layer.shadowOpacity = 0
+                    stopSpinning()
                 } else {
+                    
                     do {
                         if FIRAuth.auth()?.currentUser?.uid != nil {
                             self.tapCounter += 1
@@ -298,10 +159,117 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 print(error)
             }
         }
-        
         if FIRAuth.auth()?.currentUser?.uid == nil {
             startAD()
         }
+    }
+    
+    @IBAction func changeBackground(gesture: UILongPressGestureRecognizer) {
+        if self.tapCounter >= 500 {
+            UIView.animate(withDuration: 1.0, animations: {
+                self.itsLitImage.transform = CGAffineTransform(scaleX: 0.1, y: 0.1) }, completion: { _ in
+                    UIView.animate(withDuration: 0.3) {
+                        self.itsLitImage.transform = CGAffineTransform.identity
+                        self.changeToBlack()
+                    }
+            })
+        }
+    }
+    
+    //MARK: - Map connection
+    func showMap(_ sender: Any) {
+        setupMap()
+        if (CLLocationManager.locationServicesEnabled()) {
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.startUpdatingLocation()
+            locationManager = CLLocationManager()
+            locationManager.delegate = self
+        }
+    }
+    
+    func connectScreen(_ sender: AnyObject) {
+        self.present(self.browser, animated: true, completion: { _ in
+        })
+    }
+    
+    func ogFireButtonTapped(sender: UITapGestureRecognizer) {
+        self.ogFireButton.animation = "fall"
+        ogFireButton.duration = 3.0
+        ogFireButton.animate()
+        addAlert()
+    }
+    
+    func goToFriendsPage() {
+        friendsTableView(self.user)
+    }
+    
+    func friendsTableView(_ currentUser: User) {
+        let friendsTableViewController = FriendsTableViewController()
+        let navController = UINavigationController(rootViewController: friendsTableViewController)
+        friendsTableViewController.currentUser = currentUser
+        present(navController, animated: true, completion: nil)
+    }
+    
+    func handleLogout() {
+        do {
+            locationManager.stopUpdatingLocation()
+            try FIRAuth.auth()?.signOut()
+        } catch let logoutError {
+            print(logoutError)
+        }
+        let loginController = LoginViewController()
+        loginController.viewController = self
+        present(loginController, animated: true, completion: nil)
+    }
+    
+    //MARK: - Functions for Flashlight
+    func itsLitNoButton() {
+        let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+        checkForUnlocks()
+        counter += 1
+        
+        if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
+            if interstitial.isReady {
+                interstitial.present(fromRootViewController: self)
+            } else {
+                print("Ad wasn't ready")
+            }
+            
+            if (device?.hasTorch)! {
+                do {
+                    try device?.lockForConfiguration()
+                    if (device?.torchMode == AVCaptureTorchMode.on) {
+                        device?.torchMode =  AVCaptureTorchMode.off
+                    } else {
+                        do {
+                            try device?.setTorchModeOnWithLevel(1.0)
+                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                        } catch {
+                            print(error)
+                        }
+                    }
+                    device?.unlockForConfiguration()
+                } catch {
+                    print(error)
+                }
+            }
+            
+            let alert = UIAlertController(title: "Tip", message: "Sign in to remove Ads", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            
+            createAndLoadInterstitial()
+            stopSpinning()
+            counter = 0
+        }
+    }
+    
+    func setupLabel() {
+        view.addSubview(bonusPointTextForOgFlame)
+        bonusPointTextForOgFlame.centerYAnchor.constraint(equalTo: ogFireButton.centerYAnchor).isActive = true
+        bonusPointTextForOgFlame.centerXAnchor.constraint(equalTo: ogFireButton.centerXAnchor).isActive = true
+        bonusPointTextForOgFlame.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        bonusPointTextForOgFlame.widthAnchor.constraint(equalToConstant: 40).isActive = true
     }
     
     func animateLighter() {
@@ -311,8 +279,8 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         UIView.animate(withDuration: 2, animations: {
             self.bonusPointTextForOgFlame.isHidden = false
             self.bonusPointTextForOgFlame.shakePoints()
-            self.tapCounter += 1
             self.bonusPointTextForOgFlame.alpha = 1
+            self.tapCounter += 1
         })
         
         UIView.animate(withDuration: 1, animations: {
@@ -349,9 +317,8 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     func updateScoreLabel(_ score: Int) {
         let uid = FIRAuth.auth()!.currentUser!.uid
-        var newScore = score
         let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
-        
+        var newScore = score
         let values: [String: AnyObject] = ["Score": score as AnyObject]
         
         ref.updateChildValues(values) { (error, ref) in
@@ -373,23 +340,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         checkForUnlocks()
     }
     
-    //MARK: - Peer to Peer connection
-    @IBAction func connectScreen(_ sender: AnyObject) {
-        self.present(self.browser, animated: true, completion: { _ in
-        })
-    }
-    
     //MARK: - Background Functions
-    
-    fileprivate func createAndLoadInterstitial() {
-        interstitial = GADInterstitial(adUnitID: "ca-app-pub-8446644766706278/1896898949")
-        let request = GADRequest()
-        // Request test ads on devices you specify. Your test device ID is printed to the console when
-        // an ad request is made.
-        request.testDevices = [ kGADSimulatorID, "2077ef9a63d2b398840261c8221a0c9b" ]
-        interstitial.load(request)
-    }
-    
     func startAD() {
         createAndLoadInterstitial()
         if FIRAuth.auth()?.currentUser?.uid == nil && counter == 25 {
@@ -412,13 +363,22 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
     }
     
+    fileprivate func createAndLoadInterstitial() {
+        interstitial = GADInterstitial(adUnitID: "ca-app-pub-8446644766706278/1896898949")
+        let request = GADRequest()
+        // Request test ads on devices you specify. Your test device ID is printed to the console when
+        // an ad request is made.
+        request.testDevices = [ kGADSimulatorID, "2077ef9a63d2b398840261c8221a0c9b" ]
+        interstitial.load(request)
+    }
+    
     //MARK: - Check if logged in
     func checkIfUserIsLoggedIn() {
         
         // If user isn't logged in
         if FIRAuth.auth()?.currentUser?.uid == nil {
-            setupNavBarWithoutUser()
             createAndLoadInterstitial()
+            setupNavBarWithoutUser()
             do {
                 try FIRAuth.auth()?.signOut()
             } catch let logoutError {
@@ -432,6 +392,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         } else {
             
             timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countToEnableInteraction), userInfo: nil, repeats: true)
+            
             let uid = FIRAuth.auth()!.currentUser!.uid
             let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
             ref.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -454,57 +415,74 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 }
             }, withCancel: nil)
             
-            view.isUserInteractionEnabled = false
-            
-            profileImageView.isHidden = false
-            navigationItem.rightBarButtonItem?.isEnabled = true
-            locationManager.requestAlwaysAuthorization()
-            locationManager.requestWhenInUseAuthorization()
-            
-            fetchUserAndSetupNavBarTitle()
+            // Setup Friends Button on NavBar
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Friends", style: .plain, target: self, action: #selector(goToFriendsPage))
             navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter", size: 18)!], for: UIControlState.normal)
             navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+            
+            // Setup Connect Button on NavBar
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Connect", style: .plain, target: self, action: #selector(connectAlert))
-            navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 67)
             navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter", size: 18)!], for: UIControlState.normal)
+            navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 67)
+            
+            navigationItem.rightBarButtonItem?.isEnabled = true
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.requestAlwaysAuthorization()
+            view.isUserInteractionEnabled = false
+            profileImageView.isHidden = false
+            fetchUserAndSetupNavBarTitle()
         }
     }
     
-    func connectAlert() {
+    func setupNavBarWithoutUser() {
+        createAndLoadInterstitial()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Sign In", style: .plain, target: self, action: #selector(handleLogout))
+        navigationItem.leftBarButtonItem?.tintColor  = .black
+        navigationItem.rightBarButtonItem?.isEnabled = false
+        profileImageView.isHidden = true
+    }
+    
+    // Fetch user
+    func fetchUserAndSetupNavBarTitle() {
         
-        let appearance = SCLAlertView.SCLAppearance(
-            kCircleHeight: 0,
-            kCircleIconHeight: 55,
-            kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
-            kTextFont: UIFont(name: "AmericanTypewriter", size: 14)!,
-            kButtonFont: UIFont(name: "AmericanTypewriter-Bold", size: 14)!,
-            showCloseButton: false
-        )
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
+            return
+        }
         
-        let wifiAlertAppearance = SCLAlertView.SCLAppearance(
-            kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
-            kTextFont: UIFont(name: "AmericanTypewriter", size: 16)!
-        )
+        FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                self.navigationItem.title = dictionary["name"] as? String
+                self.user.setValuesForKeys(dictionary)
+                self.setupNavBarWithUser(self.user)
+                self.loadPeerToPeer(self.user)
+            }
+        }, withCancel: nil)
+    }
+    
+    func checkForAnimations() {
+        if self.tapCounter > 10 {
+            UIView.animate(withDuration: 0.6, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.6, y: 0.6) }, completion: { _ in
+                UIView.animate(withDuration: 0.6) {
+                    self.itsLitImage.transform = CGAffineTransform.identity
+                }
+            })
+        }
+        if self.tapCounter > 25 {
+            ItsLitButton.shake()
+        }
         
-        let wifiConnectAlert = SCLAlertView(appearance: wifiAlertAppearance)
+        if self.tapCounter > 50 {
+            rotateView()
+        }
         
-        let alertViewIcon = UIImage(named: "people0")
-        let alert = SCLAlertView(appearance: appearance)
-        alert.addButton("Connect Over WiFi", backgroundColor: .black, textColor: .white) {
-            
-            wifiConnectAlert.showWarning("Pro Tip", subTitle: "You need to be on the same WiFi", duration: 5.0, colorStyle: 0xFFFFFF)
-            self.connectScreen(self)
+        if self.tapCounter == 1001 {
+            ogFireButton.isHidden  = false
+            self.ogFireButton.animation = "fadeInUp"
+            self.ogFireButton.animate()
+            self.ogFireButton.animation = "wobble"
+            self.ogFireButton.animate()
+            setupLabel()
         }
-        alert.addButton("Connect With Friends", backgroundColor: .black, textColor: .white) {
-            self.observeFriendsAndSendLitness(self.user)
-        }
-        alert.addButton("Location", backgroundColor: .black, textColor: .white) {
-            self.showMap(self)
-        }
-        alert.addButton("No, Solo Dolo", backgroundColor: .red, textColor: .white) {
-        }
-        alert.showSuccess("Connect", subTitle: "Connect With Others", colorStyle: 0xFFFFFF, circleIconImage: alertViewIcon)
     }
     
     func countToEnableInteraction() {
@@ -512,11 +490,11 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
         if interactionCounter == 5 {
             if self.tapCounter > 1000 {
-                addSwipe()
-                ogFireButton.isHidden = false
                 ogFireButton.animation = "fadeInUp"
+                ogFireButton.isHidden = false
                 ogFireButton.animate()
                 setupLabel()
+                addSwipe()
             }
             
             if self.tapCounter < 2 {
@@ -542,79 +520,168 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             view.isUserInteractionEnabled = true
             timer.invalidate()
         } else {
-            updateUserTapCounter()
             view.isUserInteractionEnabled = false
+            updateUserTapCounter()
         }
     }
     
-    // Fetch user
-    func fetchUserAndSetupNavBarTitle() {
-        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
-            //for some reason uid = nil
-            return
+    func connectAlert() {
+        let appearance = SCLAlertView.SCLAppearance(
+            kCircleHeight: 0,
+            kCircleIconHeight: 55,
+            kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
+            kTextFont: UIFont(name: "AmericanTypewriter", size: 14)!,
+            kButtonFont: UIFont(name: "AmericanTypewriter-Bold", size: 14)!,
+            showCloseButton: false
+        )
+        
+        let wifiAlertAppearance = SCLAlertView.SCLAppearance(
+            kTitleFont: UIFont(name: "AmericanTypewriter", size: 20)!,
+            kTextFont: UIFont(name: "AmericanTypewriter", size: 16)!
+        )
+        
+        let wifiConnectAlert = SCLAlertView(appearance: wifiAlertAppearance)
+        
+        let alertViewIcon = UIImage(named: "people0")
+        let alert = SCLAlertView(appearance: appearance)
+        
+        // Connect Over WiFi Button
+        alert.addButton("Connect Over WiFi", backgroundColor: .black, textColor: .white) {
+            wifiConnectAlert.showWarning("Pro Tip", subTitle: "You need to be on the same WiFi", duration: 5.0, colorStyle: 0xFFFFFF)
+            self.connectScreen(self)
         }
-        FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-            
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                self.navigationItem.title = dictionary["name"] as? String
-                
-                self.user.setValuesForKeys(dictionary)
-                self.setupNavBarWithUser(self.user)
-                self.loadPeerToPeer(self.user)
-            }
-        }, withCancel: nil)
-    }
-    
-    func setupNavBarWithoutUser() {
-        createAndLoadInterstitial()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Sign In", style: .plain, target: self, action: #selector(handleLogout))
-        navigationItem.leftBarButtonItem?.tintColor = .black
-        profileImageView.isHidden = true
-        navigationItem.rightBarButtonItem?.isEnabled = false
+        
+        // Connect Through Friends Button
+        alert.addButton("Connect Through Friends", backgroundColor: .black, textColor: .white) {
+            self.observeFriendsAndSendLitness(self.user)
+        }
+        
+        // Connect In Location Button
+        alert.addButton("Location", backgroundColor: .black, textColor: .white) {
+            self.showMap(self)
+        }
+        
+        // Cancel
+        alert.addButton("No, Solo Dolo", backgroundColor: .red, textColor: .white) {
+        }
+        
+        alert.showSuccess("Connect", subTitle: "Connect With Others", colorStyle: 0xFFFFFF, circleIconImage: alertViewIcon)
     }
     
     // Setup Nav Bar with fetched user
     func setupNavBarWithUser(_ user: User) {
-        titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
-        // titleView.backgroundColor = UIColor.redColor()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        titleView.addSubview(containerView)
-        
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileImageView.contentMode = .scaleAspectFill
-        profileImageView.layer.cornerRadius = 15
-        profileImageView.clipsToBounds = true
-        profileImageView.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
-        if let profileImageUrl = user.profileImageUrl {
-            profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
-        }
-        
-        containerView.addSubview(profileImageView)
-        
-        //ios 9 constraint anchors
-        //need x,y,width,height anchors
-        profileImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
-        profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
-        
-        containerView.addSubview(nameLabel)
-        
-        nameLabel.text = user.name
+        containerView.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        //need x,y,width,height anchors
-        nameLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8).isActive = true
-        nameLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-        nameLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-        nameLabel.heightAnchor.constraint(equalTo: profileImageView.heightAnchor).isActive = true
+        titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+        //titleView.backgroundColor = UIColor.redColor()
         
         containerView.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
         containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         
+        if let profileImageUrl = user.profileImageUrl {
+            profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+        }
+        profileImageView.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.layer.cornerRadius = 15
+        profileImageView.clipsToBounds = true
+        
+        // x, y, width, height
+        titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
+        profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        profileImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        // x, y, width, height
+        nameLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8).isActive = true
+        nameLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+        nameLabel.heightAnchor.constraint(equalTo: profileImageView.heightAnchor).isActive = true
+        nameLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
+        nameLabel.text = user.name
+        
+        titleView.addSubview(containerView)
+        containerView.addSubview(profileImageView)
+        containerView.addSubview(nameLabel)
+        
         self.navigationItem.titleView = titleView
         
     }
+    
+    func checkForUnlocks() {
+        if self.tapCounter == 10  {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "New Animation Unlocked!",
+                text: "As you get lit, you'll unlock more cool stuff. 🔥",
+                buttonText: "It's Lit",
+                color: .black,
+                iconImage: nil)
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setTextTheme(.light)
+        }
+        
+        if self.tapCounter == 25 {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "New Animation Unlocked!",
+                text: "IT'S LIT 🔥",
+                buttonText: "Okay",
+                color: .white,
+                iconImage: nil)
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setTextTheme(.dark)
+        }
+        
+        if self.tapCounter == 50 {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "SPIN ANIMATION UNLOCKED!",
+                text: "WHIP! 🔥",
+                buttonText: "It's Lit",
+                color: .white,
+                iconImage: nil)
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setTextTheme(.dark)
+        }
+        
+        if self.tapCounter == 500 {
+            let alertView = JSSAlertView().show(
+                self,
+                title: "Background Unlocked!",
+                text: "Hold down the lighter to change the background color to BLACK",
+                buttonText: "It's Lit?",
+                color: .black,
+                iconImage: nil)
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.setTextTheme(.light)
+        }
+        
+        if self.tapCounter == 1000 {
+            addSwipe()
+            let alertView = JSSAlertView().show(
+                self,
+                title: "OG Flame Unlocked!",
+                text: "OG Flame has joined your squad!",
+                buttonText: "It's Lit!",
+                color: .white,
+                iconImage: nil)
+            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
+            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
+            alertView.setTextFont("AmericanTypewriter") // Alert body text font
+            alertView.addAction(animateLighter) // Method to run after dismissal
+        }
+    }
+
     
     func observeFriendsAndSendLitness(_ user: User) {
         self.tapCounter += 1
@@ -622,9 +689,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         let uid     = FIRAuth.auth()!.currentUser!.uid
         let highref = FIRDatabase.database().reference().child("Friend")
         let ref     = FIRDatabase.database().reference().child("Friend").child(uid)
-    
-        //append properties dictionary onto values somehow??
-        //key $0, value $1
         
         highref.observeSingleEvent(of: .value, with: { (snapshot) in
             
@@ -651,13 +715,15 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                                                 if let friendSnaps = snapshot.children.allObjects as? [FIRDataSnapshot] {
                                                     
                                                     for snap in friendSnaps {
+                                                        
+                                                        self.selfRef = FIRDatabase.database().reference().child("Litness").child(uidName!).child(toNameId)
                                                         let toRef = FIRDatabase.database().reference().child("Litness").child(toNameId).child(uidName!)
-                                                        let nameId = snap.key
                                                         let childRef = ref.childByAutoId()
                                                         let randomKey = childRef.key
+                                                        let nameId = snap.key
                                                         let values: [String: AnyObject] = [nameId: randomKey as AnyObject]
                                                         toRef.updateChildValues(values)
-                                                        self.selfRef = FIRDatabase.database().reference().child("Litness").child(uidName!).child(toNameId)
+                                                        
                                                     }
                                                 }
                                             }
@@ -685,109 +751,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             }
         }, withCancel: nil)
     }
-    
-    func checkForAnimations() {
-        if self.tapCounter > 10 {
-            UIView.animate(withDuration: 0.6, animations: { self.itsLitImage.transform = CGAffineTransform(scaleX: 0.6, y: 0.6) }, completion: { _ in
-                UIView.animate(withDuration: 0.6) {
-                    self.itsLitImage.transform = CGAffineTransform.identity
-                }
-            })
-        }
-        if self.tapCounter > 25 {
-            ItsLitButton.shake()
-        }
-        
-        if self.tapCounter > 50 {
-            rotateView()
-        }
-        
-        if self.tapCounter == 1001 {
-            ogFireButton.isHidden  = false
-            ogFireButton.animation = "fadeInUp"
-            ogFireButton.animate()
-            self.ogFireButton.animation = "wobble"
-            self.ogFireButton.animateTo()
-            setupLabel()
-        }
-    }
-    
-    func checkForUnlocks() {
-        if self.tapCounter == 10  {
-            let alertView = JSSAlertView().show(
-                self,
-                title: "New Animation Unlocked!",
-                text: "As you get lit, you'll unlock more cool stuff. 🔥",
-                buttonText: "It's Lit",
-                color: .black,
-                iconImage: nil)
-            //    alertview.addAction(myCallback) // Method to run after dismissal
-            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
-            alertView.setTextFont("AmericanTypewriter") // Alert body text font
-            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
-            alertView.setTextTheme(.light)
-        }
-        
-        if self.tapCounter == 25 {
-            let alertView = JSSAlertView().show(
-                self,
-                title: "New Animation Unlocked!",
-                text: "IT'S LIT 🔥",
-                buttonText: "Okay",
-                color: .white,
-                iconImage: nil)
-            //    alertview.addAction(myCallback) // Method to run after dismissal
-            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
-            alertView.setTextFont("AmericanTypewriter") // Alert body text font
-            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
-            alertView.setTextTheme(.dark)
-        }
-        
-        if self.tapCounter == 50 {
-            let alertView = JSSAlertView().show(
-                self,
-                title: "SPIN ANIMATION UNLOCKED!",
-                text: "WHIP! 🔥",
-                buttonText: "It's Lit",
-                color: .white,
-                iconImage: nil)
-            //    alertview.addAction(myCallback) // Method to run after dismissal
-            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
-            alertView.setTextFont("AmericanTypewriter") // Alert body text font
-            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
-            alertView.setTextTheme(.dark)
-        }
-        
-        if self.tapCounter == 500 {
-            let alertView = JSSAlertView().show(
-                self,
-                title: "Background Unlocked!",
-                text: "Hold down the lighter to change the background color to BLACK",
-                buttonText: "It's Lit?",
-                color: .black,
-                iconImage: nil)
-            //    alertview.addAction(myCallback) // Method to run after dismissal
-            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
-            alertView.setTextFont("AmericanTypewriter") // Alert body text font
-            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
-            alertView.setTextTheme(.light)
-        }
-        
-        if self.tapCounter == 1000 {
-            addSwipe()
-            let alertView = JSSAlertView().show(
-                self,
-                title: "OG Flame Unlocked!",
-                text: "OG Flame has joined your squad!",
-                buttonText: "It's Lit!",
-                color: .white,
-                iconImage: nil)
-            alertView.addAction(animateLighter) // Method to run after dismissal
-            alertView.setTitleFont("AmericanTypewriter-Bold") // Title font
-            alertView.setTextFont("AmericanTypewriter") // Alert body text font
-            alertView.setButtonFont("AmericanTypewriter-Light") // Button text font
-        }
-    }
+
 }
 
 
