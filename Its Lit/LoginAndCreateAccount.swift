@@ -67,6 +67,20 @@ class LoginViewController: UIViewController  {
         return view
     }()
     
+    let nameSeparatorView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
+        return view
+    }()
+    
+    let emailSeparatorView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
+        return view
+    }()
+    
     let nameTextField: UITextField = {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
@@ -89,20 +103,6 @@ class LoginViewController: UIViewController  {
         return tf
     }()
     
-    let nameSeparatorView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
-        return view
-    }()
-    
-    let emailSeparatorView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
-        return view
-    }()
-    
     let errorTextField: UITextField = {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
@@ -110,43 +110,19 @@ class LoginViewController: UIViewController  {
         return tf
     }()
     
-    func handleLoginRegisterChange() {
-        
-        let title = loginRegisterSegmentedControl.titleForSegment(at: loginRegisterSegmentedControl.selectedSegmentIndex)
-        loginRegisterButton.setTitle(title, for: .normal)
-        
-        if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
-            self.nameTextField.placeholder = ""
-        } else {
-            self.nameTextField.placeholder = "Name"
-        }
-        
-        inputsContainerViewHeightAnchor?.constant = loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 100 : 150
-        
-        nameTextFieldHeightAnchor?.isActive = false
-        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 0 : 1/3)
-        nameTextFieldHeightAnchor?.isActive = true
-        
-        emailTextFieldHeightAnchor?.isActive = false
-        emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/3)
-        emailTextFieldHeightAnchor?.isActive = true
-        
-        passwordTextFieldHeightAnchor?.isActive = false
-        passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/3)
-        passwordTextFieldHeightAnchor?.isActive = true
-        
-        self.errorTextField.isHidden = true
-    }
+    var inputsContainerViewHeightAnchor: NSLayoutConstraint?
+    var passwordTextFieldHeightAnchor: NSLayoutConstraint?
+    var emailTextFieldHeightAnchor: NSLayoutConstraint?
+    var nameTextFieldHeightAnchor: NSLayoutConstraint?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LoginViewController.dismissKeyboard))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.leftBarButtonItem?.tintColor = .white
         view.addGestureRecognizer(tap)
         view.backgroundColor = .white
-        
+
         view.addSubview(loginRegisterSegmentedControl)
         view.addSubview(inputsContainerView)
         view.addSubview(loginRegisterButton)
@@ -161,50 +137,19 @@ class LoginViewController: UIViewController  {
         setupProfileImageView()
     }
     
-    func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
-    func setupLoginRegisterSegmentedControl() {
-        // x, y, width, height
-        loginRegisterSegmentedControl.bottomAnchor.constraint(equalTo: inputsContainerView.topAnchor, constant: -12).isActive = true
-        loginRegisterSegmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loginRegisterSegmentedControl.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        loginRegisterSegmentedControl.heightAnchor.constraint(equalToConstant: 30).isActive = true
-    }
-    
-    func setupProfileImageView() {
-        // x, y, width, height
-        profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
-        profileImageView.bottomAnchor.constraint(equalTo: loginRegisterSegmentedControl.topAnchor, constant: -12).isActive = true
-        profileImageView.topAnchor.constraint(equalTo: loginRegisterSegmentedControl.bottomAnchor, constant: 12).isActive = true
-        profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        
-        errorTextField.bottomAnchor.constraint(equalTo:  profileImageView.topAnchor, constant: 18).isActive = true
-        errorTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-    }
-    
-    var inputsContainerViewHeightAnchor: NSLayoutConstraint?
-    var passwordTextFieldHeightAnchor: NSLayoutConstraint?
-    var emailTextFieldHeightAnchor: NSLayoutConstraint?
-    var nameTextFieldHeightAnchor: NSLayoutConstraint?
-    
     func setupInputsContainerView() {
-        // x, y, width, height
-        inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 50).isActive = true
-        inputsContainerView.widthAnchor.constraint(equalTo:   view.widthAnchor, constant: -24).isActive = true
-        inputsContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        
-        inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
-        inputsContainerViewHeightAnchor?.isActive = true
-        
         inputsContainerView.addSubview(emailSeparatorView)
         inputsContainerView.addSubview(nameSeparatorView)
         inputsContainerView.addSubview(passwordTextField)
         inputsContainerView.addSubview(emailTextField)
         inputsContainerView.addSubview(nameTextField)
+        
+        // x, y, width, height
+        inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
+        inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 50).isActive = true
+        inputsContainerView.widthAnchor.constraint(equalTo:   view.widthAnchor, constant: -24).isActive = true
+        inputsContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        inputsContainerViewHeightAnchor?.isActive = true
         
         // x, y, width, height
         nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
@@ -238,6 +183,48 @@ class LoginViewController: UIViewController  {
         passwordTextField.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
         passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor).isActive = true
         passwordTextFieldHeightAnchor?.isActive = true
+    
+    }
+    
+    func handleLoginRegisterChange() {
+        
+        let title = loginRegisterSegmentedControl.titleForSegment(at: loginRegisterSegmentedControl.selectedSegmentIndex)
+        loginRegisterButton.setTitle(title, for: .normal)
+        
+        if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
+            self.nameTextField.placeholder = ""
+        } else {
+            self.nameTextField.placeholder = "Name"
+        }
+        
+        inputsContainerViewHeightAnchor?.constant = loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 100 : 150
+        
+        nameTextFieldHeightAnchor?.isActive = false
+        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 0 : 1/3)
+        nameTextFieldHeightAnchor?.isActive = true
+        
+        emailTextFieldHeightAnchor?.isActive = false
+        emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/3)
+        emailTextFieldHeightAnchor?.isActive = true
+        
+        passwordTextFieldHeightAnchor?.isActive = false
+        passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/3)
+        passwordTextFieldHeightAnchor?.isActive = true
+        
+        self.errorTextField.isHidden = true
+    }
+    
+    func setupProfileImageView() {
+        // x, y, width, height
+        profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
+        profileImageView.bottomAnchor.constraint(equalTo: loginRegisterSegmentedControl.topAnchor, constant: -12).isActive = true
+        profileImageView.topAnchor.constraint(equalTo: loginRegisterSegmentedControl.bottomAnchor, constant: 12).isActive = true
+        profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        
+        errorTextField.bottomAnchor.constraint(equalTo:  profileImageView.topAnchor, constant: 18).isActive = true
+        errorTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
     func setupLoginRegisterButton() {
@@ -254,23 +241,12 @@ class LoginViewController: UIViewController  {
         
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
-        //        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIKeyboardWillShowNotification, object: nil)
-        //
-        //        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleKeyboardWillHide), name: UIKeyboardWillHideNotification, object: nil)
-    }
-    
-    func handleCancel() {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    func handleKeyboardDidShow() {
+    func setupLoginRegisterSegmentedControl() {
+        // x, y, width, height
+        loginRegisterSegmentedControl.bottomAnchor.constraint(equalTo: inputsContainerView.topAnchor, constant: -12).isActive = true
+        loginRegisterSegmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        loginRegisterSegmentedControl.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        loginRegisterSegmentedControl.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
     
     func handleLogin() {
@@ -293,14 +269,6 @@ class LoginViewController: UIViewController  {
             self.viewController?.fetchUserAndSetupNavBarTitle()
             self.dismiss(animated: true, completion: nil)
         })
-    }
-    
-    func handleLoginRegister() {
-        if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
-            handleLogin()
-        } else {
-            handleRegister()
-        }
     }
     
     func loginRegisterSkipped() {
@@ -328,10 +296,39 @@ class LoginViewController: UIViewController  {
         self.present(alert, animated: true, completion: nil)
     }
     
+    func handleLoginRegister() {
+        if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
+            handleLogin()
+        } else {
+            handleRegister()
+        }
+    }
+    
+    func setupKeyboardObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     func goToDefaultPage() {
         self.viewController?.viewDidLoad()
         self.dismiss(animated: true, completion: nil)
     }
+    
+    func handleCancel() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    func handleKeyboardDidShow() {
+    }
+
 }
 
 

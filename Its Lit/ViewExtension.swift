@@ -15,38 +15,7 @@ import AVFoundation
 
 extension ViewController: UIImagePickerControllerDelegate {
     
-    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
-        // Shake Animation
-        navigationController?.navigationBar.shake()
-        ItsLitButton.shake()
-        
-        if motion == .motionShake {
-            sendInfo()
-            let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-            if (device?.hasTorch)! {
-                do {
-                    try device?.lockForConfiguration()
-                    if (device?.torchMode == AVCaptureTorchMode.on) {
-                        device?.torchMode = AVCaptureTorchMode.off
-                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-                        
-                    } else {
-                        
-                        do {
-                            try device?.setTorchModeOnWithLevel(1.0)
-                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-                        } catch {
-                            print(error)
-                        }
-                    }
-                    device?.unlockForConfiguration()
-                } catch {
-                    print(error)
-                }
-            }
-        }
-    }
-    
+    // Start of Alerts
     func addAlert() {
         let appearance = SCLAlertView.SCLAppearance(
         kCircleIconHeight: 50,
@@ -56,9 +25,9 @@ extension ViewController: UIImagePickerControllerDelegate {
         showCloseButton: false
         )
         
+        let alertViewIcon = UIImage(named: "ios emoji")
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        let alertViewIcon = UIImage(named: "ios emoji")
         view.image = alertViewIcon
         
         let alert = SCLAlertView(appearance: appearance)
@@ -118,13 +87,12 @@ extension ViewController: UIImagePickerControllerDelegate {
         
         // Add MapView
         let camera = GMSCameraPosition.camera(withLatitude: (locationManager.location?.coordinate.latitude)!, longitude: (locationManager.location?.coordinate.longitude)!, zoom: 14)
-        
         let mapView = GMSMapView.map(withFrame: CGRect(x: 0, y: 0, width: subView.frame.width, height: subView.frame.height), camera: camera)
         
         let marker = GMSMarker()
-        marker.position = camera.target
-        marker.snippet = "Hello World"
         marker.appearAnimation = kGMSMarkerAnimationPop
+        marker.position = camera.target
+        marker.snippet = "It's Lit"
         marker.map = mapView
         
         mapView.layer.cornerRadius = 5
@@ -136,77 +104,8 @@ extension ViewController: UIImagePickerControllerDelegate {
         alert.showInfo("Searching...", subTitle: "", duration: 10, colorStyle: 0xFFFFFF, circleIconImage: alertViewIcon)
     }
     
-    func profilePicUpdate() {
-        let user = FIRAuth.auth()?.currentUser
-        guard (user?.uid) != nil else {
-            return
-        }
-        //successfully authenticated user
-        let imageName = UUID().uuidString
-        let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
-        let metadata = FIRStorageMetadata()
-        if let profileImage = self.profileImageView.image, let uploadData = UIImageJPEGRepresentation(profileImage, 0.1) {
-            
-            storageRef.put(uploadData, metadata: metadata, completion: { (metadata, error) in
-                
-                if error != nil {
-                    print(error as Any)
-                    return
-                }
-                
-                if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
-                    
-                    let values = ["profileImageUrl": profileImageUrl]
-                    self.registerUserIntoDatabaseWithUID((user?.uid)!, values: values as [String : AnyObject])
-                }
-            })
-        }
-    }
-    
-    fileprivate func registerUserIntoDatabaseWithUID(_ uid: String, values: [String: AnyObject]) {
-        let uid = FIRAuth.auth()!.currentUser!.uid
-        let ref = FIRDatabase.database().reference().child("users").child(uid)
-        
-        ref.updateChildValues(values, withCompletionBlock: { (err, ref) in
-            
-            self.dismiss(animated: true, completion: nil)
-        })
-    }
-    
-    
-    func handleSelectProfileImageView() {
-        let picker = UIImagePickerController()
-        
-        picker.delegate = self
-        picker.allowsEditing = true
-        
-        present(picker, animated: true, completion: nil)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        
-        var selectedImageFromPicker: UIImage?
-        
-        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
-            selectedImageFromPicker = editedImage
-        } else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
-            
-            selectedImageFromPicker = originalImage
-        }
-        
-        if let selectedImage = selectedImageFromPicker {
-            profileImageView.image = selectedImage
-        }
-        
-        profilePicUpdate()
-        
-        dismiss(animated: true, completion: nil)
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        print("canceled picker")
-        dismiss(animated: true, completion: nil)
-    }
+    // End of Alerts
+    // Start of Animations
     
     func changeToRed() {
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
@@ -279,21 +178,7 @@ extension ViewController: UIImagePickerControllerDelegate {
         }, completion: nil)
         
     }
-    func animateBackgroundColour () {
-        changeToBlack()
-    }
-    
-    func rotateView() {
-        if(!animating) {
-            animating = true;
-            spinWithOptions(options: UIViewAnimationOptions.curveEaseIn);
-        }
-    }
-    
-    func stopSpinning() {
-        animating = false
-    }
-    
+   
     func spinWithOptions(options: UIViewAnimationOptions) {
         UIView.animate(withDuration: 0.5, delay: 0.0, options: options, animations: { () -> Void in
             let val : CGFloat = CGFloat((M_PI / Double(2.0)));
@@ -309,28 +194,62 @@ extension ViewController: UIImagePickerControllerDelegate {
         }
     }
     
-    func rotateWorldView() {
+    func rotateView() {
         if(!animating) {
             animating = true;
-            spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseIn);
-        } else {
-            animating = false
+            spinWithOptions(options: UIViewAnimationOptions.curveEaseIn);
         }
     }
     
-    func spinWorldWithOptions(options: UIViewAnimationOptions) {
-        UIView.animate(withDuration: 10.0, delay: 0.0, options: options, animations: { () -> Void in
-            //   let val : CGFloat = CGFloat((M_PI / Double(5.0)));
-        }) { (finished: Bool) -> Void in
-            if(finished) {
-                if(self.animating){
-                    self.spinWorldWithOptions(options: UIViewAnimationOptions.curveLinear)
-                } else if (options != UIViewAnimationOptions.curveEaseOut) {
-                    self.spinWorldWithOptions(options: UIViewAnimationOptions.curveEaseOut)
-                }
-            }
+    func stopSpinning() {
+        animating = false
+    }
+
+    func addSwipe() {
+        let directions: [UISwipeGestureRecognizerDirection] = [.right, .left, .up, .down]
+        for direction in directions {
+            let gesture = UISwipeGestureRecognizer(target: self, action:  #selector(self.swipeAnimations))
+            gesture.direction = direction
+            self.view.addGestureRecognizer(gesture)
         }
     }
+    
+    func swipeAnimations(sender: UISwipeGestureRecognizer) {
+        print(sender.direction)
+        if sender.direction == .up {
+            itsLitImage.animation = "pop"
+            itsLitImage.animate()
+            itsLitNoButton()
+        }
+        if sender.direction == .down {
+            itsLitImage.animation = "fall"
+            itsLitImage.animateToNext {
+                self.itsLitImage.animation = "pop"
+                self.itsLitImage.animateTo()
+            }
+            itsLitNoButton()
+        }
+        if sender.direction == .left {
+            itsLitImage.animation = "slideRight"
+            itsLitImage.animateToNext {
+                self.itsLitImage.animation = "pop"
+                self.itsLitImage.animateTo()
+            }
+            itsLitNoButton()
+        }
+        if sender.direction == .right {
+            itsLitImage.animation = "slideLeft"
+            itsLitImage.animateToNext {
+                self.itsLitImage.animation = "pop"
+                self.itsLitImage.animateTo()
+            }
+            itsLitNoButton()
+        }
+    }
+    
+    // End of Animations
+    // Start of Peer to Peer
+    
     func sendInfo() {
         if self.session.connectedPeers.count > 0 {
             let firstNameVar = "It's"
@@ -399,46 +318,111 @@ extension ViewController: UIImagePickerControllerDelegate {
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
     }
     
-    func addSwipe() {
-        let directions: [UISwipeGestureRecognizerDirection] = [.right, .left, .up, .down]
-        for direction in directions {
-            let gesture = UISwipeGestureRecognizer(target: self, action:  #selector(self.swipeAnimations))
-            gesture.direction = direction
-            self.view.addGestureRecognizer(gesture)
+    // End of Peer to Peer
+    // Start of Profile Pic Update
+    
+    func profilePicUpdate() {
+        let user = FIRAuth.auth()?.currentUser
+        guard (user?.uid) != nil else {
+            return
+        }
+        //successfully authenticated user
+        let imageName = UUID().uuidString
+        let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
+        let metadata = FIRStorageMetadata()
+        if let profileImage = self.profileImageView.image, let uploadData = UIImageJPEGRepresentation(profileImage, 0.1) {
+            
+            storageRef.put(uploadData, metadata: metadata, completion: { (metadata, error) in
+                
+                if error != nil {
+                    print(error as Any)
+                    return
+                }
+                
+                if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
+                    
+                    let values = ["profileImageUrl": profileImageUrl]
+                    self.registerUserIntoDatabaseWithUID((user?.uid)!, values: values as [String : AnyObject])
+                }
+            })
         }
     }
     
-    func swipeAnimations(sender: UISwipeGestureRecognizer) {
-        print(sender.direction)
-        if sender.direction == .up {
-            itsLitImage.animation = "pop"
-            itsLitImage.animate()
-            itsLitNoButton()
-        }
-        if sender.direction == .down {
-            itsLitImage.animation = "fall"
-            itsLitImage.animateToNext {
-                self.itsLitImage.animation = "pop"
-                self.itsLitImage.animateTo()
-            }
-            itsLitNoButton()
-        }
-        if sender.direction == .left {
-            itsLitImage.animation = "slideRight"
-            itsLitImage.animateToNext {
-                self.itsLitImage.animation = "pop"
-                self.itsLitImage.animateTo()
-            }
-            itsLitNoButton()
-        }
-        if sender.direction == .right {
-            itsLitImage.animation = "slideLeft"
-            itsLitImage.animateToNext {
-                self.itsLitImage.animation = "pop"
-                self.itsLitImage.animateTo()
-            }
-            itsLitNoButton()
-        }
+    fileprivate func registerUserIntoDatabaseWithUID(_ uid: String, values: [String: AnyObject]) {
+        let uid = FIRAuth.auth()!.currentUser!.uid
+        let ref = FIRDatabase.database().reference().child("users").child(uid)
+        
+        ref.updateChildValues(values, withCompletionBlock: { (err, ref) in
+            
+            self.dismiss(animated: true, completion: nil)
+        })
     }
     
+    
+    func handleSelectProfileImageView() {
+        let picker = UIImagePickerController()
+        
+        picker.delegate = self
+        picker.allowsEditing = true
+        
+        present(picker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        var selectedImageFromPicker: UIImage?
+        
+        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
+            selectedImageFromPicker = editedImage
+        } else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
+            
+            selectedImageFromPicker = originalImage
+        }
+        
+        if let selectedImage = selectedImageFromPicker {
+            profileImageView.image = selectedImage
+        }
+        
+        profilePicUpdate()
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        print("canceled picker")
+        dismiss(animated: true, completion: nil)
+    }
+
+    
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+        // Shake Animation
+        navigationController?.navigationBar.shake()
+        ItsLitButton.shake()
+        
+        if motion == .motionShake {
+            sendInfo()
+            let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+            if (device?.hasTorch)! {
+                do {
+                    try device?.lockForConfiguration()
+                    if (device?.torchMode == AVCaptureTorchMode.on) {
+                        device?.torchMode = AVCaptureTorchMode.off
+                        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                        
+                    } else {
+                        
+                        do {
+                            try device?.setTorchModeOnWithLevel(1.0)
+                            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                        } catch {
+                            print(error)
+                        }
+                    }
+                    device?.unlockForConfiguration()
+                } catch {
+                    print(error)
+                }
+            }
+        }
+    }
 }

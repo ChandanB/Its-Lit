@@ -12,8 +12,29 @@ import Firebase
 extension LoginViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func handleRegister() {
-        guard
+        
+        FIRDatabase.database().reference().child("usernames").runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
             
+            var userName = self.nameTextField.text
+            
+            if currentData.value == nil {
+                currentData.value = userName
+            } else {
+                self.nameTextField.text = ""
+                userName = ""
+            }
+            
+            currentData.value = userName
+            self.nameTextField.text = currentData.value as! String?
+            return FIRTransactionResult.success(withValue: currentData)
+            
+        }) { (error, committed, snapshot) in
+            if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+        
+        guard
             let password = passwordTextField.text,
             let name  = nameTextField.text,
             let email = emailTextField.text
@@ -21,6 +42,11 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
                 print("Form is not valid")
                 return
         }
+        
+        if name == "" {
+            self.errorTextField.isHidden = false
+            self.errorTextField.text = ("Username Taken")
+        } else {
         
         FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user: FIRUser?, error) in
             
@@ -60,6 +86,7 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
                 })
             }
         })
+        }
     }
     
     private func registerUserIntoDatabaseWithUID(uid: String, values: [String: AnyObject]) {
@@ -80,18 +107,14 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
             
             //may crash if keys don't match
             user.setValuesForKeys(values)
+            var username = FIRDatabase.database().reference().child("usernames")
+            let values = [user.name!: uid]
+            username.updateChildValues(values)
             self.viewController?.viewDidLoad()
             self.viewController?.setupNavBarWithUser(user)
             self.dismiss(animated: true, completion: nil)
             
         })
-    }
-    
-    func handleSelectProfileImageView() {
-        let picker = UIImagePickerController()
-        picker.allowsEditing = true
-        picker.delegate = self
-        present(picker, animated: true, completion: nil)
     }
     
     private func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
@@ -110,6 +133,13 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
         
         dismiss(animated: true, completion: nil)
         
+    }
+    
+    func handleSelectProfileImageView() {
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        present(picker, animated: true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

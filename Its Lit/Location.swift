@@ -11,12 +11,12 @@ import Firebase
 
 class Location: NSObject {
     
-    var name: String?
-    var fromId: String?
-    var latitude: String?
-    var longitude: String?
-    var timestamp: NSNumber?
-    var toId: String?
+    var timestamp : NSNumber?
+    var longitude : String?
+    var latitude  : String?
+    var fromId    : String?
+    var name      : String?
+    var toId      : String?
     
     func locationPartnerId() -> String? {
         return fromId == FIRAuth.auth()?.currentUser?.uid ? toId : fromId
@@ -25,10 +25,10 @@ class Location: NSObject {
     init(dictionary: [String: AnyObject]) {
         super.init()
         
-        fromId = dictionary["fromId"] as? String
-        latitude = dictionary["latitude"] as? String
-        longitude = dictionary["longitude"] as? String
         timestamp = dictionary["timestamp"] as? NSNumber
-        toId = dictionary["toId"] as? String
+        longitude = dictionary["longitude"] as? String
+        latitude  = dictionary["latitude"]  as? String
+        fromId    = dictionary["fromId"]    as? String
+        toId      = dictionary["toId"]      as? String
     }
 }

@@ -11,11 +11,10 @@ import UIKit
 
 
 class User: NSObject {
-    var latitude: String?
-    var longitude: String?
-    var id: String?
-    var name: String?
-    var email: String?
-    var profileImageUrl: String?
-    var friends: [String?] = []
+    var profileImageUrl : String?
+    var longitude : String?
+    var latitude  : String?
+    var email : String?
+    var name  : String?
+    var id    : String?
 }

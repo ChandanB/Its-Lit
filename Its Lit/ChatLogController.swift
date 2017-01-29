@@ -14,17 +14,6 @@ import AVFoundation
 
 class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    var viewController: ViewController?
-    let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-    
-    var startingFrame: CGRect?
-    var blackBackgroundView: UIView?
-    var startingImageView: UIImageView?
-    
-    let cellId = "cellId"
-    var ref: FIRDatabaseReference?
-    var databaseHandle: FIRDatabaseHandle?
-    var databaseHandleReceiving: FIRDatabaseHandle?
     var currentUser: User? {
         didSet {
             observeFriendRequest(self.currentUser!)
@@ -35,17 +24,43 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         didSet {
             navigationItem.title = user?.name
             observeMessages()
-           
         }
     }
     
+    // Device and View
+    let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+    var viewController: ViewController?
+    var startingImageView: UIImageView?
+    var blackBackgroundView: UIView?
+    var startingFrame: CGRect?
+    
+    // Database
+    var databaseHandleReceiving: FIRDatabaseHandle?
+    var databaseHandle: FIRDatabaseHandle?
+    var ref: FIRDatabaseReference?
     var messages = [Message]()
+    let cellId   = "cellId"
+    
+    lazy var inputContainerView: ChatInputContainerView = {
+        let chatInputContainerView = ChatInputContainerView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
+        chatInputContainerView.chatLogController = self
+        return chatInputContainerView
+    }()
+    
+    override var inputAccessoryView: UIView? {
+        get {
+            return inputContainerView
+        }
+    }
+    
+    override var canBecomeFirstResponder : Bool {
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add Friend", style: .plain, target: self, action: #selector(addFriend))
-        
         guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = self.user?.id else {
             return
         }
@@ -57,16 +72,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             }
         })
         
-        collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-        collectionView?.alwaysBounceVertical = true
-        collectionView?.backgroundColor = UIColor.rgb(230, green: 230, blue: 230)
-        collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.keyboardDismissMode = .interactive
-        setupKeyboardObservers()
-        
-        let name = currentUser?.name
-        
         //Check if any request received
+        let name = currentUser?.name
         self.databaseHandleReceiving = FIRDatabase.database().reference().child("Friend").child(toId).child(name!).observe(.childAdded, with: { (snapshot) in
             
             FIRDatabase.database().reference().child("Friend").child(toId).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -100,6 +107,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Waiting", style: .plain, target: self, action: nil)
             }
         })
+        
+        collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+        collectionView?.backgroundColor = UIColor.rgb(230, green: 230, blue: 230)
+        collectionView?.keyboardDismissMode  = .interactive
+        collectionView?.alwaysBounceVertical = true
+        setupKeyboardObservers()
 
     }
     
@@ -200,26 +214,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }, withCancel: nil)
     }
     
-    func itsLitNoButton() {
-        if (device?.hasTorch)! {
-            do {
-                try device?.lockForConfiguration()
-                if (device?.torchMode == AVCaptureTorchMode.on) {
-                    device?.torchMode = AVCaptureTorchMode.off
-                } else {
-                    do {
-                        try device?.setTorchModeOnWithLevel(1.0)
-                    } catch {
-                        print(error)
-                    }
-                }
-                device?.unlockForConfiguration()
-            } catch {
-                print(error)
-            }
-        }
-    }
-    
     func addFriend(){
         let alert = UIAlertController(title: "Add Friend?", message: "Do you want to add this user to your friend list?", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: { action in
@@ -234,20 +228,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let toId = self.user!.name!
         let fromId = FIRAuth.auth()!.currentUser!.uid
         let friendRef = FIRDatabase.database().reference().child("Friend").child(fromId).child(toId)
-        
-        let friends = toId
-        // let recipientRef = FIRDatabase.database().reference().child("Friend").child(toId).child(fromId)
-        
-        friendRef.updateChildValues([friends: true])
-        //  recipientRef.updateChildValues([friends: true])
-        
+        friendRef.updateChildValues([toId: true])
     }
     
     func invite() {
         let ref = FIRDatabase.database().reference().child("Lit")
+        let fromId = FIRAuth.auth()!.currentUser!.uid
         let childRef = ref.childByAutoId()
         let toId = self.user!.id!
-        let fromId = FIRAuth.auth()!.currentUser!.uid
         let litRef = FIRDatabase.database().reference().child("Lit").child(fromId).child(toId)
         let litId = childRef.key
         
@@ -290,29 +278,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
     }
     
-    lazy var inputContainerView: ChatInputContainerView = {
-        let chatInputContainerView = ChatInputContainerView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
-        chatInputContainerView.chatLogController = self
-        return chatInputContainerView
-    }()
-    
-    override var inputAccessoryView: UIView? {
-        get {
-            return inputContainerView
-        }
-    }
-    
-    override var canBecomeFirstResponder : Bool {
-        return true
-    }
-    
     func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
     }
     
     func handleKeyboardWillShow(_ notification: Notification) {
@@ -330,6 +297,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         UIView.animate(withDuration: keyboardDuration!, animations: {
             self.view.layoutIfNeeded()
         })
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -352,71 +324,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         return cell
     }
     
-    fileprivate func setupCell(_ cell: ChatMessageCell, message: Message) {
-        if let profileImageUrl = self.user?.profileImageUrl {
-            cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
-        }
-        
-        if message.fromId == FIRAuth.auth()?.currentUser?.uid {
-            //outgoing yellow
-            cell.bubbleView.backgroundColor = .white
-            cell.textView.textColor = UIColor.black
-            cell.profileImageView.isHidden = true
-            cell.bubbleViewRightAnchor?.isActive = true
-            cell.bubbleViewLeftAnchor?.isActive = false
-            
-        } else {
-            
-            //incoming gray
-            let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(imageTapped))
-            cell.bubbleView.backgroundColor = .red
-            cell.textView.textColor = UIColor.white
-            cell.profileImageView.isHidden = false
-            cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
-            cell.bubbleViewRightAnchor?.isActive = false
-            cell.bubbleViewLeftAnchor?.isActive = true
-        }
-    }
-    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         collectionView?.collectionViewLayout.invalidateLayout()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        var height: CGFloat = 80
-        
-        let message = messages[(indexPath as NSIndexPath).item]
-        if let text = message.text {
-            height = estimateFrameForText(text).height + 20
-            
-        } else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
-            height = CGFloat(imageHeight / imageWidth * 200)
-        }
-        
-        let width = UIScreen.main.bounds.width
-        return CGSize(width: width, height: height)
-    }
-    
-    fileprivate func estimateFrameForText(_ text: String) -> CGRect {
-        let size = CGSize(width: 200, height: 1000)
-        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16)], context: nil)
-    }
-    
-    var containerViewBottomAnchor: NSLayoutConstraint?
-    
-    func handleSend() {
-        let properties = ["text": inputContainerView.inputTextField.text!]
-        if properties == ["text": ""] {
-        } else {
-            sendMessageWithProperties(properties as [String : AnyObject])
-        }
-    }
-    
-    func dismissFullscreenImage(sender: UITapGestureRecognizer) {
-        navigationController?.isNavigationBarHidden = false
-        sender.view?.removeFromSuperview()
     }
     
     fileprivate func sendMessageWithProperties(_ properties: [String: AnyObject]) {
@@ -448,6 +357,69 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             let recipientUserMessagesRef = FIRDatabase.database().reference().child("user-messages").child(toId).child(fromId)
             recipientUserMessagesRef.updateChildValues([messageId: 1])
         }
+    }
+    
+    fileprivate func setupCell(_ cell: ChatMessageCell, message: Message) {
+        if let profileImageUrl = self.user?.profileImageUrl {
+            cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+        }
+        
+        if message.fromId == FIRAuth.auth()?.currentUser?.uid {
+            //outgoing yellow
+            cell.bubbleView.backgroundColor = .white
+            cell.textView.textColor = UIColor.black
+            cell.profileImageView.isHidden = true
+            cell.bubbleViewRightAnchor?.isActive = true
+            cell.bubbleViewLeftAnchor?.isActive = false
+            
+        } else {
+            
+            //incoming gray
+            let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(imageTapped))
+            cell.bubbleView.backgroundColor = .red
+            cell.textView.textColor = UIColor.white
+            cell.profileImageView.isHidden = false
+            cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+            cell.bubbleViewRightAnchor?.isActive = false
+            cell.bubbleViewLeftAnchor?.isActive = true
+        }
+    }
+    
+    fileprivate func estimateFrameForText(_ text: String) -> CGRect {
+        let size = CGSize(width: 200, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16)], context: nil)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        var height: CGFloat = 80
+        
+        let message = messages[(indexPath as NSIndexPath).item]
+        if let text = message.text {
+            height = estimateFrameForText(text).height + 20
+            
+        } else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
+            height = CGFloat(imageHeight / imageWidth * 200)
+        }
+        
+        let width = UIScreen.main.bounds.width
+        return CGSize(width: width, height: height)
+    }
+    
+    var containerViewBottomAnchor: NSLayoutConstraint?
+    
+    func handleSend() {
+        let properties = ["text": inputContainerView.inputTextField.text!]
+        if properties == ["text": ""] {
+        } else {
+            sendMessageWithProperties(properties as [String : AnyObject])
+        }
+    }
+    
+    func dismissFullscreenImage(sender: UITapGestureRecognizer) {
+        navigationController?.isNavigationBarHidden = false
+        sender.view?.removeFromSuperview()
     }
     
     func imageTapped(sender: UITapGestureRecognizer) {
@@ -509,6 +481,26 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 zoomOutImageView.removeFromSuperview()
                 self.startingImageView?.isHidden = false
             })
+        }
+    }
+    
+    func itsLitNoButton() {
+        if (device?.hasTorch)! {
+            do {
+                try device?.lockForConfiguration()
+                if (device?.torchMode == AVCaptureTorchMode.on) {
+                    device?.torchMode = AVCaptureTorchMode.off
+                } else {
+                    do {
+                        try device?.setTorchModeOnWithLevel(1.0)
+                    } catch {
+                        print(error)
+                    }
+                }
+                device?.unlockForConfiguration()
+            } catch {
+                print(error)
+            }
         }
     }
 }

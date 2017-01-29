@@ -27,7 +27,7 @@ extension UIColor {
     convenience init(r: CGFloat, g: CGFloat, b: CGFloat) {
         self.init(red: r/255, green: g/255, blue: b/255, alpha: 1)
     }
-
+    
 }
 
 extension UIView {
@@ -50,7 +50,7 @@ extension UIView {
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight] // for supporting device rotation
         self.addSubview(blurEffectView)
     }
-
+    
 }
 
 public extension UIView {
@@ -58,10 +58,10 @@ public extension UIView {
         let animation : CABasicAnimation = CABasicAnimation(keyPath: "transform.translation.x")
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
         
-        animation.repeatCount = count ?? 2
         animation.duration = (duration ?? 0.2)/TimeInterval(animation.repeatCount)
-        animation.autoreverses = true
         animation.byValue = translation ?? -15
+        animation.repeatCount = count ?? 2
+        animation.autoreverses = true
         layer.add(animation, forKey: "shake")
     }
     
@@ -69,11 +69,11 @@ public extension UIView {
         let animation : CABasicAnimation = CABasicAnimation(keyPath: "transform.translation.y")
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
         
-        animation.repeatCount = count ?? 1
         animation.duration = (duration ?? 1)/TimeInterval(animation.repeatCount)
-        animation.autoreverses = false
         animation.byValue = translation ?? -300
+        animation.repeatCount = count ?? 1
+        animation.autoreverses = false
         layer.add(animation, forKey: "shakePoints")
     }
     
-    }
+}

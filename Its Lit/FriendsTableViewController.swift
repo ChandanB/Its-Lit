@@ -56,9 +56,6 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
     var timer: Timer?
     var lit = [Lit]()
     
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -93,35 +90,25 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         }
     }
     
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if searchController.isActive {
-            return false
-        } else {
-            return true
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        
-        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
-            return
-        }
-        
-        let message = self.messages[(indexPath as NSIndexPath).row]
-        if let chatPartnerId = message.chatPartnerId() {
-            FIRDatabase.database().reference().child("user-messages").child(uid).child(chatPartnerId).removeValue(completionBlock: { (error, ref) in
+    fileprivate func fetchMessageWithMessageId(_ messageId: String) {
+        let messagesReference = FIRDatabase.database().reference().child("messages").child(messageId)
+        messagesReference.observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let message = Message(dictionary: dictionary)
                 
-                if error != nil {
-                    print("Failed to delete message:", error as Any)
-                    return
+                if let chatPartnerId = message.chatPartnerId() {
+                    self.messagesDictionary[chatPartnerId] = message
                 }
-                
-                self.messagesDictionary.removeValue(forKey: chatPartnerId)
                 self.attemptReloadOfTable()
-            })
-        }
+            }
+        }, withCancel: nil)
     }
     
+    fileprivate func attemptReloadOfTable() {
+        self.timer?.invalidate()
+        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
+    }
     
     func observeUserMessages() {
         guard let uid = FIRAuth.auth()?.currentUser?.uid else {
@@ -151,45 +138,6 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         
     }
     
-    fileprivate func fetchMessageWithMessageId(_ messageId: String) {
-        let messagesReference = FIRDatabase.database().reference().child("messages").child(messageId)
-        messagesReference.observeSingleEvent(of: .value, with: { (snapshot) in
-            
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                let message = Message(dictionary: dictionary)
-                
-                if let chatPartnerId = message.chatPartnerId() {
-                    self.messagesDictionary[chatPartnerId] = message
-                }
-                self.attemptReloadOfTable()
-            }
-            
-        }, withCancel: nil)
-    }
-    
-    fileprivate func attemptReloadOfTable() {
-        self.timer?.invalidate()
-        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
-    }
-    
-    func handleReloadTable() {
-        self.messages = Array(self.messagesDictionary.values)
-        self.messages.sort(by: { (message1, message2) -> Bool in
-            return message1.timestamp?.int32Value > message2.timestamp?.int32Value
-        })
-        
-        DispatchQueue.main.async(execute: {
-            self.tableView.reloadData()
-        })
-    }
-    
-    func showChatControllerForUser(_ user: User, _ currentUser: User) {
-        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
-        chatLogController.user = user
-        chatLogController.currentUser = currentUser
-        navigationController?.pushViewController(chatLogController, animated: true)
-    }
-    
     func fetchUser() {
         FIRDatabase.database().reference().child("users").observe(.childAdded, with: { (snapshot) in
             
@@ -207,17 +155,34 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         }, withCancel: nil)
     }
     
-    func handleCancel() {
-        dismiss(animated: true, completion: nil)
+    func handleReloadTable() {
+        self.messages = Array(self.messagesDictionary.values)
+        self.messages.sort(by: { (message1, message2) -> Bool in
+            return message1.timestamp?.int32Value > message2.timestamp?.int32Value
+        })
+        
+        DispatchQueue.main.async(execute: {
+            self.tableView.reloadData()
+        })
     }
     
+    func showChatControllerForUser(_ user: User, _ currentUser: User) {
+        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+        chatLogController.currentUser = currentUser
+        chatLogController.user = user
+        navigationController?.pushViewController(chatLogController, animated: true)
+    }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if searchController.isActive && searchController.searchBar.text != ""  {
-            return filtered.count
-        } else {
-            return messages.count
-        }
+    func filterContentForSearchText(searchText: String, scope: String = "All") {
+        filtered = users.filter({( user : User) -> Bool in
+            let categoryMatch = (scope == "All") || (user.name == scope)
+            return categoryMatch && (user.name?.lowercased().contains(searchText.lowercased()))!
+        })
+        self.attemptReloadOfTable()
+    }
+    
+    func handleCancel() {
+        dismiss(animated: true, completion: nil)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -240,18 +205,6 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
             cell.message = message
         }
         return cell
-    }
-    
-    func filterContentForSearchText(searchText: String, scope: String = "All") {
-        filtered = users.filter({( user : User) -> Bool in
-            let categoryMatch = (scope == "All") || (user.name == scope)
-            return categoryMatch && (user.name?.lowercased().contains(searchText.lowercased()))!
-        })
-        self.attemptReloadOfTable()
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 72
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -302,6 +255,50 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
             }
         }
     }
+    
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if searchController.isActive && searchController.searchBar.text != ""  {
+            return filtered.count
+        } else {
+            return messages.count
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
+            return
+        }
+        
+        let message = self.messages[(indexPath as NSIndexPath).row]
+        if let chatPartnerId = message.chatPartnerId() {
+            FIRDatabase.database().reference().child("user-messages").child(uid).child(chatPartnerId).removeValue(completionBlock: { (error, ref) in
+                
+                if error != nil {
+                    print("Failed to delete message:", error as Any)
+                    return
+                }
+                
+                self.messagesDictionary.removeValue(forKey: chatPartnerId)
+                self.attemptReloadOfTable()
+            })
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if searchController.isActive {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    
 }
 
 
