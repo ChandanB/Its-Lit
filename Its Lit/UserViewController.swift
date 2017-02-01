@@ -57,6 +57,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var interactionCounter  = 0
     var tapCounter          = 0
     let nameLabel = UILabel()
+    var toUser    = User()
     let user      = User()
     var litness   = [Lit]()
     var counter   = 0
@@ -75,7 +76,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var databaseHandleReceiving : FIRDatabaseHandle?
     var browser      : MCBrowserViewController!
     var assistant    : MCAdvertiserAssistant!
+    var childRef     : FIRDatabaseReference?
     var selfRef      : FIRDatabaseReference?
+    var toRef        : FIRDatabaseReference?
     var interstitial : GADInterstitial!
     var session      : MCSession!
     var peerID       : MCPeerID!
@@ -127,7 +130,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         itsLitImage.layer.shadowOffset = CGSize(width: 0, height: 0)
         itsLitImage.layer.shadowColor  = defaultColor.cgColor
-        itsLitImage.layer.shadowRadius = 10.0
+        itsLitImage.layer.shadowRadius = 20.0
         checkForAnimations()
         sendInfo()
         
@@ -139,7 +142,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                     itsLitImage.layer.shadowOpacity = 0
                     stopSpinning()
                 } else {
-                    
                     do {
                         if FIRAuth.auth()?.currentUser?.uid != nil {
                             self.tapCounter += 1
@@ -176,12 +178,10 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
     }
     
-    
     func itsLitNoButton() {
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         checkForUnlocks()
         counter += 1
-        
         if (device?.hasTorch)! {
             do {
                 try device?.lockForConfiguration()
@@ -191,6 +191,10 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                     do {
                         try device?.setTorchModeOnWithLevel(1.0)
                         AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                        if FIRAuth.auth()?.currentUser?.uid != nil {
+                            self.tapCounter += 1
+                            updateUserTapCounter()
+                        }
                     } catch {
                         print(error)
                     }
@@ -200,7 +204,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 print(error)
             }
         }
-
         
         if FIRAuth.auth()?.currentUser?.uid == nil && counter == 20 {
             if interstitial.isReady {
@@ -212,13 +215,12 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             let alert = UIAlertController(title: "Tip", message: "Sign in to remove Ads", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-            
             createAndLoadInterstitial()
             stopSpinning()
             counter = 0
         }
     }
-
+    
     func updateUserTapCounter() {
         let uid = FIRAuth.auth()!.currentUser!.uid
         let ref = FIRDatabase.database().reference().child("User-Score").child(uid)
@@ -267,7 +269,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 self.tapCounterLabel.text = String(newScore)
             }
         }, withCancel: nil)
-        
         checkForUnlocks()
     }
     
@@ -324,7 +325,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         friendsTableViewController.currentUser = currentUser
         present(navController, animated: true, completion: nil)
     }
-
+    
     func ogFireButtonTapped(sender: UITapGestureRecognizer) {
         self.ogFireButton.animation = "fall"
         ogFireButton.duration = 3.0
@@ -351,20 +352,20 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     fileprivate func createAndLoadInterstitial() {
+        // Request test ads on devices you specify. Your test device ID is printed to the console when
         interstitial = GADInterstitial(adUnitID: "ca-app-pub-8446644766706278/1896898949")
         let request = GADRequest()
-        // Request test ads on devices you specify. Your test device ID is printed to the console when
+        
         // an ad request is made.
         request.testDevices = [ kGADSimulatorID, "2077ef9a63d2b398840261c8221a0c9b" ]
         interstitial.load(request)
     }
-
+    
     // Fetch user
     func fetchUserAndSetupNavBarTitle() {
         guard let uid = FIRAuth.auth()?.currentUser?.uid else {
             return
         }
-        
         FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 self.navigationItem.title = dictionary["name"] as? String
@@ -374,7 +375,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             }
         }, withCancel: nil)
     }
-
+    
     func startAD() {
         createAndLoadInterstitial()
         if FIRAuth.auth()?.currentUser?.uid == nil && counter == 25 {
@@ -383,23 +384,18 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             } else {
                 print("Ad wasn't ready")
             }
-            
             let alert = UIAlertController(title: "Tip", message: "Sign in to remove Ads", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "It's Lit", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-            
-            counter = 0
             stopSpinning()
-            
+            counter = 0
         } else if FIRAuth.auth()?.currentUser?.uid == nil {
             counter += 1
         }
-        
     }
     
     //MARK: - Check if logged in
     func checkIfUserIsLoggedIn() {
-        handleLogout()
         // If user isn't logged in
         if FIRAuth.auth()?.currentUser?.uid == nil {
             createAndLoadInterstitial()
@@ -415,7 +411,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             present(navController, animated: true, completion: nil)
             
         } else {
-            
             timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countToEnableInteraction), userInfo: nil, repeats: true)
             
             let uid = FIRAuth.auth()!.currentUser!.uid
@@ -436,7 +431,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                         }
                         self.updateScoreLabel(score)
                     }
-                    
                 }
             }, withCancel: nil)
             
@@ -456,7 +450,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             view.isUserInteractionEnabled = false
             profileImageView.isHidden = false
             fetchUserAndSetupNavBarTitle()
-            
         }
     }
     
@@ -572,6 +565,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     // Setup Nav Bar with fetched user
     func setupNavBarWithUser(_ user: User) {
         
+        self.navigationItem.titleView = titleView
         containerView.addSubview(profileImageView)
         titleView.addSubview(containerView)
         containerView.addSubview(nameLabel)
@@ -606,9 +600,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         nameLabel.heightAnchor.constraint(equalTo: profileImageView.heightAnchor).isActive = true
         nameLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
         nameLabel.text = user.name
-        
-        self.navigationItem.titleView = titleView
-        
     }
     
     func checkForUnlocks() {
@@ -683,91 +674,41 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             alertView.addAction(animateLighter) // Method to run after dismissal
         }
     }
-
     
     func observeFriendsAndSendLitness(_ user: User) {
-        self.tapCounter += 1
         let uidName = user.name
         let uid     = FIRAuth.auth()!.currentUser!.uid
-        let highref = FIRDatabase.database().reference().child("Friend")
         let ref     = FIRDatabase.database().reference().child("Friend").child(uid)
-        
-        FIRDatabase.database().reference().child("usernames").child(uidName!).runTransactionBlock({ (currentData: FIRMutableData) -> FIRTransactionResult in
-            
-            var userName = [String: AnyObject]()
-            
-            // update openChatObject with the latest information from currentData
-            if currentData.hasChildren() {
-                userName = currentData.value as! [String: AnyObject]
-            }
-            
-            currentData.value = userName
-            return FIRTransactionResult.success(withValue: currentData)
-        }) { (error, committed, snapshot) in
-            if let error = error {
-                print(error.localizedDescription)
-            }
-        }
-            //Transaction.handler()
-        
-        highref.observeSingleEvent(of: .value, with: { (snapshot) in
-            
+        var litValues: [String: AnyObject] = [:]
+
+        FIRDatabase.database().reference().child("Friend").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
                 for snap in snapshots {
-                    let toId = snap.key
-                    
-                    FIRDatabase.database().reference().child("Friend").child(toId).child(uidName!).observeSingleEvent(of: .value, with: { (snapshot) in
-                        
-                        if (snapshot.value as? [String: AnyObject]) != nil {
-                            
-                            FIRDatabase.database().reference().child("Friend").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-                                
-                                if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
-                                    for snap in snapshots {
-                                        let allFriends = [snap]
-                                        let toNameId = snap.key
-                                        
-                                        FIRDatabase.database().reference().child("Friend").child(uid).child(toNameId).observeSingleEvent(of: .value, with: { (snapshot) in
-                                            
-                                            if (snapshot.value as? [String: AnyObject]) != nil {
-                                                
-                                                if let friendSnaps = snapshot.children.allObjects as? [FIRDataSnapshot] {
-                                                    
-                                                    for snap in friendSnaps {
-                                                        let toRef = FIRDatabase.database().reference().child("Litness").child(toNameId).child(uidName!)
-                                                        let childRef = ref.childByAutoId()
-                                                        let randomKey = childRef.key
-                                                        let nameId = snap.key
-                                                        let values: [String: AnyObject] = [nameId: randomKey as AnyObject]
-                                                        toRef.updateChildValues(values)
-                                                        self.selfRef = FIRDatabase.database().reference().child("Litness").child(uidName!)
-                                                    }
-                                                }
-                                            }
-                                        })
-                                    }
-                                }
-                            })
-                        }
-                    })
+                    if (snapshot.value as? [String: AnyObject]) != nil {
+                        self.toUser.name = snap.key
+                        let childRef     = ref.childByAutoId()
+                        let randomKey    = childRef.key
+            
+                        self.toRef = FIRDatabase.database().reference().child("Litness").child(self.toUser.name!)
+                        litValues = [uidName!: randomKey as AnyObject]
+                        self.toRef?.updateChildValues(litValues)
+                        self.childRef = FIRDatabase.database().reference().child("Litness").child(uidName!).child(self.toUser.name!)
+                    }
                 }
             }
-        }, withCancel: nil)
+        })
         
-        self.databaseHandleReceiving = self.selfRef?.observe(.childAdded, with: { (snapshot) in
-            if (snapshot.value as? [String: AnyObject]) != nil {
-                self.itsLitNoButton()
-                print(self.selfRef)
-                self.selfRef?.removeValue(completionBlock: { (error, ref) in
-                    if error != nil {
-                        print("Failed to delete litness:", error as Any)
-                        return
-                    }
-                })
-            }
+        self.databaseHandleReceiving = self.childRef?.observe(.childAdded, with: { (snapshot) in
+            self.toRef?.removeValue(completionBlock: { (error, ref) in
+                if error != nil {
+                    print("Failed to delete litness:", error as Any)
+                    return
+                } else {
+                    self.itsLitNoButton()
+                }
+            })
         }, withCancel: nil)
     }
-
 }
 
 

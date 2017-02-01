@@ -114,31 +114,29 @@ extension ViewController: UIImagePickerControllerDelegate {
             self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
             self.nameLabel.textColor = UIColor.white
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            self.tapCounterLabel.tintColor = .white
+            self.tapCounterLabel.textColor = .white
         }, completion: nil)
     }
     
     func changeToGrey() {
-        //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[1]
             self.view.backgroundColor =  self.backgroundColours[1]
             self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
             self.nameLabel.textColor = UIColor.white
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            self.tapCounterLabel.tintColor = .white
+            self.tapCounterLabel.textColor = .white
         }, completion: nil)
     }
     
     func changeToBlack() {
-        //  let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[2]
             self.view.backgroundColor =  self.backgroundColours[2]
             self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
             self.nameLabel.textColor = UIColor.white
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            self.tapCounterLabel.tintColor = .white
+            self.tapCounterLabel.textColor = .white
         }, completion: nil)
         
     }
@@ -151,8 +149,7 @@ extension ViewController: UIImagePickerControllerDelegate {
             self.navigationItem.titleView?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
             self.nameLabel.textColor = UIColor.rgb(51, green: 21, blue: 1)
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-            self.tapCounterLabel.tintColor = .black
-            
+            self.tapCounterLabel.textColor =  UIColor.rgb(51, green: 21, blue: 1)
         }, completion: nil)
     }
     
@@ -161,13 +158,12 @@ extension ViewController: UIImagePickerControllerDelegate {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[5]
             self.profileImageView.backgroundColor = self.backgroundColours[5]
             self.view.backgroundColor =  self.backgroundColours[5]
-            self.tapCounterLabel.tintColor = .white
+            self.tapCounterLabel.textColor = .white
         }, completion: nil)
         
     }
     
     func changeToBlue() {
-        // let worldTintedImage = worldImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[4]
             self.view.backgroundColor =  self.backgroundColours[4]
@@ -176,7 +172,6 @@ extension ViewController: UIImagePickerControllerDelegate {
             self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
             self.tapCounterLabel.tintColor = .white
         }, completion: nil)
-        
     }
    
     func spinWithOptions(options: UIViewAnimationOptions) {
@@ -232,7 +227,7 @@ extension ViewController: UIImagePickerControllerDelegate {
         if sender.direction == .left {
             itsLitImage.animation = "slideRight"
             itsLitImage.animateToNext {
-                self.itsLitImage.animation = "pop"
+                self.itsLitImage.animation = "slideLeft"
                 self.itsLitImage.animateTo()
             }
             itsLitNoButton()
@@ -240,7 +235,7 @@ extension ViewController: UIImagePickerControllerDelegate {
         if sender.direction == .right {
             itsLitImage.animation = "slideLeft"
             itsLitImage.animateToNext {
-                self.itsLitImage.animation = "pop"
+                self.itsLitImage.animation = "slideRight"
                 self.itsLitImage.animateTo()
             }
             itsLitNoButton()
@@ -360,11 +355,10 @@ extension ViewController: UIImagePickerControllerDelegate {
     
     
     func handleSelectProfileImageView() {
+        handleLogout()
         let picker = UIImagePickerController()
-        
-        picker.delegate = self
         picker.allowsEditing = true
-        
+        picker.delegate = self
         present(picker, animated: true, completion: nil)
     }
     

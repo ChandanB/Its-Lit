@@ -107,7 +107,7 @@ extension LoginViewController: UIImagePickerControllerDelegate, UINavigationCont
             
             //may crash if keys don't match
             user.setValuesForKeys(values)
-            var username = FIRDatabase.database().reference().child("usernames")
+            let username = FIRDatabase.database().reference().child("usernames")
             let values = [user.name!: uid]
             username.updateChildValues(values)
             self.viewController?.viewDidLoad()
