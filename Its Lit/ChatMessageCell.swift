@@ -23,9 +23,9 @@ class ChatMessageCell: UICollectionViewCell {
         let tv = UITextView()
         tv.translatesAutoresizingMaskIntoConstraints = false
         tv.font = UIFont.systemFont(ofSize: 16)
-        tv.backgroundColor = UIColor.clear
+        tv.backgroundColor = .clear
         tv.text = "SAMPLE TEXT FOR NOW"
-        tv.textColor = UIColor.white
+        tv.textColor = .white
         tv.isEditable = false
         return tv
     }()

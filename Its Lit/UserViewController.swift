@@ -43,8 +43,8 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
-        label.font.withSize(36)
         label.isHidden = true
+        label.font = UIFont(name: "AmericanTypewriter-Bold", size: 32)
         label.text = "+1"
         return label
     }()
@@ -98,10 +98,10 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         itsLitImage.animate()
         
         // Setup Nav Bar
-        UINavigationBar.appearance().barTintColor = UIColor.rgb(254, green: 209, blue: 67)
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        view.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
+        UINavigationBar.appearance().barTintColor = defaultColor
         UINavigationBar.appearance().shadowImage = UIImage()
+        view.backgroundColor = defaultColor
         
         checkIfUserIsLoggedIn()
         
@@ -113,8 +113,8 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             ogFireButton.isHidden = true
             
             self.backgroundColours =
-                [redColor  , UIColor.darkGray,
-                 blackColor, UIColor.white,
+                [redColor  , .darkGray,
+                 blackColor, .white,
                  blueColor , defaultColor]
         }
         
@@ -128,9 +128,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     // Turn on flashlight
     @IBAction func itsLit(_ sender: UIButton) {
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-        itsLitImage.layer.shadowOffset = CGSize(width: 0, height: 0)
-        itsLitImage.layer.shadowColor  = defaultColor.cgColor
-        itsLitImage.layer.shadowRadius = 20.0
         checkForAnimations()
         sendInfo()
         
@@ -276,25 +273,8 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         view.addSubview(bonusPointTextForOgFlame)
         bonusPointTextForOgFlame.centerYAnchor.constraint(equalTo: ogFireButton.centerYAnchor).isActive = true
         bonusPointTextForOgFlame.centerXAnchor.constraint(equalTo: ogFireButton.centerXAnchor).isActive = true
-        bonusPointTextForOgFlame.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        bonusPointTextForOgFlame.heightAnchor.constraint(equalToConstant: 80).isActive = true
         bonusPointTextForOgFlame.widthAnchor.constraint(equalToConstant: 40).isActive = true
-    }
-    
-    func animateLighter() {
-        self.bonusPointTextForOgFlame.isHidden = false
-        self.bonusPointTextForOgFlame.alpha = 0
-        ogFireButton.animation = "morph"
-        ogFireButton.animate()
-        
-        UIView.animate(withDuration: 2, animations: {
-            self.tapCounter += 1
-            self.bonusPointTextForOgFlame.alpha = 1
-            self.bonusPointTextForOgFlame.shakePoints()
-        })
-        
-        UIView.animate(withDuration: 1, animations: {
-            self.bonusPointTextForOgFlame.alpha = 0
-        })
     }
     
     func handleLogout() {
@@ -437,7 +417,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             // Setup Friends Button on NavBar
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Friends", style: .plain, target: self, action: #selector(goToFriendsPage))
             navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "AmericanTypewriter", size: 18)!], for: UIControlState.normal)
-            navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
+            navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 67)
             
             // Setup Connect Button on NavBar
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Connect", style: .plain, target: self, action: #selector(connectAlert))
@@ -467,6 +447,18 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         
         if self.tapCounter > 50 {
             rotateView()
+        }
+        
+        if self.tapCounter > 500 {
+            tapCounterLabel.layer.shadowOffset = CGSize(width: 0, height: 0)
+            tapCounterLabel.layer.shadowColor  = defaultColor.cgColor
+            tapCounterLabel.layer.shadowRadius = 60.0
+            
+            itsLitImage.layer.shadowOffset = CGSize(width: 0, height: 0)
+            itsLitImage.layer.shadowColor  = defaultColor.cgColor
+            itsLitImage.layer.shadowRadius = 20.0
+
+            tapCounterLabel.layer.shadowOpacity = 1
         }
         
         if self.tapCounter == 1001 {
@@ -574,7 +566,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         containerView.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
-        //titleView.backgroundColor = UIColor.redColor()
         
         containerView.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
         containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
@@ -582,7 +573,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         if let profileImageUrl = user.profileImageUrl {
             profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
         }
-        profileImageView.backgroundColor = UIColor.rgb(254, green: 209, blue: 67)
+        profileImageView.backgroundColor = defaultColor
         profileImageView.contentMode = .scaleAspectFill
         profileImageView.layer.cornerRadius = 15
         profileImageView.clipsToBounds = true

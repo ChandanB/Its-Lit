@@ -367,7 +367,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         if message.fromId == FIRAuth.auth()?.currentUser?.uid {
             //outgoing yellow
             cell.bubbleView.backgroundColor = .white
-            cell.textView.textColor = UIColor.black
+            cell.textView.textColor = .black
             cell.profileImageView.isHidden = true
             cell.bubbleViewRightAnchor?.isActive = true
             cell.bubbleViewLeftAnchor?.isActive = false
@@ -377,7 +377,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             //incoming gray
             let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(imageTapped))
             cell.bubbleView.backgroundColor = .red
-            cell.textView.textColor = UIColor.white
+            cell.textView.textColor = .white
             cell.profileImageView.isHidden = false
             cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
             cell.bubbleViewRightAnchor?.isActive = false

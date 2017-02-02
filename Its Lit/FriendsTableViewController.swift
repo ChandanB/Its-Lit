@@ -73,7 +73,7 @@ class FriendsTableViewController: UITableViewController, UISearchControllerDeleg
         searchController.searchBar.tintColor = UIColor.rgb(51, green: 21, blue: 1)
         searchController.searchBar.searchBarStyle = UISearchBarStyle.prominent
         searchController.searchBar.placeholder = " Search For Friends"
-        searchController.searchBar.barTintColor = UIColor.white
+        searchController.searchBar.barTintColor = .white
         searchController.searchBar.isTranslucent = false
         searchController.searchBar.delegate = self
         searchController.searchBar.sizeToFit()

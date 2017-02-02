@@ -18,7 +18,7 @@ class LoginViewController: UIViewController  {
         button.addTarget(self, action: #selector(handleLoginRegister), for: .touchUpInside)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(.white, for: .normal)
         button.setTitle("Register", for: .normal)
         button.backgroundColor = .black
         button.layer.cornerRadius = 20
@@ -30,7 +30,7 @@ class LoginViewController: UIViewController  {
         button.addTarget(self, action: #selector(loginRegisterSkipped), for: .touchUpInside)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(.white, for: .normal)
         button.setTitle("Skip", for: .normal)
         button.backgroundColor = .red
         button.layer.cornerRadius = 20

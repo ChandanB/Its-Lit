@@ -107,14 +107,32 @@ extension ViewController: UIImagePickerControllerDelegate {
     // End of Alerts
     // Start of Animations
     
+    func animateLighter() {
+        self.bonusPointTextForOgFlame.isHidden = false
+        self.bonusPointTextForOgFlame.alpha = 0
+        ogFireButton.animation = "morph"
+        ogFireButton.animate()
+        
+        UIView.animate(withDuration: 10, animations: {
+            self.tapCounter += 1
+            self.bonusPointTextForOgFlame.alpha = 1
+            self.bonusPointTextForOgFlame.shakePoints()
+        })
+        
+        UIView.animate(withDuration: 1, animations: {
+            self.bonusPointTextForOgFlame.alpha = 0
+        })
+    }
+    
     func changeToRed() {
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[0]
             self.view.backgroundColor =  self.backgroundColours[0]
-            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-            self.nameLabel.textColor = UIColor.white
-            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+            self.navigationItem.leftBarButtonItem?.tintColor = .white
+            self.nameLabel.textColor = .white
+            self.navigationItem.rightBarButtonItem?.tintColor = .white
             self.tapCounterLabel.textColor = .white
+            self.bonusPointTextForOgFlame.textColor = .white
         }, completion: nil)
     }
     
@@ -122,10 +140,11 @@ extension ViewController: UIImagePickerControllerDelegate {
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[1]
             self.view.backgroundColor =  self.backgroundColours[1]
-            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-            self.nameLabel.textColor = UIColor.white
-            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+            self.navigationItem.leftBarButtonItem?.tintColor = .white
+            self.nameLabel.textColor = .white
+            self.navigationItem.rightBarButtonItem?.tintColor = .white
             self.tapCounterLabel.textColor = .white
+            self.bonusPointTextForOgFlame.textColor = .white
         }, completion: nil)
     }
     
@@ -133,10 +152,11 @@ extension ViewController: UIImagePickerControllerDelegate {
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[2]
             self.view.backgroundColor =  self.backgroundColours[2]
-            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-            self.nameLabel.textColor = UIColor.white
-            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            self.tapCounterLabel.textColor = .white
+            self.navigationItem.leftBarButtonItem?.tintColor = .white
+            self.nameLabel.textColor = .white
+            self.navigationItem.rightBarButtonItem?.tintColor = .white
+            self.tapCounterLabel.textColor = self.defaultColor
+            self.bonusPointTextForOgFlame.textColor = self.defaultColor
         }, completion: nil)
         
     }
@@ -145,11 +165,12 @@ extension ViewController: UIImagePickerControllerDelegate {
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[3]
             self.view.backgroundColor =  self.backgroundColours[3]
-            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-            self.navigationItem.titleView?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-            self.nameLabel.textColor = UIColor.rgb(51, green: 21, blue: 1)
-            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.rgb(51, green: 21, blue: 1)
-            self.tapCounterLabel.textColor =  UIColor.rgb(51, green: 21, blue: 1)
+            self.navigationItem.leftBarButtonItem?.tintColor = self.darkColor
+            self.navigationItem.titleView?.tintColor = self.darkColor
+            self.nameLabel.textColor = self.darkColor
+            self.navigationItem.rightBarButtonItem?.tintColor = self.darkColor
+            self.tapCounterLabel.textColor =  self.darkColor
+            self.bonusPointTextForOgFlame.textColor = self.darkColor
         }, completion: nil)
     }
     
@@ -159,6 +180,7 @@ extension ViewController: UIImagePickerControllerDelegate {
             self.profileImageView.backgroundColor = self.backgroundColours[5]
             self.view.backgroundColor =  self.backgroundColours[5]
             self.tapCounterLabel.textColor = .white
+            self.bonusPointTextForOgFlame.textColor = .white
         }, completion: nil)
         
     }
@@ -167,10 +189,11 @@ extension ViewController: UIImagePickerControllerDelegate {
         UIView.animate(withDuration: 1, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             UINavigationBar.appearance().barTintColor = self.backgroundColours[4]
             self.view.backgroundColor =  self.backgroundColours[4]
-            self.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
-            self.nameLabel.textColor = UIColor.white
-            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+            self.navigationItem.leftBarButtonItem?.tintColor = .white
+            self.nameLabel.textColor = .white
+            self.navigationItem.rightBarButtonItem?.tintColor = .white
             self.tapCounterLabel.tintColor = .white
+            self.bonusPointTextForOgFlame.textColor = .white
         }, completion: nil)
     }
    
@@ -214,31 +237,30 @@ extension ViewController: UIImagePickerControllerDelegate {
         if sender.direction == .up {
             itsLitImage.animation = "pop"
             itsLitImage.animate()
-            itsLitNoButton()
         }
         if sender.direction == .down {
+            stopSpinning()
             itsLitImage.animation = "fall"
             itsLitImage.animateToNext {
                 self.itsLitImage.animation = "pop"
                 self.itsLitImage.animateTo()
             }
-            itsLitNoButton()
         }
         if sender.direction == .left {
+            stopSpinning()
             itsLitImage.animation = "slideRight"
             itsLitImage.animateToNext {
                 self.itsLitImage.animation = "slideLeft"
                 self.itsLitImage.animateTo()
             }
-            itsLitNoButton()
         }
         if sender.direction == .right {
+            stopSpinning()
             itsLitImage.animation = "slideLeft"
             itsLitImage.animateToNext {
                 self.itsLitImage.animation = "slideRight"
                 self.itsLitImage.animateTo()
             }
-            itsLitNoButton()
         }
     }
     
@@ -355,7 +377,6 @@ extension ViewController: UIImagePickerControllerDelegate {
     
     
     func handleSelectProfileImageView() {
-        handleLogout()
         let picker = UIImagePickerController()
         picker.allowsEditing = true
         picker.delegate = self
