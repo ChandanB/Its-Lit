@@ -26,6 +26,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     @IBOutlet weak var itsLitImage     : SpringImageView!
     @IBOutlet weak var ItsLitButton    : UIImageView!
     @IBOutlet weak var tapCounterLabel : UILabel!
+    @IBOutlet weak var connectedUsersLabel: UILabel!
     let profileImageView = SpringImageView()
     let titleView        = UIView()
     let containerView    = UIView()
@@ -80,9 +81,11 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var selfRef      : FIRDatabaseReference?
     var toRef        : FIRDatabaseReference?
     var interstitial : GADInterstitial!
+    var network      = NetworkEnum.off
     var session      : MCSession!
     var peerID       : MCPeerID!
     var otherUser    : User?
+    
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -130,7 +133,9 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         checkForAnimations()
         sendInfo()
-        
+        if network == .on {
+            connectWithEveryone(user)
+        }
         if (device?.hasTorch)! {
             do {
                 try device?.lockForConfiguration()
@@ -144,10 +149,12 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                             self.tapCounter += 1
                             updateUserTapCounter()
                         }
-                        if self.tapCounter > 1000 {
+                        if self.tapCounter > 100 {
+                            itsLitImage.layer.shadowOpacity = 1
+                        }
+                        if self.tapCounter > 250 {
                             animateLighter()
                         }
-                        itsLitImage.layer.shadowOpacity = 1
                         try device?.setTorchModeOnWithLevel(1.0)
                     } catch {
                         print(error)
@@ -441,15 +448,15 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 }
             })
         }
-        if self.tapCounter > 25 {
+        if self.tapCounter > 20 {
             ItsLitButton.shake()
         }
         
-        if self.tapCounter > 50 {
+        if self.tapCounter > 40 {
             rotateView()
         }
         
-        if self.tapCounter > 500 {
+        if self.tapCounter > 100 {
             tapCounterLabel.layer.shadowOffset = CGSize(width: 0, height: 0)
             tapCounterLabel.layer.shadowColor  = defaultColor.cgColor
             tapCounterLabel.layer.shadowRadius = 60.0
@@ -457,11 +464,11 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             itsLitImage.layer.shadowOffset = CGSize(width: 0, height: 0)
             itsLitImage.layer.shadowColor  = defaultColor.cgColor
             itsLitImage.layer.shadowRadius = 20.0
-
+            
             tapCounterLabel.layer.shadowOpacity = 1
         }
         
-        if self.tapCounter == 1001 {
+        if self.tapCounter == 256 {
             ogFireButton.isHidden  = false
             self.ogFireButton.animation = "fadeInUp"
             self.ogFireButton.animate()
@@ -531,20 +538,25 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         let alertViewIcon = UIImage(named: "people0")
         let alert = SCLAlertView(appearance: appearance)
         
-        // Connect Over WiFi Button
-        alert.addButton("Connect Over WiFi", backgroundColor: .black, textColor: .white) {
-            wifiConnectAlert.showWarning("Pro Tip", subTitle: "You need to be on the same WiFi", duration: 5.0, colorStyle: 0xFFFFFF)
-            self.connectScreen(self)
-        }
-        
-        // Connect Through Friends Button
-        alert.addButton("Connect Through Friends", backgroundColor: .black, textColor: .white) {
-            self.observeFriendsAndSendLitness(self.user)
-        }
-        
-        // Connect In Location Button
-        alert.addButton("Location", backgroundColor: .black, textColor: .white) {
-            self.showMap(self)
+        if self.network == .off {
+            // Connect Over WiFi Button
+            alert.addButton("Connect Over WiFi", backgroundColor: .black, textColor: .white) {
+                wifiConnectAlert.showWarning("Pro Tip", subTitle: "You need to be on the same WiFi", duration: 5.0, colorStyle: 0xFFFFFF)
+                self.connectScreen(self)
+            }
+            
+            alert.addButton("Connect With EVERYONE", backgroundColor: .black, textColor: .white) {
+                self.network = NetworkEnum.on
+                self.connectWithEveryone(self.user)
+                self.navigationItem.leftBarButtonItem?.title = "Disconnect"
+                // self.showMap(self)
+            }
+        } else {
+            alert.addButton("Disconnect With EVERYONE", backgroundColor: .black, textColor: .white) {
+                self.network = NetworkEnum.off
+                self.navigationItem.leftBarButtonItem?.title = "Connect"
+                self.connectedUsersLabel.text = ""
+            }
         }
         
         // Cancel
@@ -608,7 +620,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             alertView.setTextTheme(.light)
         }
         
-        if self.tapCounter == 25 {
+        if self.tapCounter == 20 {
             let alertView = JSSAlertView().show(
                 self,
                 title: "New Animation Unlocked!",
@@ -622,7 +634,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             alertView.setTextTheme(.dark)
         }
         
-        if self.tapCounter == 50 {
+        if self.tapCounter == 40 {
             let alertView = JSSAlertView().show(
                 self,
                 title: "SPIN ANIMATION UNLOCKED!",
@@ -636,7 +648,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             alertView.setTextTheme(.dark)
         }
         
-        if self.tapCounter == 500 {
+        if self.tapCounter == 100 {
             let alertView = JSSAlertView().show(
                 self,
                 title: "Background Unlocked!",
@@ -650,7 +662,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             alertView.setTextTheme(.light)
         }
         
-        if self.tapCounter == 1000 {
+        if self.tapCounter == 250 {
             addSwipe()
             let alertView = JSSAlertView().show(
                 self,
@@ -666,12 +678,63 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
     }
     
+    func connectWithEveryone(_ user: User){
+        let uidName = user.name
+        let ref     = FIRDatabase.database().reference().child("Everybody Lit")
+        let currentUserRef = FIRDatabase.database().reference().child("Everybody Lit").child(uidName!)
+        
+        if self.network == .on {
+            currentUserRef.observe(.value, with: { (snapshot) in
+                if snapshot.value != nil {
+                    let key = [uidName!: "Has Joined" as AnyObject]
+                    ref.updateChildValues(key)
+                }
+            })
+            self.databaseHandleReceiving = currentUserRef.observe(.childAdded, with: { (snapshot) in
+                if (snapshot.value as? [String: AnyObject]) != nil {
+                    self.itsLitNoButton()
+                }
+            }, withCancel: nil)
+            
+            ref.observeSingleEvent(of: .value, with: { (snapshot) in
+                if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                    for snap in snapshots {
+                        self.toUser.name = snap.key
+                        if self.toUser.name != uidName {
+                            let toUserRef = FIRDatabase.database().reference().child("Everybody Lit").child(self.toUser.name!)
+                            let key = [uidName!: "Is Lit" as AnyObject]
+                            toUserRef.updateChildValues(key)
+                        }
+                    }
+                    if snapshots.count == 1 {
+                        self.connectedUsersLabel.text = "Connected to: 1 person"
+                    } else {
+                        self.connectedUsersLabel.text = "Connected to: \(snapshots.count) users"
+                    }
+                }
+            })
+        } else {
+            self.databaseHandleReceiving = ref.observe(.childAdded, with: { (snapshot) in
+                if (snapshot.value as? [String: AnyObject]) != nil {
+                    currentUserRef.removeValue(completionBlock: { (error, ref) in
+                        if error != nil {
+                            print("Failed to delete litness:", error as Any)
+                            return
+                        } else {
+                            self.itsLitNoButton()
+                        }
+                    })
+                }
+            })
+        }
+    }
+    
     func observeFriendsAndSendLitness(_ user: User) {
         let uidName = user.name
         let uid     = FIRAuth.auth()!.currentUser!.uid
         let ref     = FIRDatabase.database().reference().child("Friend").child(uid)
         var litValues: [String: AnyObject] = [:]
-
+        
         FIRDatabase.database().reference().child("Friend").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
                 for snap in snapshots {
@@ -679,7 +742,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                         self.toUser.name = snap.key
                         let childRef     = ref.childByAutoId()
                         let randomKey    = childRef.key
-            
                         self.toRef = FIRDatabase.database().reference().child("Litness").child(self.toUser.name!)
                         litValues = [uidName!: randomKey as AnyObject]
                         self.toRef?.updateChildValues(litValues)

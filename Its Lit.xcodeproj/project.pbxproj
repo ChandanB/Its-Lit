@@ -33,6 +33,7 @@
 		1FEE4DF61E28923F00D3C01D /* Lit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DEE1E28923F00D3C01D /* Lit.swift */; };
 		1FEE4DF81E28923F00D3C01D /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DF01E28923F00D3C01D /* ChatMessageCell.swift */; };
 		1FEE4DF91E28923F00D3C01D /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEE4DF11E28923F00D3C01D /* UserCell.swift */; };
+		1FF74FD41E440E8A008337FD /* NetworkEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF74FD31E440E8A008337FD /* NetworkEnum.swift */; };
 		B5B91B11DBED834F4821E878 /* Pods_Its_Lit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D1CCC90587EA32F0F342E3A /* Pods_Its_Lit.framework */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +68,7 @@
 		1FEE4DEE1E28923F00D3C01D /* Lit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lit.swift; sourceTree = "<group>"; };
 		1FEE4DF01E28923F00D3C01D /* ChatMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		1FEE4DF11E28923F00D3C01D /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		1FF74FD31E440E8A008337FD /* NetworkEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkEnum.swift; sourceTree = "<group>"; };
 		2D1CCC90587EA32F0F342E3A /* Pods_Its_Lit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Its_Lit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		36765741619ECD86C73FEE06 /* Pods-Its Lit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Its Lit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Its Lit/Pods-Its Lit.release.xcconfig"; sourceTree = "<group>"; };
 		571F8332AE04D23B6E8D3193 /* Pods-Its Lit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Its Lit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Its Lit/Pods-Its Lit.debug.xcconfig"; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				1FEE4DEE1E28923F00D3C01D /* Lit.swift */,
 				1FEE4DF01E28923F00D3C01D /* ChatMessageCell.swift */,
 				1FEE4DF11E28923F00D3C01D /* UserCell.swift */,
+				1FF74FD31E440E8A008337FD /* NetworkEnum.swift */,
 			);
 			name = "Ext and Helpers";
 			sourceTree = "<group>";
@@ -342,6 +345,7 @@
 				1F4589711E2883C80043D0EA /* MessagingExtension.swift in Sources */,
 				1FEE4DF41E28923F00D3C01D /* User.swift in Sources */,
 				1FEE4DF61E28923F00D3C01D /* Lit.swift in Sources */,
+				1FF74FD41E440E8A008337FD /* NetworkEnum.swift in Sources */,
 				1FEE4DF51E28923F00D3C01D /* imageHandle.swift in Sources */,
 				1F2314EA1E25AD4500A84468 /* UserViewController.swift in Sources */,
 				1F45896F1E2883B00043D0EA /* AppDelegate.swift in Sources */,
