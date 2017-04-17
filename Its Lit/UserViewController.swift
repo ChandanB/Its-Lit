@@ -11,7 +11,6 @@ import AVFoundation
 import MultipeerConnectivity
 import GoogleMobileAds
 import Firebase
-import MediaPlayer
 import MapKit
 import JSSAlertView
 import Spring
@@ -19,7 +18,7 @@ import SCLAlertView
 import GoogleMaps
 import GooglePlaces
 
-class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate , MPMediaPickerControllerDelegate, CLLocationManagerDelegate, GMSMapViewDelegate {
+class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate,  UINavigationControllerDelegate, CLLocationManagerDelegate, GMSMapViewDelegate {
     
     //MARK: - Objects In View and Views
     @IBOutlet weak var ogFireButton    : SpringImageView!
@@ -50,6 +49,19 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         return label
     }()
     
+    //MARK: - Variables for Peer to Peer.
+    var databaseHandleReceiving : FIRDatabaseHandle?
+    var browser      : MCBrowserViewController!
+    var assistant    : MCAdvertiserAssistant!
+    var childRef     : FIRDatabaseReference?
+    var selfRef      : FIRDatabaseReference?
+    var toRef        : FIRDatabaseReference?
+    var interstitial : GADInterstitial!
+    var network      = NetworkEnum.off
+    var session      : MCSession!
+    var peerID       : MCPeerID!
+    var otherUser    : User?
+    
     //MARK: - Objects
     let loginViewController = LoginViewController()
     var locationsDictionary = [String: Location]()
@@ -63,6 +75,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var litness   = [Lit]()
     var counter   = 0
     
+    
     //MARK: - Colors and Animations
     let blueColor     = UIColor(r: 110, g: 148, b: 208)
     let defaultColor  = UIColor(r: 254, g: 209, b: 67)
@@ -72,19 +85,6 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var backgroundColours = [UIColor()]
     var animating:  Bool  = false
     var timer = Timer()
-    
-    //MARK: - Variables for Peer to Peer.
-    var databaseHandleReceiving : FIRDatabaseHandle?
-    var browser      : MCBrowserViewController!
-    var assistant    : MCAdvertiserAssistant!
-    var childRef     : FIRDatabaseReference?
-    var selfRef      : FIRDatabaseReference?
-    var toRef        : FIRDatabaseReference?
-    var interstitial : GADInterstitial!
-    var network      = NetworkEnum.off
-    var session      : MCSession!
-    var peerID       : MCPeerID!
-    var otherUser    : User?
     
     
     //MARK: - ViewDidLoad
@@ -109,7 +109,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         checkIfUserIsLoggedIn()
         
         // Check whether or not to show ogFireButton
-        if self.tapCounter < 1000 {
+        if self.tapCounter < 750 {
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action:#selector(ogFireButtonTapped))
             ogFireButton.addGestureRecognizer(tapGestureRecognizer)
             ogFireButton.isUserInteractionEnabled = true
@@ -171,7 +171,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     @IBAction func changeBackground(gesture: UILongPressGestureRecognizer) {
-        if self.tapCounter >= 500 {
+        if self.tapCounter >= 120 {
             UIView.animate(withDuration: 1.0, animations: {
                 self.itsLitImage.transform = CGAffineTransform(scaleX: 0.1, y: 0.1) }, completion: { _ in
                     UIView.animate(withDuration: 0.3) {
@@ -468,7 +468,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             tapCounterLabel.layer.shadowOpacity = 1
         }
         
-        if self.tapCounter == 256 {
+        if self.tapCounter == 750 || self.tapCounter == 751 {
             ogFireButton.isHidden  = false
             self.ogFireButton.animation = "fadeInUp"
             self.ogFireButton.animate()
@@ -482,7 +482,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         interactionCounter += 1
         
         if interactionCounter == 5 {
-            if self.tapCounter > 1000 {
+            if self.tapCounter > 750 {
                 ogFireButton.animation = "fadeInUp"
                 ogFireButton.isHidden = false
                 ogFireButton.animate()
@@ -544,19 +544,19 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                 wifiConnectAlert.showWarning("Pro Tip", subTitle: "You need to be on the same WiFi", duration: 5.0, colorStyle: 0xFFFFFF)
                 self.connectScreen(self)
             }
-            
-            alert.addButton("Connect With EVERYONE", backgroundColor: .black, textColor: .white) {
-                self.network = NetworkEnum.on
-                self.connectWithEveryone(self.user)
-                self.navigationItem.leftBarButtonItem?.title = "Disconnect"
-                // self.showMap(self)
-            }
-        } else {
-            alert.addButton("Disconnect With EVERYONE", backgroundColor: .black, textColor: .white) {
-                self.network = NetworkEnum.off
-                self.navigationItem.leftBarButtonItem?.title = "Connect"
-                self.connectedUsersLabel.text = ""
-            }
+        
+//            alert.addButton("Connect With EVERYONE", backgroundColor: .black, textColor: .white) {
+//                self.network = NetworkEnum.on
+//                self.connectWithEveryone(self.user)
+//                self.navigationItem.leftBarButtonItem?.title = "Disconnect"
+//                // self.showMap(self)
+//            }
+//        } else {
+//            alert.addButton("Disconnect With EVERYONE", backgroundColor: .black, textColor: .white) {
+//                self.network = NetworkEnum.off
+//                self.navigationItem.leftBarButtonItem?.title = "Connect"
+//                self.connectedUsersLabel.text = ""
+//            }
         }
         
         // Cancel
@@ -620,7 +620,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             alertView.setTextTheme(.light)
         }
         
-        if self.tapCounter == 20 {
+        if self.tapCounter == 30 {
             let alertView = JSSAlertView().show(
                 self,
                 title: "New Animation Unlocked!",
@@ -634,7 +634,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             alertView.setTextTheme(.dark)
         }
         
-        if self.tapCounter == 40 {
+        if self.tapCounter == 70 {
             let alertView = JSSAlertView().show(
                 self,
                 title: "SPIN ANIMATION UNLOCKED!",
@@ -648,7 +648,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             alertView.setTextTheme(.dark)
         }
         
-        if self.tapCounter == 100 {
+        if self.tapCounter == 120 {
             let alertView = JSSAlertView().show(
                 self,
                 title: "Background Unlocked!",
@@ -662,7 +662,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
             alertView.setTextTheme(.light)
         }
         
-        if self.tapCounter == 250 {
+        if self.tapCounter == 750 || self.tapCounter == 751 {
             addSwipe()
             let alertView = JSSAlertView().show(
                 self,
@@ -707,13 +707,14 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
                         }
                     }
                     if snapshots.count == 1 {
-                        self.connectedUsersLabel.text = "Connected to: 1 person"
+                        self.connectedUsersLabel.text = "Connected to: No One Yet"
                     } else {
                         self.connectedUsersLabel.text = "Connected to: \(snapshots.count) users"
                     }
                 }
             })
         } else {
+            
             self.databaseHandleReceiving = ref.observe(.childAdded, with: { (snapshot) in
                 if (snapshot.value as? [String: AnyObject]) != nil {
                     currentUserRef.removeValue(completionBlock: { (error, ref) in

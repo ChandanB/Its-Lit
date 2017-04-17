@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>EZSwiftExtensions.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>GTMSessionFetcher.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -42,22 +47,27 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>0CADDE84F5C401E1A721F9341EAC1156</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>23BA9083ED0D2392A167A8AFA04427FA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>2A24EE34A2B6B808D627207D42752E6A</key>
+		<key>4D3E6C1183A3D76FBB0190A19DCFDD19</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C072F2DEE4EA0A915E78A2F202218D8A</key>
+		<key>97A83A304CBA7B6DA5B82376F87BBA9A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B8C8B5980AFC19366DA1142115765007</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D52BBCAE8144280321A90D9CF2902E1A</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -40,9 +40,7 @@ func addConstraintsWithFormat(_ format: String, views: UIView...) {
                     if self.imageUrlString == urlString {
                         self.image = imageToCache
                     }
-                    
                 })
-                
             }).resume()
         }
         

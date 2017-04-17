@@ -349,6 +349,7 @@ extension ViewController: UIImagePickerControllerDelegate {
         let metadata = FIRStorageMetadata()
         if let profileImage = self.profileImageView.image, let uploadData = UIImageJPEGRepresentation(profileImage, 0.1) {
             
+            
             storageRef.put(uploadData, metadata: metadata, completion: { (metadata, error) in
                 
                 if error != nil {

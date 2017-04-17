@@ -126,7 +126,7 @@ class LoginViewController: UIViewController  {
         view.addSubview(loginRegisterSegmentedControl)
         view.addSubview(inputsContainerView)
         view.addSubview(loginRegisterButton)
-        view.addSubview(skipLoginRegister)
+     //   view.addSubview(skipLoginRegister)
         view.addSubview(profileImageView)
         view.addSubview(errorTextField)
         
@@ -234,10 +234,10 @@ class LoginViewController: UIViewController  {
         loginRegisterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         loginRegisterButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        skipLoginRegister.topAnchor.constraint(equalTo: loginRegisterButton.bottomAnchor, constant: 12).isActive = true
-        skipLoginRegister.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
-        skipLoginRegister.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        skipLoginRegister.heightAnchor.constraint(equalToConstant: 50).isActive = true
+//        skipLoginRegister.topAnchor.constraint(equalTo: loginRegisterButton.bottomAnchor, constant: 12).isActive = true
+//        skipLoginRegister.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
+//        skipLoginRegister.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+//        skipLoginRegister.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
     }
     
@@ -330,12 +330,3 @@ class LoginViewController: UIViewController  {
     }
 
 }
-
-
-
-
-
-
-
-
-
